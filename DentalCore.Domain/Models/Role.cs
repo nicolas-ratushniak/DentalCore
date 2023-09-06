@@ -2,7 +2,7 @@
 
 namespace DentalCore.Domain.Models;
 
-public class City
+public class Role
 {
     public int Id { get; set; }
     

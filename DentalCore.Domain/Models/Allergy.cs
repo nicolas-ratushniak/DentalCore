@@ -1,7 +1,13 @@
-﻿namespace DentalCore.Domain.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DentalCore.Domain.Models;
 
 public class Allergy
 {
-    public int Id { get; set; }
+    public int PatientId { get; set; }
+    
+    [MaxLength(30)]
     public string Name { get; set; }
+
+    public Patient Patient { get; set; }
 }
