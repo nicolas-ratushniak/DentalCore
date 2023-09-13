@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalCore.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230913175635_Initial")]
+    [Migration("20230913184920_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -269,6 +269,11 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
+
+                    b.Property<string>("Diagnosis")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Discount")
                         .HasColumnType("int");
