@@ -6,6 +6,7 @@ public class User
 {
     public int Id { get; set; }
     public int RoleId { get; set; }
+    public bool IsEnabled { get; set; }
     
     [MaxLength(20)]
     public string Login { get; set; }

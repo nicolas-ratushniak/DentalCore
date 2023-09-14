@@ -222,6 +222,9 @@ namespace DentalCore.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Login")
                         .IsRequired()
                         .HasMaxLength(20)

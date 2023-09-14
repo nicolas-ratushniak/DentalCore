@@ -98,6 +98,7 @@ namespace DentalCore.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<int>(type: "int", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false),
                     Login = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
