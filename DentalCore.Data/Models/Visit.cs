@@ -8,7 +8,7 @@ public class Visit
     public int Id { get; set; }
     public int PatientId { get; set; }
     public int DoctorId { get; set; }
-    public int Discount { get; set; }
+    public int DiscountPercent { get; set; }
     public int TotalPrice { get; set; }
 
     [MaxLength(100)]
