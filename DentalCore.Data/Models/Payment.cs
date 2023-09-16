@@ -1,4 +1,4 @@
-﻿namespace DentalCore.Domain.Models;
+﻿namespace DentalCore.Data.Models;
 
 public class Payment
 {

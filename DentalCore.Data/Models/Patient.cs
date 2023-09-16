@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DentalCore.Domain.Models;
+namespace DentalCore.Data.Models;
 
 public class Patient
 {

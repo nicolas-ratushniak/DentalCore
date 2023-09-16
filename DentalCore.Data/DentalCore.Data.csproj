@@ -15,8 +15,4 @@
       </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\DentalCore.Domain\DentalCore.Domain.csproj" />
-    </ItemGroup>
-
 </Project>

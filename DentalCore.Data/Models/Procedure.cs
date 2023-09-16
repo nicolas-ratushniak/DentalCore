@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace DentalCore.Domain.Models;
+namespace DentalCore.Data.Models;
 
 public class Procedure
 {
