@@ -31,6 +31,7 @@ public class Patient
     public ICollection<Allergy>? Allergies { get; set; }
     public ICollection<Payment>? Payments { get; set; }
     public ICollection<Disease>? Diseases { get; set; }
+    public ICollection<Visit>? Visits { get; set; }
 }
 
 public enum Gender

@@ -25,7 +25,7 @@ namespace DentalCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Disease",
+                name: "Diseases",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -34,7 +34,7 @@ namespace DentalCore.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Disease", x => x.Id);
+                    table.PrimaryKey("PK_Diseases", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -146,9 +146,9 @@ namespace DentalCore.Data.Migrations
                 {
                     table.PrimaryKey("PK_DiseasePatient", x => new { x.DiseasesId, x.PatientsId });
                     table.ForeignKey(
-                        name: "FK_DiseasePatient_Disease_DiseasesId",
+                        name: "FK_DiseasePatient_Diseases_DiseasesId",
                         column: x => x.DiseasesId,
-                        principalTable: "Disease",
+                        principalTable: "Diseases",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -300,7 +300,7 @@ namespace DentalCore.Data.Migrations
                 name: "TreatmentItems");
 
             migrationBuilder.DropTable(
-                name: "Disease");
+                name: "Diseases");
 
             migrationBuilder.DropTable(
                 name: "Procedures");

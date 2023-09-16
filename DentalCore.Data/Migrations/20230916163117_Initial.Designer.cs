@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalCore.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230914160923_Initial")]
+    [Migration("20230916163117_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace DentalCore.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Allergy", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Allergy", b =>
                 {
                     b.Property<int>("PatientId")
                         .HasColumnType("int");
@@ -39,7 +39,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Allergies");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.City", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.City", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Cities");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Disease", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Disease", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,10 +72,10 @@ namespace DentalCore.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Disease");
+                    b.ToTable("Diseases");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Patient", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Patient", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,7 +122,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Patients");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Payment", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,7 +151,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Payments");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Procedure", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Procedure", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -178,7 +178,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Procedures");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Role", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -196,7 +196,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.TreatmentItem", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.TreatmentItem", b =>
                 {
                     b.Property<int>("VisitId")
                         .HasColumnType("int");
@@ -220,7 +220,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("TreatmentItems");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.User", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -265,7 +265,7 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Visit", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Visit", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -317,9 +317,9 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("DiseasePatient");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Allergy", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Allergy", b =>
                 {
-                    b.HasOne("DentalCore.Domain.Models.Patient", "Patient")
+                    b.HasOne("DentalCore.Data.Models.Patient", "Patient")
                         .WithMany("Allergies")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -328,9 +328,9 @@ namespace DentalCore.Data.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Patient", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Patient", b =>
                 {
-                    b.HasOne("DentalCore.Domain.Models.City", "City")
+                    b.HasOne("DentalCore.Data.Models.City", "City")
                         .WithMany()
                         .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -339,13 +339,13 @@ namespace DentalCore.Data.Migrations
                     b.Navigation("City");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Payment", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Payment", b =>
                 {
-                    b.HasOne("DentalCore.Domain.Models.Patient", null)
+                    b.HasOne("DentalCore.Data.Models.Patient", null)
                         .WithMany("Payments")
                         .HasForeignKey("PatientId");
 
-                    b.HasOne("DentalCore.Domain.Models.Visit", "Visit")
+                    b.HasOne("DentalCore.Data.Models.Visit", "Visit")
                         .WithMany("Payments")
                         .HasForeignKey("VisitId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -354,15 +354,15 @@ namespace DentalCore.Data.Migrations
                     b.Navigation("Visit");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.TreatmentItem", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.TreatmentItem", b =>
                 {
-                    b.HasOne("DentalCore.Domain.Models.Procedure", "Procedure")
+                    b.HasOne("DentalCore.Data.Models.Procedure", "Procedure")
                         .WithMany()
                         .HasForeignKey("ProcedureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DentalCore.Domain.Models.Visit", "Visit")
+                    b.HasOne("DentalCore.Data.Models.Visit", "Visit")
                         .WithMany("TreatmentItems")
                         .HasForeignKey("VisitId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -373,9 +373,9 @@ namespace DentalCore.Data.Migrations
                     b.Navigation("Visit");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.User", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.User", b =>
                 {
-                    b.HasOne("DentalCore.Domain.Models.Role", "Role")
+                    b.HasOne("DentalCore.Data.Models.Role", "Role")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -384,16 +384,16 @@ namespace DentalCore.Data.Migrations
                     b.Navigation("Role");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Visit", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Visit", b =>
                 {
-                    b.HasOne("DentalCore.Domain.Models.User", "Doctor")
+                    b.HasOne("DentalCore.Data.Models.User", "Doctor")
                         .WithMany()
                         .HasForeignKey("DoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DentalCore.Domain.Models.Patient", "Patient")
-                        .WithMany()
+                    b.HasOne("DentalCore.Data.Models.Patient", "Patient")
+                        .WithMany("Visits")
                         .HasForeignKey("PatientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -405,27 +405,29 @@ namespace DentalCore.Data.Migrations
 
             modelBuilder.Entity("DiseasePatient", b =>
                 {
-                    b.HasOne("DentalCore.Domain.Models.Disease", null)
+                    b.HasOne("DentalCore.Data.Models.Disease", null)
                         .WithMany()
                         .HasForeignKey("DiseasesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DentalCore.Domain.Models.Patient", null)
+                    b.HasOne("DentalCore.Data.Models.Patient", null)
                         .WithMany()
                         .HasForeignKey("PatientsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Patient", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Patient", b =>
                 {
                     b.Navigation("Allergies");
 
                     b.Navigation("Payments");
+
+                    b.Navigation("Visits");
                 });
 
-            modelBuilder.Entity("DentalCore.Domain.Models.Visit", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Visit", b =>
                 {
                     b.Navigation("Payments");
 

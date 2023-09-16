@@ -6,8 +6,8 @@ namespace DentalCore.Data;
 public class AppDbContext : DbContext
 {
     public DbSet<Allergy> Allergies { get; set; }
-    public DbSet<Disease> Diseases { get; set; }
     public DbSet<City> Cities { get; set; }
+    public DbSet<Disease> Diseases { get; set; }
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Payment> Payments { get; set; }
     public DbSet<Procedure> Procedures { get; set; }
