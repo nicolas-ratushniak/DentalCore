@@ -79,20 +79,32 @@ public class PatientService : IPatientService
 
     public int GetDebt(int id)
     {
-        var visits = GetVisits(id);
-        int shouldHavePayed = 0;
-        int actuallyPayed = 0;
-
-        foreach (var visit in visits)
-        {
-            shouldHavePayed += visit.TotalPrice;
-
-            actuallyPayed += _context.Payments
-                .Where(p => p.VisitId == visit.Id)
-                .Sum(p => p.Sum);
-        }
+        var shouldHavePayed = GetVisits(id).Sum(v => v.TotalPrice);
+        var actuallyPayed = GetPayments(id).Sum(p => p.Sum);
 
         return shouldHavePayed - actuallyPayed;
+    }
+
+    public void PayWholeDebt(int id)
+    {
+        var paymentTime = DateTime.Now;
+        
+        foreach (var visit in GetVisits(id))
+        {
+            var alreadyPaid = _context.Payments.Where(p => p.VisitId == visit.Id)
+                .Sum(p => p.Sum);
+
+            var payment = new Payment
+            {
+                VisitId = visit.Id,
+                DateTime = paymentTime,
+                Sum = visit.TotalPrice - alreadyPaid,
+            };
+
+            _context.Payments.Add(payment);
+        }
+
+        _context.SaveChanges();
     }
 
     public IEnumerable<Allergy> GetAllergies(int id)
@@ -110,15 +122,15 @@ public class PatientService : IPatientService
         return patient.Diseases ?? new List<Disease>();
     }
 
-    public IEnumerable<Payment> GetPayments(int id)
+    private IEnumerable<Visit> GetVisits(int id)
+    {
+        return _context.Visits.Where(v => v.PatientId == id);
+    }
+    
+    private IEnumerable<Payment> GetPayments(int id)
     {
         return _context.Payments
             .Include(p => p.Visit)
             .Where(p => p.Visit.PatientId == id);
-    }
-
-    public IEnumerable<Visit> GetVisits(int id)
-    {
-        return _context.Visits.Where(v => v.PatientId == id);
     }
 }

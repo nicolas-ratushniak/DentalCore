@@ -10,8 +10,7 @@ public interface IPatientService
     public void Add(PatientCreateDto dto);
     public void Update(PatientUpdateDto dto);
     public int GetDebt(int id);
+    public void PayWholeDebt(int id);
     public IEnumerable<Allergy> GetAllergies(int id);
     public IEnumerable<Disease> GetDiseases(int id);
-    public IEnumerable<Payment> GetPayments(int id);
-    public IEnumerable<Visit> GetVisits(int id);
 }
