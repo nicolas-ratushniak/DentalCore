@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalCore.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230916163117_Initial")]
+    [Migration("20230919172527_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -281,7 +281,7 @@ namespace DentalCore.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Discount")
+                    b.Property<int>("DiscountPercent")
                         .HasColumnType("int");
 
                     b.Property<int>("DoctorId")

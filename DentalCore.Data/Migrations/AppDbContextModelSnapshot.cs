@@ -278,7 +278,7 @@ namespace DentalCore.Data.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Discount")
+                    b.Property<int>("DiscountPercent")
                         .HasColumnType("int");
 
                     b.Property<int>("DoctorId")
