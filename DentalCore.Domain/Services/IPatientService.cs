@@ -1,5 +1,5 @@
 ﻿using DentalCore.Domain.Dto;
-using DentalCore.Domain.Models;
+using DentalCore.Data.Models;
 
 namespace DentalCore.Domain.Services;
 
@@ -13,4 +13,5 @@ public interface IPatientService
     public IEnumerable<Allergy> GetAllergies(int id);
     public IEnumerable<Disease> GetDiseases(int id);
     public IEnumerable<Payment> GetPayments(int id);
+    public IEnumerable<Visit> GetVisits(int id);
 }

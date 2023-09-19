@@ -1,5 +1,5 @@
 ﻿using DentalCore.Domain.Dto;
-using DentalCore.Domain.Models;
+using DentalCore.Data.Models;
 
 namespace DentalCore.Domain.Services;
 
