@@ -32,12 +32,19 @@ public class VisitService : IVisitService
 
         if (!dto.TreatmentItems.Any())
         {
-            throw new ValidationException("Неможливо створити візит без жодної процедури");
+            throw new ValidationException("Не обрано жодної процедури");
         }
 
         var totalPrice = CalculateTotalPrice(
-            dto.TreatmentItems.Sum(t => t.Price * t.Quantity), 
+            dto.TreatmentItems.Sum(t => t.Price * t.Quantity),
             dto.DiscountPercent);
+
+        var firstPayment = dto.FirstPayment;
+
+        if (firstPayment > totalPrice)
+        {
+            throw new ValidationException("Введена сума перевищує потрібну");
+        }
 
         var visit = new Visit
         {
@@ -50,10 +57,10 @@ public class VisitService : IVisitService
         };
 
         _context.Visits.Add(visit);
-        
-        if (dto.FirstPayment > 0)
+
+        if (firstPayment > 0)
         {
-            AddPayment(visit.Id, dto.FirstPayment);
+            AddPaymentUnsafe(visit.Id, dto.FirstPayment);
         }
 
         foreach (var treatmentItem in dto.TreatmentItems)
@@ -80,15 +87,7 @@ public class VisitService : IVisitService
             throw new ArgumentOutOfRangeException(nameof(sum));
         }
 
-        var payment = new Payment
-        {
-            VisitId = id,
-            DateTime = DateTime.Now,
-            Sum = sum
-        };
-
-        _context.Payments.Add(payment);
-        _context.SaveChanges();
+        AddPaymentUnsafe(id, sum);
     }
 
     public int GetDebt(int id)
@@ -118,9 +117,16 @@ public class VisitService : IVisitService
             .Where(t => t.VisitId == id);
     }
 
-    public IEnumerable<Payment> GetPayments(int id)
+    private void AddPaymentUnsafe(int id, int sum)
     {
-        return _context.Payments
-            .Where(p => p.VisitId == id);
+        var payment = new Payment
+        {
+            VisitId = id,
+            DateTime = DateTime.Now,
+            Sum = sum
+        };
+
+        _context.Payments.Add(payment);
+        _context.SaveChanges();
     }
 }

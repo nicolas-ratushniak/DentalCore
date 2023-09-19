@@ -13,5 +13,4 @@ public interface IVisitService
     public int GetMoneyPayed(int id);
     public int CalculateTotalPrice(int sum, int discountPercent);
     public IEnumerable<TreatmentItem> GetTreatmentItems(int id);
-    public IEnumerable<Payment> GetPayments(int id);
 }
