@@ -20,5 +20,5 @@ public class Visit
     public Patient Patient { get; set; }
     public User Doctor { get; set; }
     public ICollection<TreatmentItem> TreatmentItems { get; set; }
-    public ICollection<Payment> Payments { get; set; }
+    public ICollection<Payment>? Payments { get; set; }
 }
