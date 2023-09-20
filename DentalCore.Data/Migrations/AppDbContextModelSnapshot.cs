@@ -175,24 +175,6 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Procedures");
                 });
 
-            modelBuilder.Entity("DentalCore.Data.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
             modelBuilder.Entity("DentalCore.Data.Models.TreatmentItem", b =>
                 {
                     b.Property<int>("VisitId")
@@ -247,7 +229,7 @@ namespace DentalCore.Data.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int>("Role")
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
@@ -256,8 +238,6 @@ namespace DentalCore.Data.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
 
                     b.ToTable("Users");
                 });
@@ -368,17 +348,6 @@ namespace DentalCore.Data.Migrations
                     b.Navigation("Procedure");
 
                     b.Navigation("Visit");
-                });
-
-            modelBuilder.Entity("DentalCore.Data.Models.User", b =>
-                {
-                    b.HasOne("DentalCore.Data.Models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("DentalCore.Data.Models.Visit", b =>
