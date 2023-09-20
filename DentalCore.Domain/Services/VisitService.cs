@@ -35,46 +35,68 @@ public class VisitService : IVisitService
             throw new ValidationException("Не обрано жодної процедури");
         }
 
-        var totalPrice = CalculateTotalPrice(
-            dto.TreatmentItems.Sum(t => t.Price * t.Quantity),
-            dto.DiscountPercent);
+        var patient = _context.Patients.Find(dto.PatientId)
+                      ?? throw new EntityNotFoundException("Patient not found");
 
-        var firstPayment = dto.FirstPayment;
-
-        if (firstPayment > totalPrice)
-        {
-            throw new ValidationException("Введена сума перевищує потрібну");
-        }
+        var doctor = _context.Users
+                         .Where(u => u.Role == UserRole.Doctor)
+                         .SingleOrDefault(d => d.Id == dto.DoctorId)
+                     ?? throw new EntityNotFoundException("Doctor not found");
 
         var visit = new Visit
         {
             PatientId = dto.PatientId,
+            Patient = patient,
             DoctorId = dto.DoctorId,
+            Doctor = doctor,
             DiscountPercent = dto.DiscountPercent,
-            TotalPrice = totalPrice,
             Diagnosis = dto.Diagnosis,
-            Date = dto.Date
+            Date = dto.Date,
+            Payments = new List<Payment>(),
+            TreatmentItems = new List<TreatmentItem>()
         };
 
-        _context.Visits.Add(visit);
-
-        if (firstPayment > 0)
+        foreach (var item in dto.TreatmentItems)
         {
-            AddPaymentUnsafe(visit.Id, dto.FirstPayment);
-        }
+            var procedure = _context.Procedures.Find(item.ProcedureId)
+                            ?? throw new EntityNotFoundException("Procedure not found");
 
-        foreach (var treatmentItem in dto.TreatmentItems)
-        {
-            _context.TreatmentItems.Add(new TreatmentItem
+            visit.TreatmentItems.Add(new TreatmentItem
             {
-                VisitId = visit.Id,
-                ProcedureId = treatmentItem.ProcedureId,
-                Quantity = treatmentItem.Quantity,
-                Price = treatmentItem.Price,
-                IsDiscountValid = treatmentItem.IsDiscountValid
+                ProcedureId = item.ProcedureId,
+                Quantity = item.Quantity,
+                Price = procedure.Price,
+                IsDiscountValid = procedure.IsDiscountValid,
+                Visit = visit,
+                Procedure = procedure
             });
         }
 
+        visit.TotalPrice = CalculateTotalPrice(
+            visit.TreatmentItems.Sum(t => t.Price * t.Quantity),
+            dto.DiscountPercent);
+
+        var firstPayment = dto.FirstPayment;
+
+        if (firstPayment > visit.TotalPrice)
+        {
+            throw new ValidationException("Введена сума перевищує потрібну");
+        }
+
+        if (firstPayment > 0)
+        {
+            var payment = new Payment
+            {
+                DateTime = DateTime.Now,
+                Sum = firstPayment,
+                Visit = visit
+            };
+
+            visit.Payments = new List<Payment>();
+            visit.Payments.Add(payment);
+        }
+
+        _context.Visits.Add(visit);
         _context.SaveChanges();
     }
 
@@ -87,7 +109,16 @@ public class VisitService : IVisitService
             throw new ArgumentOutOfRangeException(nameof(sum));
         }
 
-        AddPaymentUnsafe(id, sum);
+        var payment = new Payment
+        {
+            VisitId = id,
+            DateTime = DateTime.Now,
+            Sum = sum,
+            Visit = visit
+        };
+
+        _context.Payments.Add(payment);
+        _context.SaveChanges();
     }
 
     public int GetDebt(int id)
@@ -105,28 +136,15 @@ public class VisitService : IVisitService
 
     public int CalculateTotalPrice(int sum, int discountPercent)
     {
-        var purePrice = (int)((double)sum / 100 * (100 - discountPercent));
-        var rest = purePrice % 50;
+        var purePrice = (int)Math.Round(sum * (1 - discountPercent / 100.0), MidpointRounding.ToPositiveInfinity);
+        var remainder = purePrice % 50;
 
-        return rest < 25 ? purePrice - rest : purePrice + (50 - rest);
+        return remainder < 25 ? purePrice - remainder : purePrice - remainder + 50;
     }
 
     public IEnumerable<TreatmentItem> GetTreatmentItems(int id)
     {
         return _context.TreatmentItems
             .Where(t => t.VisitId == id);
-    }
-
-    private void AddPaymentUnsafe(int id, int sum)
-    {
-        var payment = new Payment
-        {
-            VisitId = id,
-            DateTime = DateTime.Now,
-            Sum = sum
-        };
-
-        _context.Payments.Add(payment);
-        _context.SaveChanges();
     }
 }
