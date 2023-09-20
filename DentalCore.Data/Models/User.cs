@@ -5,7 +5,7 @@ namespace DentalCore.Data.Models;
 public class User
 {
     public int Id { get; set; }
-    public int RoleId { get; set; }
+    public UserRole Role { get; set; }
     public bool IsEnabled { get; set; }
     
     [MaxLength(20)]
@@ -21,6 +21,11 @@ public class User
     
     [MaxLength(10)]
     public string Phone { get; set; }
+}
 
-    public Role Role { get; set; }
+public enum UserRole
+{
+    Admin,
+    Doctor,
+    Guest
 }

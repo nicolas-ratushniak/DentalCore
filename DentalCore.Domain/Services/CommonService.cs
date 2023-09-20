@@ -26,9 +26,4 @@ public class CommonService : ICommonService
     {
         return _context.Payments.ToList();
     }
-
-    public IEnumerable<Role> GetRoles()
-    {
-        return _context.Roles.ToList();
-    }
 }

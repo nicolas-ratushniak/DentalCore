@@ -4,7 +4,6 @@ using DentalCore.Domain.Dto;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace DentalCore.Domain.Services;
 
@@ -30,13 +29,6 @@ public class UserService : IUserService
         return _context.Users.ToList();
     }
 
-    public IEnumerable<User> GetDoctors()
-    {
-        return _context.Users
-            .Include(u => u.Role)
-            .Where(u => u.Role.Name == "Doctor");
-    }
-
     public void Add(UserCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
@@ -53,7 +45,7 @@ public class UserService : IUserService
         
         var user = new User
         {
-            RoleId = dto.RoleId,
+            Role = dto.Role,
             IsEnabled = true,
             Login = dto.Login,
             Name = dto.Name,

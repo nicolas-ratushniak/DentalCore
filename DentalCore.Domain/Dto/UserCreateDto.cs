@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DentalCore.Data.Models;
 
 namespace DentalCore.Domain.Dto;
 
 public class UserCreateDto
 {
     [Required]
-    public int RoleId { get; set; }
+    public UserRole Role { get; set; }
     
     [Required]
     [StringLength(20, MinimumLength = 1)]
