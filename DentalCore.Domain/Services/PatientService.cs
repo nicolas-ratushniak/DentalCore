@@ -37,6 +37,9 @@ public class PatientService : IPatientService
             throw new ValidationException("У базі вже є пацієнт з таким ПІБ");
         }
 
+        var city = _context.Cities.Find(dto.CityId)
+                   ?? throw new EntityNotFoundException("City not found");
+
         var patient = new Patient
         {
             CityId = dto.CityId,
@@ -46,7 +49,8 @@ public class PatientService : IPatientService
             Patronymic = dto.Patronymic,
             Phone = dto.Phone,
             BirthDate = dto.BirthDate,
-            DateCreated = DateTime.Today
+            DateCreated = DateTime.Today,
+            City = city
         };
 
         _context.Patients.Add(patient);
@@ -63,9 +67,13 @@ public class PatientService : IPatientService
             throw new ValidationException("У базі вже є пацієнт з таким ПІБ");
         }
         
+        var city = _context.Cities.Find(dto.CityId)
+                   ?? throw new EntityNotFoundException("City not found");
+        
         var patient = Get(dto.Id);
         
         patient.CityId = dto.CityId;
+        patient.City = city;
         patient.Gender = dto.IsMale ? Gender.Male : Gender.Female;
         patient.Name = dto.Name;
         patient.Surname = dto.Surname;
