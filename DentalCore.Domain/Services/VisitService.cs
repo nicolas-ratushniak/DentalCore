@@ -134,7 +134,8 @@ public class VisitService : IVisitService
     {
         var purePrice = treatmentItems
             .Select(item => FindProcedure(item.ProcedureId))
-            .Select(procedure => procedure.IsDiscountValid
+            .Select(procedure => 
+                procedure.IsDiscountValid
                 ? (int)Math.Round(procedure.Price * (1 - discountPercent / 100.0), MidpointRounding.ToPositiveInfinity)
                 : procedure.Price)
             .Sum();

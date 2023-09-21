@@ -30,7 +30,7 @@ public class CommonService : ICommonService
     public IEnumerable<Procedure> GetProcedures()
     {
         return _context.Procedures
-            .Where(p => p.IsDeleted == false)
+            .Where(p => !p.IsDeleted)
             .ToList();
     }
 

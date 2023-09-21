@@ -32,7 +32,7 @@ public class UserService : IUserService
     public IEnumerable<User> GetDoctors()
     {
         return _context.Users
-            .Where(u => u.Role == UserRole.Doctor && u.IsEnabled == true);
+            .Where(u => u.Role == UserRole.Doctor && u.IsEnabled);
     }
 
     public void Add(UserCreateDto dto)
