@@ -23,14 +23,15 @@ public class ProcedureService : IProcedureService
 
     public IEnumerable<Procedure> GetAll()
     {
-        return _context.Procedures.ToList();
+        return _context.Procedures
+            .Where(p => p.IsDeleted == false);
     }
 
     public void Add(ProcedureCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Procedures.Any(p => p.Name == dto.Name))
+        if (GetAll().Any(p => p.Name == dto.Name))
         {
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
@@ -50,7 +51,7 @@ public class ProcedureService : IProcedureService
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Procedures.Any(p => p.Name == dto.Name && p.Id != dto.Id))
+        if (GetAll().Any(p => p.Name == dto.Name && p.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }

@@ -29,6 +29,12 @@ public class UserService : IUserService
         return _context.Users.ToList();
     }
 
+    public IEnumerable<User> GetDoctors()
+    {
+        return _context.Users
+            .Where(u => u.Role == UserRole.Doctor && u.IsEnabled == true);
+    }
+
     public void Add(UserCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
