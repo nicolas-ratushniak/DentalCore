@@ -35,11 +35,18 @@ public class VisitService : IVisitService
             throw new ValidationException("Не обрано жодної процедури");
         }
 
+        var totalPrice = CalculateTotalPrice(dto.TreatmentItems, dto.DiscountPercent);
+
+        if (dto.FirstPayment > totalPrice)
+        {
+            throw new ValidationException("Введена сума не має перевищувати суму чеку");
+        }
+
         var patient = _context.Patients.Find(dto.PatientId)
                       ?? throw new EntityNotFoundException("Patient not found");
 
         var doctor = _context.Users
-                         .Where(u => u.Role == UserRole.Doctor)
+                         .Where(u => u.Role == UserRole.Doctor && u.IsEnabled)
                          .SingleOrDefault(d => d.Id == dto.DoctorId)
                      ?? throw new EntityNotFoundException("Doctor not found");
 
@@ -51,6 +58,7 @@ public class VisitService : IVisitService
             Doctor = doctor,
             DiscountPercent = dto.DiscountPercent,
             Diagnosis = dto.Diagnosis,
+            TotalPrice = totalPrice,
             Date = dto.Date,
             Payments = new List<Payment>(),
             TreatmentItems = new List<TreatmentItem>()
@@ -58,8 +66,7 @@ public class VisitService : IVisitService
 
         foreach (var item in dto.TreatmentItems)
         {
-            var procedure = _context.Procedures.Find(item.ProcedureId)
-                            ?? throw new EntityNotFoundException("Procedure not found");
+            var procedure = FindProcedure(item.ProcedureId);
 
             visit.TreatmentItems.Add(new TreatmentItem
             {
@@ -72,23 +79,12 @@ public class VisitService : IVisitService
             });
         }
 
-        visit.TotalPrice = CalculateTotalPrice(
-            visit.TreatmentItems.Sum(t => t.Price * t.Quantity),
-            dto.DiscountPercent);
-
-        var firstPayment = dto.FirstPayment;
-
-        if (firstPayment > visit.TotalPrice)
-        {
-            throw new ValidationException("Введена сума перевищує потрібну");
-        }
-
-        if (firstPayment > 0)
+        if (dto.FirstPayment > 0)
         {
             var payment = new Payment
             {
                 DateTime = DateTime.Now,
-                Sum = firstPayment,
+                Sum = dto.FirstPayment,
                 Visit = visit
             };
 
@@ -134,9 +130,15 @@ public class VisitService : IVisitService
             .Sum(p => p.Sum);
     }
 
-    public int CalculateTotalPrice(int sum, int discountPercent)
+    public int CalculateTotalPrice(IEnumerable<TreatmentItemDto> treatmentItems, int discountPercent)
     {
-        var purePrice = (int)Math.Round(sum * (1 - discountPercent / 100.0), MidpointRounding.ToPositiveInfinity);
+        var purePrice = treatmentItems
+            .Select(item => FindProcedure(item.ProcedureId))
+            .Select(procedure => procedure.IsDiscountValid
+                ? (int)Math.Round(procedure.Price * (1 - discountPercent / 100.0), MidpointRounding.ToPositiveInfinity)
+                : procedure.Price)
+            .Sum();
+
         var remainder = purePrice % 50;
 
         return remainder < 25 ? purePrice - remainder : purePrice - remainder + 50;
@@ -146,5 +148,13 @@ public class VisitService : IVisitService
     {
         return _context.TreatmentItems
             .Where(t => t.VisitId == id);
+    }
+
+    private Procedure FindProcedure(int procedureId)
+    {
+        return _context.Procedures
+                   .Where(p => !p.IsDeleted)
+                   .SingleOrDefault(p => p.Id == procedureId)
+               ?? throw new EntityNotFoundException("Procedure not found");
     }
 }

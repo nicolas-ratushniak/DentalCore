@@ -2,7 +2,7 @@
 
 namespace DentalCore.Domain.Dto;
 
-public class TreatmentItemCreateDto
+public class TreatmentItemDto
 {
     [Required]
     public int ProcedureId { get; set; }

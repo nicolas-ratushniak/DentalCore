@@ -25,5 +25,5 @@ public class VisitCreateDto
     public DateTime Date { get; set; }
     
     [Required] 
-    public IEnumerable<TreatmentItemCreateDto> TreatmentItems { get; set; }
+    public IEnumerable<TreatmentItemDto> TreatmentItems { get; set; }
 }
