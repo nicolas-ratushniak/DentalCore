@@ -37,6 +37,11 @@ public class PatientService : IPatientService
             throw new ValidationException("У базі вже є пацієнт з таким ПІБ");
         }
 
+        if (dto.BirthDate > DateTime.Now)
+        {
+            throw new ValidationException("Некоректна дата народження. Подорожі у часі заборонені");
+        }
+
         var city = _context.Cities.Find(dto.CityId)
                    ?? throw new EntityNotFoundException("City not found");
 
@@ -65,6 +70,11 @@ public class PatientService : IPatientService
                 p.Name == dto.Name && p.Surname == dto.Surname && p.Patronymic == dto.Patronymic && p.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є пацієнт з таким ПІБ");
+        }
+        
+        if (dto.BirthDate > DateTime.Now)
+        {
+            throw new ValidationException("Некоректна дата народження. Подорожі у часі заборонені");
         }
         
         var city = _context.Cities.Find(dto.CityId)
