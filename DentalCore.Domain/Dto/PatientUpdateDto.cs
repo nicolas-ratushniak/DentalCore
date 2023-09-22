@@ -26,7 +26,7 @@ public class PatientUpdateDto
     public string Patronymic { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(10, MinimumLength = 10)]
+    [RegularExpression(@"^0\d{9}$")]
     public string Phone { get; set; } = string.Empty;
     
     [Required]

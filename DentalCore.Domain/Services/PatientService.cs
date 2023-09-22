@@ -71,17 +71,17 @@ public class PatientService : IPatientService
         {
             throw new ValidationException("У базі вже є пацієнт з таким ПІБ");
         }
-        
+
         if (dto.BirthDate > DateTime.Now)
         {
             throw new ValidationException("Некоректна дата народження. Подорожі у часі заборонені");
         }
-        
+
         var city = _context.Cities.Find(dto.CityId)
                    ?? throw new EntityNotFoundException("City not found");
-        
+
         var patient = Get(dto.Id);
-        
+
         patient.CityId = dto.CityId;
         patient.City = city;
         patient.Gender = dto.IsMale ? Gender.Male : Gender.Female;
@@ -97,6 +97,11 @@ public class PatientService : IPatientService
 
     public int GetDebt(int id)
     {
+        if (!_context.Patients.Any(p => p.Id == id))
+        {
+            throw new EntityNotFoundException("Patient not found");
+        }
+
         var shouldHavePayed = GetVisits(id).Sum(v => v.TotalPrice);
         var actuallyPayed = GetPayments(id).Sum(p => p.Sum);
 
@@ -105,18 +110,30 @@ public class PatientService : IPatientService
 
     public void PayWholeDebt(int id)
     {
+        if (!_context.Patients.Any(p => p.Id == id))
+        {
+            throw new EntityNotFoundException("Patient not found");
+        }
+
         var paymentTime = DateTime.Now;
-        
+
         foreach (var visit in GetVisits(id))
         {
             var alreadyPaid = _context.Payments.Where(p => p.VisitId == visit.Id)
                 .Sum(p => p.Sum);
 
+            var remainsToPay = visit.TotalPrice - alreadyPaid;
+
+            if (remainsToPay <= 0)
+            {
+                continue;
+            }
+
             var payment = new Payment
             {
                 VisitId = visit.Id,
                 DateTime = paymentTime,
-                Sum = visit.TotalPrice - alreadyPaid,
+                Sum = remainsToPay
             };
 
             _context.Payments.Add(payment);
@@ -133,9 +150,9 @@ public class PatientService : IPatientService
     public IEnumerable<Disease> GetDiseases(int id)
     {
         var patient = _context.Patients
-            .Include(p => p.Diseases)
-            .SingleOrDefault(p => p.Id == id)
-            ?? throw new EntityNotFoundException();
+                          .Include(p => p.Diseases)
+                          .SingleOrDefault(p => p.Id == id)
+                      ?? throw new EntityNotFoundException();
 
         return patient.Diseases ?? new List<Disease>();
     }
@@ -144,7 +161,7 @@ public class PatientService : IPatientService
     {
         return _context.Visits.Where(v => v.PatientId == id);
     }
-    
+
     private IEnumerable<Payment> GetPayments(int id)
     {
         return _context.Payments
