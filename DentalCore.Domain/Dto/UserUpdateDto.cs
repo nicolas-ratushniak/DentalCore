@@ -6,10 +6,7 @@ public class UserUpdateDto
 {
     [Required]
     public int Id { get; set; }
-    
-    [Required] 
-    public bool IsEnabled { get; set; }
-    
+
     [Required]
     [StringLength(20, MinimumLength = 1)]
     public string Login { get; set; }

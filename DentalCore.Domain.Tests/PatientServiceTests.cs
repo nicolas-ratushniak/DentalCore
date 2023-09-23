@@ -911,7 +911,7 @@ public class PatientServiceTests
             {
                 Id = 0,
                 Role = UserRole.Doctor,
-                IsEnabled = true,
+                IsDeleted = false,
                 Login = "login",
                 PasswordHash = "sdfsdfk",
                 Name = "Doctor Name",
@@ -992,7 +992,7 @@ public class PatientServiceTests
             {
                 Id = 0,
                 Role = UserRole.Doctor,
-                IsEnabled = true,
+                IsDeleted = false,
                 Login = "login",
                 PasswordHash = "sdfsdfk",
                 Name = "Doctor Name",
@@ -1098,7 +1098,7 @@ public class PatientServiceTests
             {
                 Id = 0,
                 Role = UserRole.Doctor,
-                IsEnabled = true,
+                IsDeleted = false,
                 Login = "login",
                 PasswordHash = "sdfsdfk",
                 Name = "Doctor Name",
@@ -1205,7 +1205,7 @@ public class PatientServiceTests
             {
                 Id = 0,
                 Role = UserRole.Doctor,
-                IsEnabled = true,
+                IsDeleted = false,
                 Login = "login",
                 PasswordHash = "sdfsdfk",
                 Name = "Doctor Name",

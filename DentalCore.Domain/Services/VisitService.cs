@@ -46,7 +46,7 @@ public class VisitService : IVisitService
                       ?? throw new EntityNotFoundException("Patient not found");
 
         var doctor = _context.Users
-                         .Where(u => u.Role == UserRole.Doctor && u.IsEnabled)
+                         .Where(u => u.Role == UserRole.Doctor && !u.IsDeleted)
                          .SingleOrDefault(d => d.Id == dto.DoctorId)
                      ?? throw new EntityNotFoundException("Doctor not found");
 

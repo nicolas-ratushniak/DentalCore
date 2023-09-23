@@ -5,9 +5,9 @@ namespace DentalCore.Data.Models;
 public class User
 {
     public int Id { get; set; }
+    public bool IsDeleted { get; set; }
     public UserRole Role { get; set; }
-    public bool IsEnabled { get; set; }
-    
+
     [MaxLength(20)]
     public string Login { get; set; }
     
