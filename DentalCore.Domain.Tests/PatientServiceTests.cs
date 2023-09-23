@@ -85,7 +85,7 @@ public class PatientServiceTests
     [InlineData("0123")]
     [InlineData("01234567892345")]
     [InlineData("1111111111")]
-    public void Add_InvalidPhone_ThrowsValidationException(string invalidPhone)
+    public void Add_PhoneDoesntFollowRegex_ThrowsValidationException(string invalidPhone)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -126,7 +126,7 @@ public class PatientServiceTests
     [Theory]
     [InlineData("A")]
     [InlineData("Too long naaaaaaaaame")]
-    public void Add_InvalidNameLenght_ThrowsValidationException(string invalidName)
+    public void Add_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -167,7 +167,7 @@ public class PatientServiceTests
     [Theory]
     [InlineData("A")]
     [InlineData("Too long surnaaaaaaame")]
-    public void Add_InvalidSurnameLenght_ThrowsValidationException(string invalidSurname)
+    public void Add_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -208,7 +208,7 @@ public class PatientServiceTests
     [Theory]
     [InlineData("A")]
     [InlineData("Too long patronymiiic")]
-    public void Add_InvalidPatronymicLenght_ThrowsValidationException(string invalidPatronymic)
+    public void Add_PatronymicHasInvalidLenght_ThrowsValidationException(string invalidPatronymic)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -502,7 +502,7 @@ public class PatientServiceTests
     [InlineData("0123")] // too short
     [InlineData("01234567892345")] // too long
     [InlineData("1111111111")] // starts not with zero
-    public void Update_InvalidPhone_ThrowsValidationException(string invalidPhone)
+    public void Update_PhoneDoesntFollowRegex_ThrowsValidationException(string invalidPhone)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -557,7 +557,7 @@ public class PatientServiceTests
     [Theory]
     [InlineData("A")]
     [InlineData("Too long naaaaaaaaame")]
-    public void Update_InvalidNameLenght_ThrowsValidationException(string invalidName)
+    public void Update_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -612,7 +612,7 @@ public class PatientServiceTests
     [Theory]
     [InlineData("A")]
     [InlineData("Too long surnaaaaaaame")]
-    public void Update_InvalidSurnameLenght_ThrowsValidationException(string invalidSurname)
+    public void Update_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -669,7 +669,7 @@ public class PatientServiceTests
     [Theory]
     [InlineData("A")]
     [InlineData("Too long patronymiiic")]
-    public void Update_InvalidPatronymicLenght_ThrowsValidationException(string invalidPatronymic)
+    public void Update_PatronymicHasInvalidLenght_ThrowsValidationException(string invalidPatronymic)
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
