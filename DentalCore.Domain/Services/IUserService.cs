@@ -7,7 +7,7 @@ public interface IUserService
 {
     public User Get(int id);
     public IEnumerable<User> GetAll();
-    public IEnumerable<User> GetDoctors();
     public void Add(UserCreateDto dto);
     public void Update(UserUpdateDto dto);
+    public void SoftDelete(int id);
 }

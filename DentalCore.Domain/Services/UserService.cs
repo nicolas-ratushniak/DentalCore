@@ -29,12 +29,6 @@ public class UserService : IUserService
         return _context.Users.ToList();
     }
 
-    public IEnumerable<User> GetDoctors()
-    {
-        return _context.Users
-            .Where(u => u.Role == UserRole.Doctor && u.IsEnabled);
-    }
-
     public void Add(UserCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
@@ -52,7 +46,7 @@ public class UserService : IUserService
         var user = new User
         {
             Role = dto.Role,
-            IsEnabled = true,
+            IsDeleted = false,
             Login = dto.Login,
             Name = dto.Name,
             Surname = dto.Surname,
@@ -81,12 +75,21 @@ public class UserService : IUserService
 
         var user = Get(dto.Id);
 
-        user.IsEnabled = dto.IsEnabled;
         user.Login = dto.Login;
         user.PasswordHash = _hasher.HashPassword(user, dto.Password);
         user.Name = dto.Name;
         user.Surname = dto.Surname;
         user.Phone = dto.Phone;
+
+        _context.Users.Update(user);
+        _context.SaveChanges();
+    }
+
+    public void SoftDelete(int id)
+    {
+        var user = Get(id);
+
+        user.IsDeleted = true;
 
         _context.Users.Update(user);
         _context.SaveChanges();

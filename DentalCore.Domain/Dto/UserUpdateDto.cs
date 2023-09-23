@@ -8,7 +8,7 @@ public class UserUpdateDto
     public int Id { get; set; }
 
     [Required]
-    [StringLength(20, MinimumLength = 1)]
+    [RegularExpression(@"^[A-Za-z]\w{0,19}$")]
     public string Login { get; set; }
     
     [Required]
@@ -24,6 +24,6 @@ public class UserUpdateDto
     public string Surname { get; set; }
     
     [Required]
-    [StringLength(10, MinimumLength = 10)]
+    [RegularExpression(@"^0\d{9}$")]
     public string Phone { get; set; }
 }
