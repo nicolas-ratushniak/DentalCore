@@ -46,7 +46,7 @@ public class VisitService : IVisitService
                       ?? throw new EntityNotFoundException("Patient not found");
 
         var doctor = _context.Users
-                         .Where(u => u.Role == UserRole.Doctor && !u.IsDeleted)
+                         .Where(u => u.Role == UserRole.Doctor)
                          .SingleOrDefault(d => d.Id == dto.DoctorId)
                      ?? throw new EntityNotFoundException("Doctor not found");
 
@@ -153,9 +153,7 @@ public class VisitService : IVisitService
 
     private Procedure FindProcedure(int procedureId)
     {
-        return _context.Procedures
-                   .Where(p => !p.IsDeleted)
-                   .SingleOrDefault(p => p.Id == procedureId)
+        return _context.Procedures.Find(procedureId)
                ?? throw new EntityNotFoundException("Procedure not found");
     }
 }

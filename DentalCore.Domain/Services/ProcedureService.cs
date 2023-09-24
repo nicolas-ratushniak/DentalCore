@@ -23,8 +23,7 @@ public class ProcedureService : IProcedureService
 
     public IEnumerable<Procedure> GetAll()
     {
-        return _context.Procedures
-            .Where(p => p.IsDeleted == false);
+        return _context.Procedures.ToList();
     }
 
     public void Add(ProcedureCreateDto dto)

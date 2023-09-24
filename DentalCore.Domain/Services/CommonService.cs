@@ -29,9 +29,7 @@ public class CommonService : ICommonService
 
     public IEnumerable<Procedure> GetProcedures()
     {
-        return _context.Procedures
-            .Where(p => !p.IsDeleted)
-            .ToList();
+        return _context.Procedures.ToList();
     }
 
     public IEnumerable<City> GetCities()
