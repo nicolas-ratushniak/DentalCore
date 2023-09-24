@@ -19,7 +19,6 @@ public partial class App : Application
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
                 services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
-
             })
             .Build();
     }

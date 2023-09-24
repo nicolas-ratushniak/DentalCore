@@ -25,12 +25,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<TreatmentItem>(t =>
             t.HasKey(nameof(TreatmentItem.VisitId), nameof(TreatmentItem.ProcedureId)));
 
-        modelBuilder.Entity<User>(u =>
-            u.HasQueryFilter(user => !user.IsDeleted));
-        
-        modelBuilder.Entity<Procedure>(p =>
-            p.HasQueryFilter(procedure => !procedure.IsDeleted));
-        
         base.OnModelCreating(modelBuilder);
     }
 }
