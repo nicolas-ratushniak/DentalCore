@@ -15,22 +15,27 @@ public class ProcedureService : IProcedureService
         _context = context;
     }
 
-    public Procedure Get(int id)
+    public Procedure Get(int id, bool includeSoftDeleted)
     {
-        return _context.Procedures.Find(id)
-               ?? throw new EntityNotFoundException();
+        return includeSoftDeleted
+            ? _context.Procedures.Find(id) ?? throw new EntityNotFoundException()
+            : _context.Procedures
+                .Where(p => !p.IsDeleted)
+                .SingleOrDefault(p => p.Id == id) ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<Procedure> GetAll()
+    public IEnumerable<Procedure> GetAll(bool includeSoftDeleted)
     {
-        return _context.Procedures.ToList();
+        return includeSoftDeleted
+            ? _context.Procedures.ToList()
+            : _context.Procedures.Where(p => !p.IsDeleted);
     }
 
     public void Add(ProcedureCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (GetAll().Any(p => p.Name == dto.Name))
+        if (_context.Procedures.Any(p => p.Name == dto.Name))
         {
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
@@ -50,12 +55,12 @@ public class ProcedureService : IProcedureService
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (GetAll().Any(p => p.Name == dto.Name && p.Id != dto.Id))
+        if (_context.Procedures.Any(p => p.Name == dto.Name && p.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
 
-        var procedure = Get(dto.Id);
+        var procedure = Get(dto.Id, false);
 
         procedure.Name = dto.Name;
         procedure.Price = dto.Price;
@@ -67,7 +72,7 @@ public class ProcedureService : IProcedureService
 
     public void Delete(int id)
     {
-        var procedure = Get(id);
+        var procedure = Get(id, false);
 
         procedure.IsDeleted = true;
         
