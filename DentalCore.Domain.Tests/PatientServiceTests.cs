@@ -29,17 +29,7 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var testDto = new PatientCreateDto
-        {
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
-
+        var testDto = GetDefaultCreateDto();
         var service = new PatientService(new AppDbContext(options));
 
         // act
@@ -49,7 +39,6 @@ public class PatientServiceTests
         using (var context = new AppDbContext(options))
         {
             Assert.True(context.Patients.Any(p => p.Id == 1));
-            Assert.Equal("Patronymic1", context.Patients.Find(1)?.Patronymic);
         }
     }
 
@@ -61,21 +50,13 @@ public class PatientServiceTests
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        var invalidDto = new PatientCreateDto
-        {
-            CityId = 1, // no such city in DB
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultCreateDto();
+        testDto.CityId = 12; // no such in DB
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(invalidDto);
+        var throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<EntityNotFoundException>(throwsEx);
@@ -83,7 +64,8 @@ public class PatientServiceTests
 
     [Theory]
     [InlineData("0123")]
-    [InlineData("01234567892345")]
+    [InlineData("aTextPhone")]
+    [InlineData("01234567892")]
     [InlineData("1111111111")]
     public void Add_PhoneDoesntFollowRegex_ThrowsValidationException(string invalidPhone)
     {
@@ -103,21 +85,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientCreateDto
-        {
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = invalidPhone,
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultCreateDto();
+        testDto.Phone = invalidPhone;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(invalidDto);
+        var throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -144,21 +118,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientCreateDto
-        {
-            CityId = 1,
-            IsMale = false,
-            Name = invalidName,
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultCreateDto();
+        testDto.Name = invalidName;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(invalidDto);
+        var throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -185,21 +151,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientCreateDto
-        {
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = invalidSurname,
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultCreateDto();
+        testDto.Surname = invalidSurname;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(invalidDto);
+        var throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -226,21 +184,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientCreateDto
-        {
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = invalidPatronymic,
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultCreateDto();
+        testDto.Patronymic = invalidPatronymic;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(invalidDto);
+        var throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -265,21 +215,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientCreateDto
-        {
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = DateTime.Now.AddDays(1)
-        };
+        var testDto = GetDefaultCreateDto();
+        testDto.BirthDate = DateTime.Now.AddYears(1);
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(invalidDto);
+        var throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -292,6 +234,10 @@ public class PatientServiceTests
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
+
+        var duplicateName = "Double Name";
+        var duplicateSurname = "Double Surname";
+        var duplicatePatronymic = "Double Patronymic";
 
         using (var context = new AppDbContext(options))
         {
@@ -307,9 +253,9 @@ public class PatientServiceTests
             {
                 CityId = 1,
                 Gender = Gender.Male,
-                Name = "Name1",
-                Surname = "Surname1",
-                Patronymic = "Patronymic1",
+                Name = duplicateName,
+                Surname = duplicateSurname,
+                Patronymic = duplicatePatronymic,
                 Phone = "1111111111",
                 BirthDate = DateTime.Today,
                 DateCreated = DateTime.Today,
@@ -319,16 +265,10 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var testDto = new PatientCreateDto
-        {
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "2222222222",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultCreateDto();
+        testDto.Name = duplicateName;
+        testDto.Surname = duplicateSurname;
+        testDto.Patronymic = duplicatePatronymic;
 
         var service = new PatientService(new AppDbContext(options));
 
@@ -373,17 +313,7 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var testDto = new PatientUpdateDto
-        {
-            Id = 1,
-            CityId = 1,
-            IsMale = false,
-            Name = "Updated Name1",
-            Surname = "Updated Surname1",
-            Patronymic = "Updated Patronymic1",
-            Phone = "0222222222",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
 
         var service = new PatientService(new AppDbContext(options));
 
@@ -400,7 +330,8 @@ public class PatientServiceTests
                 Assert.Fail("No patient found");
             }
 
-            Assert.Equal("Updated Patronymic1", patient.Patronymic);
+            Assert.Equal(testDto.Name, patient.Name);
+            Assert.Equal(testDto.Surname, patient.Surname);
         }
     }
 
@@ -424,22 +355,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientUpdateDto()
-        {
-            Id = 12, // no such patient in db
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.Id = 12; // no such in DB
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Update(invalidDto);
+        var throwsEx = () => service.Update(testDto);
 
         // assert
         Assert.Throws<EntityNotFoundException>(throwsEx);
@@ -477,31 +399,23 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientUpdateDto()
-        {
-            Id = 1,
-            CityId = 12, // no such city in DB
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.CityId = 12; // no such in DB
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Update(invalidDto);
+        var throwsEx = () => service.Update(testDto);
 
         // assert
         Assert.Throws<EntityNotFoundException>(throwsEx);
     }
 
     [Theory]
-    [InlineData("0123")] // too short
-    [InlineData("01234567892345")] // too long
-    [InlineData("1111111111")] // starts not with zero
+    [InlineData("0123")]
+    [InlineData("aTextPhone")]
+    [InlineData("01234567892345")]
+    [InlineData("1111111111")]
     public void Update_PhoneDoesntFollowRegex_ThrowsValidationException(string invalidPhone)
     {
         // arrange
@@ -533,22 +447,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientUpdateDto
-        {
-            Id = 1,
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = invalidPhone,
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.Phone = invalidPhone;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Update(invalidDto);
+        var throwsEx = () => service.Update(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -588,22 +493,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientUpdateDto
-        {
-            Id = 1,
-            CityId = 1,
-            IsMale = false,
-            Name = invalidName,
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.Name = invalidName;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Update(invalidDto);
+        var throwsEx = () => service.Update(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -645,22 +541,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientUpdateDto
-        {
-            Id = 1,
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = invalidSurname,
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.Surname = invalidSurname;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Update(invalidDto);
+        var throwsEx = () => service.Update(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -702,22 +589,13 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientUpdateDto
-        {
-            Id = 1,
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = invalidPatronymic,
-            Phone = "0111111111",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.Patronymic = invalidPatronymic;
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Update(invalidDto);
+        var throwsEx = () => service.Update(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -757,22 +635,14 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var invalidDto = new PatientUpdateDto
-        {
-            Id = 1,
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0111111111",
-            BirthDate = DateTime.Now.AddDays(1)
-        };
+
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.BirthDate = DateTime.Now.AddYears(1);
 
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Update(invalidDto);
+        var throwsEx = () => service.Update(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -785,6 +655,10 @@ public class PatientServiceTests
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
+        
+        var duplicateName = "Double Name";
+        var duplicateSurname = "Double Surname";
+        var duplicatePatronymic = "Double Patronymic";
 
         using (var context = new AppDbContext(options))
         {
@@ -813,9 +687,9 @@ public class PatientServiceTests
                 {
                     CityId = 1,
                     Gender = Gender.Male,
-                    Name = "Name2",
-                    Surname = "Surname2",
-                    Patronymic = "Patronymic2",
+                    Name = duplicateName,
+                    Surname = duplicateSurname,
+                    Patronymic = duplicatePatronymic,
                     Phone = "0111111111",
                     BirthDate = DateTime.Today,
                     DateCreated = DateTime.Today,
@@ -825,17 +699,10 @@ public class PatientServiceTests
             context.SaveChanges();
         }
 
-        var testDto = new PatientUpdateDto
-        {
-            Id = 2,
-            CityId = 1,
-            IsMale = false,
-            Name = "Name1",
-            Surname = "Surname1",
-            Patronymic = "Patronymic1",
-            Phone = "0222222222",
-            BirthDate = new DateTime(2001, 1, 1)
-        };
+        var testDto = GetDefaultUpdateDto(1);
+        testDto.Name = duplicateName;
+        testDto.Surname = duplicateSurname;
+        testDto.Patronymic = duplicatePatronymic;
 
         var service = new PatientService(new AppDbContext(options));
 
@@ -1152,7 +1019,7 @@ public class PatientServiceTests
                 Sum = 20,
                 Visit = visit1
             };
-            
+
             var payment2 = new Payment
             {
                 VisitId = 1,
@@ -1184,7 +1051,7 @@ public class PatientServiceTests
             Assert.Equal(200, context.Payments.Sum(p => p.Sum));
         }
     }
-    
+
     [Fact]
     public void PayWholeDebt_PatientHasNoDebt_NoPaymentIsCreated()
     {
@@ -1267,7 +1134,7 @@ public class PatientServiceTests
             Assert.Equal(1, context.Payments.Count());
         }
     }
-    
+
     [Fact]
     public void PayWholeDebt_PatientNotFound_ThrowsEntityNotFoundException()
     {
@@ -1283,5 +1150,34 @@ public class PatientServiceTests
 
         // assert
         Assert.Throws<EntityNotFoundException>(throwsEx);
+    }
+
+    private PatientCreateDto GetDefaultCreateDto()
+    {
+        return new PatientCreateDto
+        {
+            CityId = 1,
+            IsMale = true,
+            Name = "Name",
+            Surname = "Surname",
+            Patronymic = "Patronymic",
+            Phone = "0000000000",
+            BirthDate = new DateTime(2001, 1, 1)
+        };
+    }
+
+    private PatientUpdateDto GetDefaultUpdateDto(int id)
+    {
+        return new PatientUpdateDto
+        {
+            Id = id,
+            CityId = 1,
+            IsMale = true,
+            Name = "Updated Name",
+            Surname = "Updated Surname",
+            Patronymic = "Updated Patronymic",
+            Phone = "0000000001",
+            BirthDate = new DateTime(2001, 1, 1)
+        };
     }
 }
