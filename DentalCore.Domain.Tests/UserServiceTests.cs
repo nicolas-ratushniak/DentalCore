@@ -563,9 +563,9 @@ public class UserServiceTests
         // assert
         Assert.Throws<ValidationException>(throwsEx);
     }
-    
+
     [Fact]
-    public void SoftDelete_UserExists_UserIsNoMoreAccessible()
+    public void SoftDelete_UserExists_UserIsSoftDeleted()
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -595,10 +595,10 @@ public class UserServiceTests
         // assert
         using (var context = new AppDbContext(options))
         {
-            Assert.Equal(0, context.Users.Count());
+            Assert.Equal(1, context.Users.Count(u => u.IsDeleted));
         }
     }
-    
+
     [Fact]
     public void SoftDelete_UserNotFound_ThrowsEntityNotFoundException()
     {
@@ -616,6 +616,38 @@ public class UserServiceTests
         Assert.Throws<EntityNotFoundException>(throwsEx);
     }
 
+    [Fact]
+    public void SoftDelete_UserIsAlreadySoftDeleted_ThrowsEntityNotFoundException()
+    {
+        // arrange
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+
+        using (var context = new AppDbContext(options))
+        {
+            context.Users.Add(new User
+            {
+                IsDeleted = true,
+                Role = UserRole.Admin,
+                Login = "Login",
+                PasswordHash = "123",
+                Name = "Name",
+                Surname = "Surname",
+                Phone = "0000000000"
+            });
+
+            context.SaveChanges();
+        }
+
+        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+
+        // act
+        Action throwsEx = () => service.SoftDelete(1);
+
+        // assert
+        Assert.Throws<EntityNotFoundException>(throwsEx);
+    }
 
     private UserCreateDto GetDefaultCreateDto()
     {
