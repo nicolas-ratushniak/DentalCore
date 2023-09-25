@@ -140,6 +140,11 @@ public class VisitService : IVisitService
                 : procedure.Price)
             .Sum();
 
+        if (purePrice <= 50)
+        {
+            return 50;
+        }
+
         var remainder = purePrice % 50;
 
         return remainder < 25 ? purePrice - remainder : purePrice - remainder + 50;
