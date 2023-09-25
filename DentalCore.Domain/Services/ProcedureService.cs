@@ -15,20 +15,26 @@ public class ProcedureService : IProcedureService
         _context = context;
     }
 
-    public Procedure Get(int id, bool includeSoftDeleted)
+    public Procedure Get(int id)
     {
-        return includeSoftDeleted
-            ? _context.Procedures.Find(id) ?? throw new EntityNotFoundException()
-            : _context.Procedures
-                .Where(p => !p.IsDeleted)
-                .SingleOrDefault(p => p.Id == id) ?? throw new EntityNotFoundException();
+        return _context.Procedures
+            .Where(p => !p.IsDeleted)
+            .SingleOrDefault(p => p.Id == id) ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<Procedure> GetAll(bool includeSoftDeleted)
+    public Procedure GetIncludeSoftDeleted(int id)
     {
-        return includeSoftDeleted
-            ? _context.Procedures.ToList()
-            : _context.Procedures.Where(p => !p.IsDeleted);
+        return _context.Procedures.Find(id) ?? throw new EntityNotFoundException();
+    }
+
+    public IEnumerable<Procedure> GetAll()
+    {
+        return _context.Procedures.Where(p => !p.IsDeleted);
+    }
+
+    public IEnumerable<Procedure> GetAllIncludeSoftDeleted()
+    {
+        return _context.Procedures.ToList();
     }
 
     public void Add(ProcedureCreateDto dto)
@@ -60,7 +66,7 @@ public class ProcedureService : IProcedureService
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
 
-        var procedure = Get(dto.Id, false);
+        var procedure = Get(dto.Id);
 
         procedure.Name = dto.Name;
         procedure.Price = dto.Price;
@@ -70,12 +76,12 @@ public class ProcedureService : IProcedureService
         _context.SaveChanges();
     }
 
-    public void Delete(int id)
+    public void SoftDelete(int id)
     {
-        var procedure = Get(id, false);
+        var procedure = Get(id);
 
         procedure.IsDeleted = true;
-        
+
         _context.Procedures.Update(procedure);
         _context.SaveChanges();
     }

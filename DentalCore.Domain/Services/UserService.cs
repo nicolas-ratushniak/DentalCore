@@ -18,20 +18,27 @@ public class UserService : IUserService
         _hasher = hasher;
     }
 
-    public User Get(int id, bool includeSoftDeleted)
+    public User Get(int id)
     {
-        return includeSoftDeleted
-            ? _context.Users.Find(id) ?? throw new EntityNotFoundException()
-            : _context.Users
-                .Where(u => !u.IsDeleted)
-                .SingleOrDefault(u => u.Id == id) ?? throw new EntityNotFoundException();
+        return _context.Users
+            .Where(u => !u.IsDeleted)
+            .SingleOrDefault(u => u.Id == id) ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<User> GetAll(bool includeSoftDeleted)
+    public User GetIncludeSoftDeleted(int id)
     {
-        return includeSoftDeleted
-            ? _context.Users.ToList()
-            : _context.Users.Where(u => !u.IsDeleted);
+        return _context.Users.Find(id)
+               ?? throw new EntityNotFoundException();
+    }
+
+    public IEnumerable<User> GetAll()
+    {
+        return _context.Users.Where(u => !u.IsDeleted);
+    }
+
+    public IEnumerable<User> GetAllIncludeSoftDeleted()
+    {
+        return _context.Users.ToList();
     }
 
     public void Add(UserCreateDto dto)
@@ -78,7 +85,7 @@ public class UserService : IUserService
             throw new ValidationException("У базі вже є користувач з таким ПІБ");
         }
 
-        var user = Get(dto.Id, false);
+        var user = Get(dto.Id);
 
         user.Login = dto.Login;
         user.PasswordHash = _hasher.HashPassword(user, dto.Password);
@@ -92,7 +99,7 @@ public class UserService : IUserService
 
     public void SoftDelete(int id)
     {
-        var user = Get(id, false);
+        var user = Get(id);
 
         user.IsDeleted = true;
 
