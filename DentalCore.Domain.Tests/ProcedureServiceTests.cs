@@ -53,7 +53,7 @@ public class ProcedureServiceTests
         // assert
         Assert.Throws<ValidationException>(throwsEx);
     }
-    
+
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]

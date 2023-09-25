@@ -22,7 +22,6 @@ public class PatientServiceTests
         {
             context.Cities.Add(new City
             {
-                Id = 1,
                 Name = "Test City"
             });
 
@@ -78,7 +77,6 @@ public class PatientServiceTests
         {
             context.Cities.Add(new City
             {
-                Id = 1,
                 Name = "Test City"
             });
 
@@ -111,7 +109,6 @@ public class PatientServiceTests
         {
             context.Cities.Add(new City
             {
-                Id = 1,
                 Name = "Test City"
             });
 
@@ -144,7 +141,6 @@ public class PatientServiceTests
         {
             context.Cities.Add(new City
             {
-                Id = 1,
                 Name = "Test City"
             });
 
@@ -177,7 +173,6 @@ public class PatientServiceTests
         {
             context.Cities.Add(new City
             {
-                Id = 1,
                 Name = "Test City"
             });
 
@@ -208,7 +203,6 @@ public class PatientServiceTests
         {
             context.Cities.Add(new City
             {
-                Id = 1,
                 Name = "Test City"
             });
 
@@ -243,13 +237,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = duplicateName,
                 Surname = duplicateSurname,
@@ -289,13 +281,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -343,7 +333,6 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
@@ -375,13 +364,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -423,13 +410,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -469,13 +454,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -515,13 +498,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -561,13 +542,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -605,13 +584,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -645,7 +622,7 @@ public class PatientServiceTests
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
-        
+
         var duplicateName = "Double Name";
         var duplicateSurname = "Double Surname";
         var duplicatePatronymic = "Double Patronymic";
@@ -654,14 +631,12 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.AddRange(
                 new Patient
                 {
-                    CityId = 1,
                     Gender = Gender.Male,
                     Name = "Name1",
                     Surname = "Surname1",
@@ -673,7 +648,6 @@ public class PatientServiceTests
                 },
                 new Patient
                 {
-                    CityId = 1,
                     Gender = Gender.Male,
                     Name = duplicateName,
                     Surname = duplicateSurname,
@@ -713,14 +687,12 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             context.Patients.Add(
                 new Patient
                 {
-                    CityId = 1,
                     Gender = Gender.Male,
                     Name = "Name1",
                     Surname = "Surname1",
@@ -756,13 +728,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             var doctor = new User
             {
-                Id = 0,
                 Role = UserRole.Doctor,
                 IsDeleted = false,
                 Login = "login",
@@ -774,7 +744,6 @@ public class PatientServiceTests
 
             var patient = new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -787,9 +756,6 @@ public class PatientServiceTests
 
             var visit = new Visit
             {
-                Id = 0,
-                PatientId = 1,
-                DoctorId = 1,
                 DiscountPercent = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
@@ -832,13 +798,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             var doctor = new User
             {
-                Id = 0,
                 Role = UserRole.Doctor,
                 IsDeleted = false,
                 Login = "login",
@@ -850,7 +814,6 @@ public class PatientServiceTests
 
             var patient = new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -863,9 +826,6 @@ public class PatientServiceTests
 
             var visit = new Visit
             {
-                Id = 0,
-                PatientId = 1,
-                DoctorId = 1,
                 DiscountPercent = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
@@ -876,7 +836,6 @@ public class PatientServiceTests
 
             var payment1 = new Payment
             {
-                VisitId = 1,
                 DateTime = DateTime.Today,
                 Sum = 20,
                 Visit = visit
@@ -884,7 +843,6 @@ public class PatientServiceTests
 
             var payment2 = new Payment
             {
-                VisitId = 1,
                 DateTime = DateTime.Today,
                 Sum = 10,
                 Visit = visit
@@ -933,13 +891,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             var doctor = new User
             {
-                Id = 0,
                 Role = UserRole.Doctor,
                 IsDeleted = false,
                 Login = "login",
@@ -951,7 +907,6 @@ public class PatientServiceTests
 
             var patient = new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -964,9 +919,6 @@ public class PatientServiceTests
 
             var visit1 = new Visit
             {
-                Id = 0,
-                PatientId = 1,
-                DoctorId = 1,
                 DiscountPercent = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
@@ -977,9 +929,6 @@ public class PatientServiceTests
 
             var visit2 = new Visit
             {
-                Id = 0,
-                PatientId = 1,
-                DoctorId = 1,
                 DiscountPercent = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
@@ -990,7 +939,6 @@ public class PatientServiceTests
 
             var payment1 = new Payment
             {
-                VisitId = 1,
                 DateTime = DateTime.Today,
                 Sum = 20,
                 Visit = visit1
@@ -998,7 +946,6 @@ public class PatientServiceTests
 
             var payment2 = new Payment
             {
-                VisitId = 1,
                 DateTime = DateTime.Today,
                 Sum = 40,
                 Visit = visit2
@@ -1035,13 +982,11 @@ public class PatientServiceTests
         {
             var city = new City
             {
-                Id = 1,
                 Name = "Test City"
             };
 
             var doctor = new User
             {
-                Id = 0,
                 Role = UserRole.Doctor,
                 IsDeleted = false,
                 Login = "login",
@@ -1053,7 +998,6 @@ public class PatientServiceTests
 
             var patient = new Patient
             {
-                CityId = 1,
                 Gender = Gender.Male,
                 Name = "Name1",
                 Surname = "Surname1",
@@ -1066,9 +1010,6 @@ public class PatientServiceTests
 
             var visit = new Visit
             {
-                Id = 0,
-                PatientId = 1,
-                DoctorId = 1,
                 DiscountPercent = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
@@ -1079,7 +1020,6 @@ public class PatientServiceTests
 
             var payment = new Payment
             {
-                VisitId = 1,
                 DateTime = DateTime.Today,
                 Sum = 100,
                 Visit = visit
