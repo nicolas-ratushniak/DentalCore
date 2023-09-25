@@ -59,7 +59,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("")]
-    [InlineData("123456789012345678901")]
+    [InlineData("123456789 123456789 A")]
     public void Add_PasswordHasInvalidLenght_ThrowsValidationException(string invalidPassword)
     {
         // arrange
@@ -81,7 +81,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789012345678901")]
+    [InlineData("123456789 123456789 A")]
     public void Add_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
@@ -103,7 +103,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789012345678901")]
+    [InlineData("123456789 123456789 A")]
     public void Add_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
@@ -224,7 +224,7 @@ public class UserServiceTests
     }
 
     [Fact]
-    public void Update_ValidDto_AddsUser()
+    public void Update_ValidDto_UpdatesUser()
     {
         // arrange
         var options = new DbContextOptionsBuilder<AppDbContext>()
@@ -256,7 +256,7 @@ public class UserServiceTests
         // assert
         using (var context = new AppDbContext(options))
         {
-            Assert.Equal(1, context.Users.Count());
+            Assert.Equal(testDto.Login, context.Users.Find(1)?.Login);
         }
     }
 
@@ -320,7 +320,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("")]
-    [InlineData("123456789012345678901")]
+    [InlineData("123456789 123456789 A")]
     public void Update_PasswordHasInvalidLenght_ThrowsValidationException(string invalidPassword)
     {
         // arrange
@@ -357,7 +357,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789012345678901")]
+    [InlineData("123456789 123456789 A")]
     public void Update_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
@@ -394,7 +394,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789012345678901")]
+    [InlineData("123456789 123456789 A")]
     public void Update_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
