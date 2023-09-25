@@ -18,7 +18,6 @@ public class VisitCreateDto
     [Range(0, int.MaxValue)]
     public int FirstPayment { get; set; }
 
-    [Required]
     [StringLength(100)] 
     public string? Diagnosis { get; set; }
     
