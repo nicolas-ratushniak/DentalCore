@@ -19,8 +19,8 @@ public class VisitCreateDto
     public int FirstPayment { get; set; }
 
     [Required]
-    [StringLength(100, MinimumLength = 2)] 
-    public string Diagnosis { get; set; } = string.Empty;
+    [StringLength(100)] 
+    public string? Diagnosis { get; set; }
     
     [Required]
     public DateTime Date { get; set; }

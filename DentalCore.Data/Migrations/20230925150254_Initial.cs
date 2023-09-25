@@ -150,8 +150,8 @@ namespace DentalCore.Data.Migrations
                     DoctorId = table.Column<int>(type: "int", nullable: false),
                     DiscountPercent = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<int>(type: "int", nullable: false),
-                    Diagnosis = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Date = table.Column<DateTime>(type: "date", nullable: false)
+                    Diagnosis = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DentalCore.Data.Models;
 
@@ -12,9 +11,8 @@ public class Visit
     public int TotalPrice { get; set; }
 
     [MaxLength(100)]
-    public string Diagnosis { get; set; }
+    public string? Diagnosis { get; set; }
     
-    [Column(TypeName = "date")]
     public DateTime Date { get; set; }
 
     public Patient Patient { get; set; }
