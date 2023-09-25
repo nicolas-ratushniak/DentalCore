@@ -247,8 +247,6 @@ public class PatientServiceTests
                 Name = "Test City"
             };
 
-            context.Cities.Add(city);
-
             context.Patients.Add(new Patient
             {
                 CityId = 1,
@@ -256,7 +254,7 @@ public class PatientServiceTests
                 Name = duplicateName,
                 Surname = duplicateSurname,
                 Patronymic = duplicatePatronymic,
-                Phone = "1111111111",
+                Phone = "0111111111",
                 BirthDate = DateTime.Today,
                 DateCreated = DateTime.Today,
                 City = city
@@ -294,8 +292,6 @@ public class PatientServiceTests
                 Id = 1,
                 Name = "Test City"
             };
-
-            context.Cities.Add(city);
 
             context.Patients.Add(new Patient
             {
@@ -523,8 +519,6 @@ public class PatientServiceTests
                 Name = "Test City"
             };
 
-            context.Cities.Add(city);
-
             context.Patients.Add(new Patient
             {
                 CityId = 1,
@@ -571,8 +565,6 @@ public class PatientServiceTests
                 Name = "Test City"
             };
 
-            context.Cities.Add(city);
-
             context.Patients.Add(new Patient
             {
                 CityId = 1,
@@ -616,8 +608,6 @@ public class PatientServiceTests
                 Id = 1,
                 Name = "Test City"
             };
-
-            context.Cities.Add(city);
 
             context.Patients.Add(new Patient
             {
@@ -667,8 +657,6 @@ public class PatientServiceTests
                 Id = 1,
                 Name = "Test City"
             };
-
-            context.Cities.Add(city);
 
             context.Patients.AddRange(
                 new Patient
@@ -728,8 +716,6 @@ public class PatientServiceTests
                 Id = 1,
                 Name = "Test City"
             };
-
-            context.Cities.Add(city);
 
             context.Patients.Add(
                 new Patient
@@ -820,12 +806,7 @@ public class PatientServiceTests
                 Visit = visit
             };
 
-            context.Add(city);
-            context.Add(doctor);
-            context.Add(patient);
-            context.Add(visit);
-            context.Add(payment);
-
+            context.Payments.Add(payment);
             context.SaveChanges();
         }
 
@@ -909,12 +890,7 @@ public class PatientServiceTests
                 Visit = visit
             };
 
-            context.Add(city);
-            context.Add(doctor);
-            context.Add(patient);
-            context.Add(visit);
-            context.AddRange(payment1, payment2);
-
+            context.Payments.AddRange(payment1, payment2);
             context.SaveChanges();
         }
 
@@ -1028,12 +1004,7 @@ public class PatientServiceTests
                 Visit = visit2
             };
 
-            context.Add(city);
-            context.Add(doctor);
-            context.Add(patient);
-            context.AddRange(visit1, visit2);
-            context.AddRange(payment1, payment2);
-
+            context.Payments.AddRange(payment1, payment2);
             context.SaveChanges();
         }
 
@@ -1114,11 +1085,7 @@ public class PatientServiceTests
                 Visit = visit
             };
 
-            context.Add(city);
-            context.Add(doctor);
-            context.Add(patient);
-            context.Add(visit);
-            context.Add(payment);
+            context.Payments.Add(payment);
 
             context.SaveChanges();
         }
