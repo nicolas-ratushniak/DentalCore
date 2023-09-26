@@ -122,14 +122,17 @@ public class VisitService : IVisitService
     public int GetDebt(int id)
     {
         var visit = Get(id);
-        return visit.TotalPrice - GetMoneyPayed(id);
+        return visit.TotalPrice - GetMoneyPayedUnsafe(id);
     }
 
     public int GetMoneyPayed(int id)
     {
-        return _context.Payments
-            .Where(p => p.VisitId == id)
-            .Sum(p => p.Sum);
+        if (!_context.Visits.Any(v => v.Id == id))
+        {
+            throw new EntityNotFoundException("Visit not found");
+        }
+
+        return GetMoneyPayedUnsafe(id);
     }
 
     public int CalculateTotalPrice(IEnumerable<TreatmentItemDto> treatmentItems, int discountPercent)
@@ -156,6 +159,13 @@ public class VisitService : IVisitService
     {
         return _context.TreatmentItems
             .Where(t => t.VisitId == id);
+    }
+
+    private int GetMoneyPayedUnsafe(int id)
+    {
+        return _context.Payments
+            .Where(p => p.VisitId == id)
+            .Sum(p => p.Sum);
     }
 
     private Procedure FindProcedure(int procedureId)
