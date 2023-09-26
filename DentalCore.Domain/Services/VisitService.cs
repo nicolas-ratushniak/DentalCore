@@ -102,7 +102,7 @@ public class VisitService : IVisitService
     {
         var visit = Get(id);
 
-        if (sum < 0 || sum > visit.TotalPrice - GetDebt(id))
+        if (sum < 0 || sum > visit.TotalPrice - GetMoneyPayed(id))
         {
             throw new ArgumentOutOfRangeException(nameof(sum));
         }
