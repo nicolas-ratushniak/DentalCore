@@ -92,7 +92,7 @@ public class ProcedureServiceTests
             {
                 Name = duplicateName,
                 Price = 10,
-                IsDiscountValid = true
+                IsDiscountAllowed = true
             });
 
             context.SaveChanges();
@@ -124,7 +124,7 @@ public class ProcedureServiceTests
             {
                 Name = "Name1",
                 Price = 10,
-                IsDiscountValid = true
+                IsDiscountAllowed = true
             });
 
             context.SaveChanges();
@@ -178,7 +178,7 @@ public class ProcedureServiceTests
             {
                 Name = "Name1",
                 Price = 10,
-                IsDiscountValid = true
+                IsDiscountAllowed = true
             });
 
             context.SaveChanges();
@@ -212,13 +212,13 @@ public class ProcedureServiceTests
                 {
                     Name = "Name1",
                     Price = 10,
-                    IsDiscountValid = true
+                    IsDiscountAllowed = true
                 },
                 new Procedure
                 {
                     Name = duplicateName,
                     Price = 10,
-                    IsDiscountValid = true
+                    IsDiscountAllowed = true
                 }
             );
 
@@ -251,7 +251,7 @@ public class ProcedureServiceTests
             {
                 Name = "Name1",
                 Price = 10,
-                IsDiscountValid = true
+                IsDiscountAllowed = true
             });
 
             context.SaveChanges();
@@ -301,7 +301,7 @@ public class ProcedureServiceTests
                 IsDeleted = true,
                 Name = "Name1",
                 Price = 10,
-                IsDiscountValid = true
+                IsDiscountAllowed = true
             });
 
             context.SaveChanges();
@@ -322,7 +322,7 @@ public class ProcedureServiceTests
         {
             Name = "Name",
             Price = 1,
-            IsDiscountValid = true
+            IsDiscountAllowed = true
         };
     }
 
@@ -333,7 +333,7 @@ public class ProcedureServiceTests
             Id = id,
             Name = "New Name",
             Price = 2,
-            IsDiscountValid = true
+            IsDiscountAllowed = true
         };
     }
 }

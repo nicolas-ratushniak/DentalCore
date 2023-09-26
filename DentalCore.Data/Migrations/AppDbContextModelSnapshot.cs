@@ -159,7 +159,7 @@ namespace DentalCore.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsDiscountValid")
+                    b.Property<bool>("IsDiscountAllowed")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")

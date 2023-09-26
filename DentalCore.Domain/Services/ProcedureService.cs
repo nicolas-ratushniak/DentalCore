@@ -50,7 +50,7 @@ public class ProcedureService : IProcedureService
         {
             Name = dto.Name,
             Price = dto.Price,
-            IsDiscountValid = dto.IsDiscountValid
+            IsDiscountAllowed = dto.IsDiscountAllowed
         };
 
         _context.Procedures.Add(procedure);
@@ -70,7 +70,7 @@ public class ProcedureService : IProcedureService
 
         procedure.Name = dto.Name;
         procedure.Price = dto.Price;
-        procedure.IsDiscountValid = dto.IsDiscountValid;
+        procedure.IsDiscountAllowed = dto.IsDiscountAllowed;
 
         _context.Procedures.Update(procedure);
         _context.SaveChanges();

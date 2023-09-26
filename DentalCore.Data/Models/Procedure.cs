@@ -13,5 +13,5 @@ public class Procedure
 
     public int Price { get; set; }
     
-    public bool IsDiscountValid { get; set; }
+    public bool IsDiscountAllowed { get; set; }
 }

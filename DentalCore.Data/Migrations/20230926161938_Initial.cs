@@ -46,7 +46,7 @@ namespace DentalCore.Data.Migrations
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    IsDiscountValid = table.Column<bool>(type: "bit", nullable: false)
+                    IsDiscountAllowed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

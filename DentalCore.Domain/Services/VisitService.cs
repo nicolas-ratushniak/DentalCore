@@ -73,7 +73,7 @@ public class VisitService : IVisitService
                 ProcedureId = item.ProcedureId,
                 Quantity = item.Quantity,
                 Price = procedure.Price,
-                IsDiscountValid = procedure.IsDiscountValid,
+                IsDiscountValid = procedure.IsDiscountAllowed,
                 Visit = visit,
                 Procedure = procedure
             });
@@ -159,8 +159,8 @@ public class VisitService : IVisitService
     private Procedure FindProcedure(int procedureId)
     {
         return _context.Procedures
-                .Where(p => !p.IsDeleted)
-                .SingleOrDefault(p => p.Id == procedureId)
+                   .Where(p => !p.IsDeleted)
+                   .SingleOrDefault(p => p.Id == procedureId)
                ?? throw new EntityNotFoundException("Procedure not found");
     }
 }

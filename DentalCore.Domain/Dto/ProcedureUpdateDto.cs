@@ -16,5 +16,5 @@ public class ProcedureUpdateDto
     public int Price { get; set; }
     
     [Required]
-    public bool IsDiscountValid { get; set; }
+    public bool IsDiscountAllowed { get; set; }
 }
