@@ -66,6 +66,8 @@ public class VisitService : IVisitService
 
         foreach (var item in dto.TreatmentItems)
         {
+            Validator.ValidateObject(item, new ValidationContext(item), true);
+
             var procedure = FindProcedure(item.ProcedureId);
 
             visit.TreatmentItems.Add(new TreatmentItem
