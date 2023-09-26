@@ -35,7 +35,16 @@ public class VisitService : IVisitService
             throw new ValidationException("Не обрано жодної процедури");
         }
 
-        var totalPrice = CalculateTotalPrice(dto.TreatmentItems, dto.DiscountPercent);
+        var itemsNoDuplicates = dto.TreatmentItems
+            .GroupBy(t => t.ProcedureId)
+            .Select(g => new TreatmentItemDto
+            {
+                ProcedureId = g.Key,
+                Quantity = g.Sum(item => item.Quantity)
+            })
+            .ToList();
+
+        var totalPrice = CalculateTotalPrice(itemsNoDuplicates, dto.DiscountPercent);
 
         if (dto.FirstPayment > totalPrice)
         {
@@ -64,7 +73,7 @@ public class VisitService : IVisitService
             TreatmentItems = new List<TreatmentItem>()
         };
 
-        foreach (var item in dto.TreatmentItems)
+        foreach (var item in itemsNoDuplicates)
         {
             Validator.ValidateObject(item, new ValidationContext(item), true);
 
