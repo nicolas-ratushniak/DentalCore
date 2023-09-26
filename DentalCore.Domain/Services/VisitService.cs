@@ -146,13 +146,27 @@ public class VisitService : IVisitService
 
     public int CalculateTotalPrice(IEnumerable<TreatmentItemDto> treatmentItems, int discountPercent)
     {
-        var purePrice = treatmentItems
-            .Select(item => FindProcedure(item.ProcedureId))
-            .Select(procedure => 
-                procedure.IsDiscountValid
-                ? (int)Math.Round(procedure.Price * (1 - discountPercent / 100.0), MidpointRounding.ToPositiveInfinity)
-                : procedure.Price)
-            .Sum();
+        var purePrice = 0.0M;
+        var items = treatmentItems.ToList();
+
+        var hasDuplicates = items
+            .GroupBy(t => t.ProcedureId)
+            .Any(g => g.Count() > 1);
+
+        if (hasDuplicates)
+        {
+            throw new ArgumentException("The list of items should not have duplicates", nameof(treatmentItems));
+        }
+
+        foreach (var item in items)
+        {
+            var procedure = FindProcedure(item.ProcedureId);
+            var priceNoDiscount = procedure.Price * item.Quantity;
+
+            purePrice += procedure.IsDiscountAllowed
+                ? priceNoDiscount * (1 - discountPercent / 100.0M)
+                : priceNoDiscount;
+        }
 
         if (purePrice <= 50)
         {
@@ -161,7 +175,7 @@ public class VisitService : IVisitService
 
         var remainder = purePrice % 50;
 
-        return remainder < 25 ? purePrice - remainder : purePrice - remainder + 50;
+        return remainder < 25 ? (int)(purePrice - remainder) : (int)(purePrice - remainder) + 50;
     }
 
     public IEnumerable<TreatmentItem> GetTreatmentItems(int id)
