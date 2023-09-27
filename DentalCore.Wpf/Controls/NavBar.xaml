@@ -3,13 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             
+
              xmlns:local="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:navigation="clr-namespace:DentalCore.Wpf.Services.Navigation"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    
+
     <UserControl.Resources>
         <converters:EqualsToBoolConverter x:Key="EqualsToBoolConverter" />
     </UserControl.Resources>
@@ -36,7 +36,7 @@
                          Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
                          CommandParameter="{x:Static navigation:ViewType.Home}"
                          Content="Головна" />
-            
+
             <RadioButton Grid.Column="1"
                          Style="{StaticResource NiceRadioButton}"
                          IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
@@ -45,7 +45,7 @@
                          Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
                          CommandParameter="{x:Static navigation:ViewType.Patients}"
                          Content="Пацієнти" />
-            
+
             <RadioButton Grid.Column="2"
                          Style="{StaticResource NiceRadioButton}"
                          IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
@@ -54,6 +54,10 @@
                          Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
                          CommandParameter="{x:Static navigation:ViewType.Visits}"
                          Content="Візити" />
+
+            <TextBlock Grid.Column="4"
+                       Padding="20,10"
+                       Text="Іван Петренко" />
         </Grid>
     </Grid>
 </UserControl>

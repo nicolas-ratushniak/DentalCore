@@ -2,5 +2,7 @@
 
 public class PatientUpdateViewModel : BaseViewModel
 {
-    
+    public PatientUpdateViewModel(int id)
+    {
+    }
 }

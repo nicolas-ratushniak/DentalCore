@@ -2,5 +2,7 @@
 
 public class VisitInfoViewModel : BaseViewModel
 {
-    
+    public VisitInfoViewModel(int id)
+    {
+    }
 }
