@@ -205,7 +205,7 @@ namespace DentalCore.Data.Migrations
                     ProcedureId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    IsDiscountValid = table.Column<bool>(type: "bit", nullable: false)
+                    IsDiscountAllowed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

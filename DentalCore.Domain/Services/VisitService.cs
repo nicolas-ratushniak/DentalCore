@@ -84,7 +84,7 @@ public class VisitService : IVisitService
                 ProcedureId = item.ProcedureId,
                 Quantity = item.Quantity,
                 Price = procedure.Price,
-                IsDiscountValid = procedure.IsDiscountAllowed,
+                IsDiscountAllowed = procedure.IsDiscountAllowed,
                 Visit = visit,
                 Procedure = procedure
             });

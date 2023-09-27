@@ -183,7 +183,7 @@ namespace DentalCore.Data.Migrations
                     b.Property<int>("ProcedureId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDiscountValid")
+                    b.Property<bool>("IsDiscountAllowed")
                         .HasColumnType("bit");
 
                     b.Property<int>("Price")
