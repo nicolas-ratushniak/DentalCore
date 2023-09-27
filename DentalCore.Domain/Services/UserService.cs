@@ -25,6 +25,21 @@ public class UserService : IUserService
             .SingleOrDefault(u => u.Id == id) ?? throw new EntityNotFoundException();
     }
 
+    public User Get(string login)
+    {
+        return _context.Users
+            .Where(u => !u.IsDeleted)
+            .SingleOrDefault(u => u.Login == login) ?? throw new EntityNotFoundException();
+    }
+
+    public bool CheckPassword(int id, string password)
+    {
+        var user = Get(id);
+
+        var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
+        return result == PasswordVerificationResult.Success;
+    }
+
     public User GetIncludeSoftDeleted(int id)
     {
         return _context.Users.Find(id)
