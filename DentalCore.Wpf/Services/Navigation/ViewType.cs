@@ -3,6 +3,7 @@
 public enum ViewType
 {
     Home,
+    Login,
     
     Patients,
     PatientInfo,
@@ -13,9 +14,9 @@ public enum ViewType
     VisitInfo,
     VisitCreate,
     
-    Procedures,
-    ProcedureCreate,
-    ProcedureUpdate,
-    
-    Payments
+    // Procedures,
+    // ProcedureCreate,
+    // ProcedureUpdate,
+    //
+    // Payments
 }
