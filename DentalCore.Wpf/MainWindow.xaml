@@ -6,8 +6,14 @@
         
         xmlns:local="clr-namespace:DentalCore.Wpf"
         xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
+        xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
+        xmlns:navigation="clr-namespace:DentalCore.Wpf.Services.Navigation"
         mc:Ignorable="d"
         Title="Dental Core" Height="600" Width="1000">
+    
+    <Window.Resources>
+        <converters:InverseViewTypeEqualsToVisibilityConverter x:Key="InverseViewTypeEqualsToVisibilityConverter"/>
+    </Window.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
@@ -15,7 +21,11 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
-        <controls:NavBar Grid.Row="0"/> 
+        <controls:NavBar Grid.Row="0"
+                         Visibility="{Binding CurrentNavBarOption,
+                         Converter={StaticResource InverseViewTypeEqualsToVisibilityConverter},
+                         ConverterParameter={x:Static navigation:ViewType.Login}}"/> 
+        
         <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
     </Grid>
 </Window>

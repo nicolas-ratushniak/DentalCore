@@ -11,7 +11,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <converters:EqualsToBoolConverter x:Key="EqualsToBoolConverter" />
+        <converters:ViewTypeEqualsToBooleanConverter x:Key="EqualsToBoolConverter" />
     </UserControl.Resources>
 
     <Grid>

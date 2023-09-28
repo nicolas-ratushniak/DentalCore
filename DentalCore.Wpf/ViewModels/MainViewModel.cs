@@ -49,13 +49,18 @@ public class MainViewModel : BaseViewModel
 
     public MainViewModel(IViewModelFactory viewModelFactory, INavigationService navigationService, IAuthenticationService authenticationService)
     {
-        _viewModelFactory = viewModelFactory;
         Navigator = navigationService;
+        _viewModelFactory = viewModelFactory;
         _authenticationService = authenticationService;
         
         Navigator.CurrentViewTypeChanged += OnCurrentViewTypeChanged;
+        Navigator.UpdateCurrentViewType(ViewType.Home, null);
+    }
 
-        CurrentViewModel = _viewModelFactory.CreateViewModel(ViewType.Login);
+    public override void Dispose()
+    {
+        Navigator.CurrentViewTypeChanged -= OnCurrentViewTypeChanged;
+        base.Dispose();
     }
 
     private void OnCurrentViewTypeChanged(object? sender, ViewTypeChangedEventArgs args)
@@ -66,8 +71,9 @@ public class MainViewModel : BaseViewModel
 
         CurrentNavBarOption = newViewType switch
         {
-            ViewType.Patients or ViewType.PatientCreate or ViewType.PatientInfo or ViewType.PatientUpdate 
-                => ViewType.Patients,
+            ViewType.Login => ViewType.Login,
+            ViewType.Patients or ViewType.PatientCreate 
+                or ViewType.PatientInfo or ViewType.PatientUpdate => ViewType.Patients,
             ViewType.Visits or ViewType.VisitCreate or ViewType.VisitInfo => ViewType.Visits,
             _ => ViewType.Home
         };
