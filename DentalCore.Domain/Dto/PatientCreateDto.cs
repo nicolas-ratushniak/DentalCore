@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using DentalCore.Data.Models;
 
 namespace DentalCore.Domain.Dto;
 
@@ -8,7 +9,7 @@ public class PatientCreateDto
     public int CityId { get; set; }
     
     [Required]
-    public bool IsMale { get; set; }
+    public Gender Gender { get; set; }
 
     [Required]
     [StringLength(20, MinimumLength = 2)]
@@ -28,4 +29,8 @@ public class PatientCreateDto
     
     [Required]
     public DateTime BirthDate { get; set; }
+    
+    public IEnumerable<string>? AllergyNames { get; set; }
+    
+    public IEnumerable<int>? DiseaseIds { get; set; }
 }

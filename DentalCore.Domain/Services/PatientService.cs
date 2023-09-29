@@ -48,15 +48,42 @@ public class PatientService : IPatientService
         var patient = new Patient
         {
             CityId = dto.CityId,
-            Gender = dto.IsMale ? Gender.Male : Gender.Female,
+            Gender = dto.Gender,
             Name = dto.Name,
             Surname = dto.Surname,
             Patronymic = dto.Patronymic,
             Phone = dto.Phone,
             BirthDate = dto.BirthDate,
             DateCreated = DateTime.Today,
-            City = city
+            City = city,
+            Allergies = new List<Allergy>(),
+            Diseases = new List<Disease>()
         };
+
+        if (dto.AllergyNames is not null)
+        {
+            foreach (var allergyName in dto.AllergyNames)
+            {
+                var allergy = new Allergy
+                {
+                    Name = allergyName,
+                    Patient = patient
+                };
+
+                patient.Allergies.Add(allergy);
+            }
+        }
+        
+        if (dto.DiseaseIds is not null)
+        {
+            foreach (var diseaseId in dto.DiseaseIds)
+            {
+                var disease = _context.Diseases.Find(diseaseId)
+                              ?? throw new EntityNotFoundException("Disease not found");
+                
+                patient.Diseases.Add(disease);
+            }
+        }
 
         _context.Patients.Add(patient);
         _context.SaveChanges();
@@ -84,12 +111,41 @@ public class PatientService : IPatientService
 
         patient.CityId = dto.CityId;
         patient.City = city;
-        patient.Gender = dto.IsMale ? Gender.Male : Gender.Female;
+        patient.Gender = dto.Gender;
         patient.Name = dto.Name;
         patient.Surname = dto.Surname;
         patient.Patronymic = dto.Patronymic;
         patient.Phone = dto.Phone;
         patient.BirthDate = dto.BirthDate;
+        
+        if (dto.AllergyNames is not null)
+        {
+            patient.Allergies = new List<Allergy>();
+            
+            foreach (var allergyName in dto.AllergyNames)
+            {
+                var allergy = new Allergy
+                {
+                    Name = allergyName,
+                    Patient = patient
+                };
+
+                patient.Allergies.Add(allergy);
+            }
+        }
+        
+        if (dto.DiseaseIds is not null)
+        {
+            patient.Diseases = new List<Disease>();
+            
+            foreach (var diseaseId in dto.DiseaseIds)
+            {
+                var disease = _context.Diseases.Find(diseaseId)
+                              ?? throw new EntityNotFoundException("Disease not found");
+                
+                patient.Diseases.Add(disease);
+            }
+        }
 
         _context.Patients.Update(patient);
         _context.SaveChanges();

@@ -1064,7 +1064,7 @@ public class PatientServiceTests
         return new PatientCreateDto
         {
             CityId = 1,
-            IsMale = true,
+            Gender = Gender.Male,
             Name = "Name",
             Surname = "Surname",
             Patronymic = "Patronymic",
@@ -1079,7 +1079,7 @@ public class PatientServiceTests
         {
             Id = id,
             CityId = 1,
-            IsMale = true,
+            Gender = Gender.Male,
             Name = "Updated Name",
             Surname = "Updated Surname",
             Patronymic = "Updated Patronymic",
