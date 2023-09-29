@@ -42,7 +42,11 @@ public partial class App : Application
 
                 services.AddSingleton<Func<HomeViewModel>>(s => () => new HomeViewModel());
                 services.AddSingleton<Func<LoginViewModel>>(s => () => new LoginViewModel());
-                services.AddSingleton<Func<PatientsViewModel>>(s => () => new PatientsViewModel());
+                
+                services.AddSingleton<Func<PatientsViewModel>>(s => () => new PatientsViewModel(
+                    s.GetRequiredService<INavigationService>(),
+                    s.GetRequiredService<IPatientService>()));
+                
                 services.AddSingleton<Func<int, PatientInfoViewModel>>(s => id => new PatientInfoViewModel(id));
                 services.AddSingleton<Func<PatientCreateViewModel>>(s => () => new PatientCreateViewModel());
                 services.AddSingleton<Func<int, PatientUpdateViewModel>>(s => id => new PatientUpdateViewModel(id));

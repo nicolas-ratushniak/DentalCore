@@ -29,7 +29,10 @@
 
     </ItemGroup>
 
-
-
-
+    <ItemGroup>
+      <None Remove="Assets\edit.png" />
+      <Resource Include="Assets\edit.png" />
+      <None Remove="Assets\more.png" />
+      <Resource Include="Assets\more.png" />
+    </ItemGroup>
 </Project>
