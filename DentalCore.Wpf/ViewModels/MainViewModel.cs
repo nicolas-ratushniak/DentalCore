@@ -1,4 +1,5 @@
-﻿using DentalCore.Data.Models;
+﻿using System.Globalization;
+using DentalCore.Data.Models;
 using DentalCore.Wpf.Services.Authentication;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels.Factories;
@@ -54,7 +55,7 @@ public class MainViewModel : BaseViewModel
         _authenticationService = authenticationService;
         
         Navigator.CurrentViewTypeChanged += OnCurrentViewTypeChanged;
-        Navigator.UpdateCurrentViewType(ViewType.Home, null);
+        Navigator.NavigateTo(ViewType.Home, null);
     }
 
     public override void Dispose()

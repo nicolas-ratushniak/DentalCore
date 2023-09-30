@@ -50,39 +50,17 @@ public class PatientsViewModel : BaseViewModel
                                              p.Name.ToLower().StartsWith(PatientSearchFilter.ToLower()));
 
         AddPatientCommand = new RelayCommand<object>(_ =>
-            _navigationService.UpdateCurrentViewType(ViewType.PatientCreate, null));
+            _navigationService.NavigateTo(ViewType.PatientCreate, null));
 
         EditPatientCommand = new RelayCommand<int>(id =>
-            _navigationService.UpdateCurrentViewType(ViewType.PatientUpdate, id));
+            _navigationService.NavigateTo(ViewType.PatientUpdate, id));
 
         ShowPatientCommand = new RelayCommand<int>(id =>
-            _navigationService.UpdateCurrentViewType(ViewType.PatientInfo, id));
+            _navigationService.NavigateTo(ViewType.PatientInfo, id));
     }
 
     private List<PatientListItemViewModel> GetPatients()
     {
-        // return new List<PatientListItemViewModel>
-        // {
-        //     new(1, "Сергій", "Іванов", "Олександрович"),
-        //     new(2, "Марина", "Іванова", "Олександрівна"),
-        //     new(3, "Андрій", "Степаненко", "Ростиславович"),
-        //     new(1, "Сергій", "Іванов", "Олександрович"),
-        //     new(2, "Марина", "Іванова", "Олександрівна"),
-        //     new(3, "Андрій", "Степаненко", "Ростиславович"),
-        //     new(1, "Сергій", "Іванов", "Олександрович"),
-        //     new(2, "Марина", "Іванова", "Олександрівна"),
-        //     new(3, "Андрій", "Степаненко", "Ростиславович"),
-        //     new(1, "Сергій", "Іванов", "Олександрович"),
-        //     new(2, "Марина", "Іванова", "Олександрівна"),
-        //     new(3, "Андрій", "Степаненко", "Ростиславович"),
-        //     new(1, "Сергій", "Іванов", "Олександрович"),
-        //     new(2, "Марина", "Іванова", "Олександрівна"),
-        //     new(3, "Андрій", "Степаненко", "Ростиславович"),
-        //     new(1, "Сергій", "Іванов", "Олександрович"),
-        //     new(2, "Марина", "Іванова", "Олександрівна"),
-        //     new(3, "Андрій", "Степаненко", "Ростиславович")
-        // };
-
         return _patientService.GetAll()
             .Select(p => new PatientListItemViewModel
             {
@@ -92,5 +70,30 @@ public class PatientsViewModel : BaseViewModel
                 Patronymic = p.Patronymic
             })
             .ToList();
+
+        // return new List<PatientListItemViewModel>()
+        // {
+        //     new()
+        //     {
+        //         Id = 0,
+        //         Name = "Василь",
+        //         Surname = "Петришин",
+        //         Patronymic = "Андрійович"
+        //     },
+        //     new()
+        //     {
+        //         Id = 0,
+        //         Name = "Карина",
+        //         Surname = "Житарюк",
+        //         Patronymic = "Володимірівна"
+        //     },
+        //     new()
+        //     {
+        //         Id = 0,
+        //         Name = "Колодрібська",
+        //         Surname = "Анастасія",
+        //         Patronymic = "Іванівна"
+        //     }
+        // };
     }
 }

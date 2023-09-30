@@ -12,11 +12,6 @@ public class CommonService : ICommonService
         _context = context;
     }
 
-    public IEnumerable<Allergy> GetAllergies()
-    {
-        return _context.Allergies.ToList();
-    }
-
     public IEnumerable<Disease> GetDiseases()
     {
         return _context.Diseases.ToList();

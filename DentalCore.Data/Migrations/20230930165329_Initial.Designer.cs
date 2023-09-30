@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalCore.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230927132622_Initial")]
+    [Migration("20230930165329_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -31,8 +31,8 @@ namespace DentalCore.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("PatientId", "Name");
 
@@ -67,8 +67,8 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.HasKey("Id");
 
@@ -97,13 +97,13 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Patronymic")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -112,8 +112,8 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 
@@ -167,8 +167,8 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(45)
+                        .HasColumnType("nvarchar(45)");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");
@@ -220,8 +220,8 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -237,8 +237,8 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
 

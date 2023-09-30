@@ -13,15 +13,15 @@ public class UserCreateDto
     public string Login { get; set; } = string.Empty;
     
     [Required]
-    [StringLength(20, MinimumLength = 1)]
+    [StringLength(30, MinimumLength = 1)]
     public string Password { get; set; } = string.Empty;
     
     [Required]
-    [StringLength(20, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2)]
     public string Name { get; set; } = string.Empty;
     
     [Required]
-    [StringLength(20, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2)]
     public string Surname { get; set; } = string.Empty;
     
     [Required]

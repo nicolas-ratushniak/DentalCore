@@ -8,7 +8,7 @@ public class Procedure
     
     public bool IsDeleted { get; set; }
     
-    [MaxLength(30)]
+    [MaxLength(45)]
     public string Name { get; set; }
 
     public int Price { get; set; }

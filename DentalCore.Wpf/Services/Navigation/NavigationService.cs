@@ -14,10 +14,10 @@ public class NavigationService : INavigationService
     public NavigationService()
     {
         UpdateCurrentViewTypeCommand = new RelayCommand<ViewType>(
-            v => UpdateCurrentViewType(v, null));
+            v => NavigateTo(v, null));
     }
 
-    public void UpdateCurrentViewType(ViewType newViewType, object? viewParameter)
+    public void NavigateTo(ViewType newViewType, object? viewParameter)
     {
         var oldViewType = CurrentViewType;
 

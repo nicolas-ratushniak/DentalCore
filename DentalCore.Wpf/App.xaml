@@ -44,6 +44,19 @@
             <Setter Property="FontWeight" Value="500" />
             <Setter Property="FontSize" Value="18" />
         </Style>
+        
+        <!-- Border -->
+        <Style x:Key="NiceBorder" TargetType="Border">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource BrushGrey}" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Padding" Value="5"></Setter>
+            <Style.Triggers>
+                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                    <Setter Property="BorderBrush" Value="Black" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
         <!-- Buttons -->
         <Style x:Key="NiceButton" TargetType="Button">

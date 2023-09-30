@@ -6,7 +6,7 @@ public class Allergy
 {
     public int PatientId { get; set; }
     
-    [MaxLength(30)]
+    [MaxLength(40)]
     public string Name { get; set; }
 
     public Patient Patient { get; set; }

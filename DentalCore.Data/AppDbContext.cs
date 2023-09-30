@@ -17,6 +17,12 @@ public class AppDbContext : DbContext
 
     public AppDbContext(DbContextOptions options) : base(options) { }
 
+    // // for migrations
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     optionsBuilder.UseSqlServer(@"Server=NorthernRival\MSSQLSERVER,1433;Database=DentalCoreDb;Trusted_Connection=True;Encrypt=Optional");
+    // }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Allergy>(a =>

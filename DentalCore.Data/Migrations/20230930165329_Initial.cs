@@ -30,7 +30,7 @@ namespace DentalCore.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -44,7 +44,7 @@ namespace DentalCore.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     IsDiscountAllowed = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -63,8 +63,8 @@ namespace DentalCore.Data.Migrations
                     Role = table.Column<int>(type: "int", nullable: false),
                     Login = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
@@ -80,9 +80,9 @@ namespace DentalCore.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CityId = table.Column<int>(type: "int", nullable: false),
                     Gender = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Surname = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Patronymic = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Patronymic = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     BirthDate = table.Column<DateTime>(type: "date", nullable: false),
                     DateCreated = table.Column<DateTime>(type: "date", nullable: false)
@@ -103,7 +103,7 @@ namespace DentalCore.Data.Migrations
                 columns: table => new
                 {
                     PatientId = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false)
                 },
                 constraints: table =>
                 {

@@ -13,10 +13,10 @@ public class User
     
     public string PasswordHash { get; set; }
     
-    [MaxLength(20)]
+    [MaxLength(30)]
     public string Name { get; set; }
     
-    [MaxLength(20)]
+    [MaxLength(30)]
     public string Surname { get; set; }
     
     [MaxLength(10)]

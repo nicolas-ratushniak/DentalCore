@@ -15,15 +15,15 @@ public class PatientUpdateDto
     public Gender Gender { get; set; }
     
     [Required]
-    [StringLength(20, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2)]
     public string Name { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(20, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2)]
     public string Surname { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(20, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2)]
     public string Patronymic { get; set; } = string.Empty;
 
     [Required]

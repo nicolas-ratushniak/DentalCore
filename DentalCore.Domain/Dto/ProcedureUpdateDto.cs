@@ -8,7 +8,7 @@ public class ProcedureUpdateDto
     public int Id { get; set; }
     
     [Required]
-    [StringLength(30, MinimumLength = 2)]
+    [StringLength(45, MinimumLength = 2)]
     public string Name { get; set; } = string.Empty;
 
     [Required]

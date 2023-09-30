@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Globalization;
+using System.Threading;
 using System.Windows;
 using DentalCore.Data;
 using DentalCore.Data.Models;
@@ -48,7 +50,12 @@ public partial class App : Application
                     s.GetRequiredService<IPatientService>()));
                 
                 services.AddSingleton<Func<int, PatientInfoViewModel>>(s => id => new PatientInfoViewModel(id));
-                services.AddSingleton<Func<PatientCreateViewModel>>(s => () => new PatientCreateViewModel());
+
+                services.AddSingleton<Func<PatientCreateViewModel>>(s => () => new PatientCreateViewModel(
+                    s.GetRequiredService<INavigationService>(),
+                    s.GetRequiredService<IPatientService>(),
+                    s.GetRequiredService<ICommonService>()));
+                    
                 services.AddSingleton<Func<int, PatientUpdateViewModel>>(s => id => new PatientUpdateViewModel(id));
                 services.AddSingleton<Func<VisitsViewModel>>(s => () => new VisitsViewModel());
                 services.AddSingleton<Func<int, VisitInfoViewModel>>(s => id => new VisitInfoViewModel(id));
@@ -66,6 +73,8 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         await AppHost.StartAsync();
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("uk-UA");
+        
         MainWindow = AppHost.Services.GetRequiredService<MainWindow>();
         MainWindow.Show();
 

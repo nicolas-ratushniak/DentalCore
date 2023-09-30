@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using DentalCore.Wpf.Services.Navigation;
 
 namespace DentalCore.Wpf.Converters;
 
-public class ViewTypeEqualsToBooleanConverter : IValueConverter
+public class EqualsToBooleanConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return (ViewType)value == (ViewType)parameter;
+        return value?.Equals(parameter);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return value;
+        return Binding.DoNothing;
     }
 }
