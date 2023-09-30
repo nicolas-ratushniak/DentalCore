@@ -56,7 +56,12 @@ public partial class App : Application
                     s.GetRequiredService<IPatientService>(),
                     s.GetRequiredService<ICommonService>()));
                     
-                services.AddSingleton<Func<int, PatientUpdateViewModel>>(s => id => new PatientUpdateViewModel(id));
+                services.AddSingleton<Func<int, PatientUpdateViewModel>>(s => id => new PatientUpdateViewModel(
+                    id,
+                    s.GetRequiredService<INavigationService>(),
+                    s.GetRequiredService<IPatientService>(),
+                    s.GetRequiredService<ICommonService>()));
+                
                 services.AddSingleton<Func<VisitsViewModel>>(s => () => new VisitsViewModel());
                 services.AddSingleton<Func<int, VisitInfoViewModel>>(s => id => new VisitInfoViewModel(id));
                 services.AddSingleton<Func<VisitCreateViewModel>>(s => () => new VisitCreateViewModel());

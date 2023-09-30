@@ -253,8 +253,7 @@
             
             <TextBlock Grid.Column="0"
                        Text="{Binding ErrorMessage}"
-                       Style="{StaticResource ErrorMessage}"
-                       Margin="0,15" />
+                       Style="{StaticResource ErrorMessage}"/>
 
             <Button Grid.Column="1"
                     Command="{Binding CancelCommand}"

@@ -286,30 +286,6 @@ public class PatientCreateViewModel : BaseViewModel
                 Id = c.Id,
                 Name = c.Name
             });
-
-        // return new List<CityListItemViewModel>()
-        // {
-        //     new()
-        //     {
-        //         Id = 1,
-        //         Name = "Чернівці"
-        //     },
-        //     new()
-        //     {
-        //         Id = 2,
-        //         Name = "Коломия"
-        //     },
-        //     new()
-        //     {
-        //         Id = 3,
-        //         Name = "Київ"
-        //     },
-        //     new()
-        //     {
-        //         Id = 4,
-        //         Name = "Лужани"
-        //     }
-        // };
     }
 
     private IEnumerable<DiseaseListItemViewModel> GetDiseases()
@@ -321,24 +297,5 @@ public class PatientCreateViewModel : BaseViewModel
                 IsSelected = false,
                 Name = d.Name
             });
-
-        // return new List<DiseaseListItemViewModel>()
-        // {
-        //     new()
-        //     {
-        //         Id = 1,
-        //         Name = "Болить живіт"
-        //     },
-        //     new()
-        //     {
-        //         Id = 2,
-        //         Name = "Мігрень"
-        //     },
-        //     new()
-        //     {
-        //         Id = 3,
-        //         Name = "Свинка"
-        //     }
-        // };
     }
 }
