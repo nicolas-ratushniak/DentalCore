@@ -190,8 +190,6 @@ public class PatientCreateViewModel : BaseViewModel
     public PatientCreateViewModel(INavigationService navigationService, IPatientService patientService,
         ICommonService commonService)
     {
-        CultureInfo.CurrentCulture = new CultureInfo("uk-UA");
-        
         _navigationService = navigationService;
         _patientService = patientService;
         _commonService = commonService;
@@ -225,7 +223,7 @@ public class PatientCreateViewModel : BaseViewModel
             : AllergyNamesInput.Split(Environment.NewLine,
                 StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-        if (!DateTime.TryParse(BirthDate, CultureInfo.CurrentCulture, out var birthDate))
+        if (!DateTime.TryParseExact(BirthDate, "d.MM.yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out var birthDate))
         {
             ErrorMessage = "Некоректний формат дати народження";
             return;
@@ -246,8 +244,8 @@ public class PatientCreateViewModel : BaseViewModel
 
         try
         {
-            _patientService.Add(dto);
-            _navigationService.NavigateTo(ViewType.Patients, null);
+            var id = _patientService.Add(dto);
+            _navigationService.NavigateTo(ViewType.PatientInfo, id);
         }
         catch (ValidationException ex)
         {

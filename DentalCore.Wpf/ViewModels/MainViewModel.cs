@@ -53,9 +53,11 @@ public class MainViewModel : BaseViewModel
         Navigator = navigationService;
         _viewModelFactory = viewModelFactory;
         _authenticationService = authenticationService;
+
+        CultureInfo.CurrentCulture = new CultureInfo("uk-UA");
         
         Navigator.CurrentViewTypeChanged += OnCurrentViewTypeChanged;
-        Navigator.NavigateTo(ViewType.Home, null);
+        Navigator.NavigateTo(ViewType.Patients, null);
     }
 
     public override void Dispose()

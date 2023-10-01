@@ -12,9 +12,7 @@ namespace DentalCore.Wpf.ViewModels;
 
 public class PatientsViewModel : BaseViewModel
 {
-    private readonly INavigationService _navigationService;
     private readonly IPatientService _patientService;
-    private readonly List<PatientListItemViewModel> _patientsList;
     private string _patientSearchFilter = string.Empty;
 
     public ICommand AddPatientCommand { get; set; }
@@ -38,25 +36,23 @@ public class PatientsViewModel : BaseViewModel
 
     public PatientsViewModel(INavigationService navigationService, IPatientService patientService)
     {
-        _navigationService = navigationService;
         _patientService = patientService;
-        _patientsList = GetPatients();
+        List<PatientListItemViewModel> patientsList = GetPatients();
 
-        PatientCollectionView = CollectionViewSource.GetDefaultView(_patientsList);
-        PatientCollectionView.SortDescriptions.Add(new SortDescription(nameof(PatientListItemViewModel.FullName),
-            ListSortDirection.Descending));
+        PatientCollectionView = CollectionViewSource.GetDefaultView(patientsList);
+        PatientCollectionView.SortDescriptions.Add(new SortDescription(nameof(PatientListItemViewModel.FullName), ListSortDirection.Descending));
         PatientCollectionView.Filter = o => o is PatientListItemViewModel p &&
                                             (p.Surname.ToLower().StartsWith(PatientSearchFilter.ToLower()) ||
                                              p.Name.ToLower().StartsWith(PatientSearchFilter.ToLower()));
 
         AddPatientCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(ViewType.PatientCreate, null));
+            navigationService.NavigateTo(ViewType.PatientCreate, null));
 
         EditPatientCommand = new RelayCommand<int>(id =>
-            _navigationService.NavigateTo(ViewType.PatientUpdate, id));
+            navigationService.NavigateTo(ViewType.PatientUpdate, id));
 
         ShowPatientCommand = new RelayCommand<int>(id =>
-            _navigationService.NavigateTo(ViewType.PatientInfo, id));
+            navigationService.NavigateTo(ViewType.PatientInfo, id));
     }
 
     private List<PatientListItemViewModel> GetPatients()
@@ -70,30 +66,5 @@ public class PatientsViewModel : BaseViewModel
                 Patronymic = p.Patronymic
             })
             .ToList();
-
-        // return new List<PatientListItemViewModel>()
-        // {
-        //     new()
-        //     {
-        //         Id = 0,
-        //         Name = "Василь",
-        //         Surname = "Петришин",
-        //         Patronymic = "Андрійович"
-        //     },
-        //     new()
-        //     {
-        //         Id = 0,
-        //         Name = "Карина",
-        //         Surname = "Житарюк",
-        //         Patronymic = "Володимірівна"
-        //     },
-        //     new()
-        //     {
-        //         Id = 0,
-        //         Name = "Колодрібська",
-        //         Surname = "Анастасія",
-        //         Patronymic = "Іванівна"
-        //     }
-        // };
     }
 }

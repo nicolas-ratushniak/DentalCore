@@ -15,6 +15,8 @@
         <Color x:Key="ColorMinorFocused">#5FC314</Color>
         <Color x:Key="GreyColor">#858a8c</Color>
         <Color x:Key="LightGreyColor">#dee0e0</Color>
+        <Color x:Key="WarningColor">#f0bf0e</Color>
+        <Color x:Key="DangerColor">#F4511E</Color>
 
         <!--Brushes-->
         <SolidColorBrush x:Key="BrushAccent" Color="{StaticResource ColorAccent}" />
@@ -22,6 +24,8 @@
         <SolidColorBrush x:Key="BrushMinorFocused" Color="{StaticResource ColorMinorFocused}" />
         <SolidColorBrush x:Key="BrushGrey" Color="{StaticResource GreyColor}" />
         <SolidColorBrush x:Key="BrushLightGrey" Color="{StaticResource LightGreyColor}" />
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
+        <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}" />
 
         <!-- Text -->
         <Style x:Key="Title" TargetType="TextBlock">

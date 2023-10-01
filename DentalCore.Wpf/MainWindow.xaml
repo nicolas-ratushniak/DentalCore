@@ -9,7 +9,9 @@
         xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
         xmlns:navigation="clr-namespace:DentalCore.Wpf.Services.Navigation"
         mc:Ignorable="d"
-        Title="Dental Core" Height="600" Width="1000">
+        Title="Dental Core" 
+        Height="700" MinHeight="620"
+        Width="1000" MinWidth="650">
     
     <Window.Resources>
         <converters:InverseViewTypeEqualsToVisibilityConverter x:Key="InverseViewTypeEqualsToVisibilityConverter"/>

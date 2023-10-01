@@ -179,7 +179,7 @@
                 </Grid>
 
                 <controls:PlaceholderTextBox Grid.Row="5"
-                                             Placeholder="Дата народження (30.12.2000)"
+                                             Placeholder="Дата народження (2.03.2000)"
                                              Text="{Binding BirthDate,
                                              Mode=TwoWay,
                                              UpdateSourceTrigger=PropertyChanged}"

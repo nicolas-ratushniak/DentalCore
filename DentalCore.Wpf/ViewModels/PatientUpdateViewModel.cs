@@ -199,7 +199,7 @@ public class PatientUpdateViewModel : BaseViewModel
         _patientService = patientService;
         _commonService = commonService;
         
-        CultureInfo.CurrentCulture = new CultureInfo("uk-UA");
+        // CultureInfo.CurrentCulture = new CultureInfo("uk-UA");
 
         var patient = patientService.Get(id);
         var cities = GetCities().ToList();
@@ -207,7 +207,7 @@ public class PatientUpdateViewModel : BaseViewModel
         Name = patient.Name;
         Surname = patient.Surname;
         Patronymic = patient.Patronymic;
-        BirthDate = patient.BirthDate.ToShortDateString();
+        BirthDate = patient.BirthDate.ToString("dd.MM.yyyy");
         Gender = patient.Gender;
         Phone = patient.Phone;
         AllergyNamesInput = string.Join(Environment.NewLine, 
@@ -243,7 +243,7 @@ public class PatientUpdateViewModel : BaseViewModel
             : AllergyNamesInput.Split(Environment.NewLine,
                 StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
 
-        if (!DateTime.TryParse(BirthDate, CultureInfo.CurrentCulture, out var birthDate))
+        if (!DateTime.TryParseExact(BirthDate, "d.MM.yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None, out var birthDate))
         {
             ErrorMessage = "Некоректний формат дати народження";
             return;
