@@ -68,7 +68,14 @@ public partial class App : Application
                 
                 services.AddSingleton<Func<VisitsViewModel>>(s => () => new VisitsViewModel());
                 services.AddSingleton<Func<int, VisitInfoViewModel>>(s => id => new VisitInfoViewModel(id));
-                services.AddSingleton<Func<VisitCreateViewModel>>(s => () => new VisitCreateViewModel());
+                
+                services.AddSingleton<Func<int, VisitCreateViewModel>>(s => id => new VisitCreateViewModel(
+                    id,
+                    s.GetRequiredService<INavigationService>(),
+                    s.GetRequiredService<IVisitService>(),
+                    s.GetRequiredService<IUserService>(),
+                    s.GetRequiredService<IPatientService>(),
+                    s.GetRequiredService<IProcedureService>()));
                 
                 services.AddTransient<MainViewModel>();
 

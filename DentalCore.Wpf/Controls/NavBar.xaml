@@ -46,14 +46,14 @@
                          CommandParameter="{x:Static navigation:ViewType.Patients}"
                          Content="Пацієнти" />
 
-            <!-- <RadioButton Grid.Column="2" -->
-            <!--              Style="{StaticResource NiceRadioButton}" -->
-            <!--              IsChecked="{Binding CurrentNavBarOption, Mode=OneWay, -->
-            <!--              Converter={StaticResource EqualsToBoolConverter}, -->
-            <!--              ConverterParameter={x:Static navigation:ViewType.Visits}}" -->
-            <!--              Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}" -->
-            <!--              CommandParameter="{x:Static navigation:ViewType.Visits}" -->
-            <!--              Content="Візити" /> -->
+            <RadioButton Grid.Column="2"
+                         Style="{StaticResource NiceRadioButton}"
+                         IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
+                         Converter={StaticResource EqualsToBoolConverter},
+                         ConverterParameter={x:Static navigation:ViewType.Visits}}"
+                         Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
+                         CommandParameter="{x:Static navigation:ViewType.Visits}"
+                         Content="Візити" />
 
             <!-- <TextBlock Grid.Column="4" -->
             <!--            Padding="20,10" -->

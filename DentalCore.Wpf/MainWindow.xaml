@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="Dental Core" 
         Height="700" MinHeight="620"
-        Width="1000" MinWidth="650">
+        Width="1000" MinWidth="1000">
     
     <Window.Resources>
         <converters:InverseViewTypeEqualsToVisibilityConverter x:Key="InverseViewTypeEqualsToVisibilityConverter"/>

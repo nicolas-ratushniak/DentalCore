@@ -16,6 +16,7 @@ public class PatientInfoViewModel : BaseViewModel
     private readonly IPatientService _patientService;
     private readonly IVisitService _visitService;
     private int _debt;
+    private int _patientId;
 
     public ICommand AddVisitCommand { get; }
     public ICommand ShowVisitCommand { get; }
@@ -51,6 +52,7 @@ public class PatientInfoViewModel : BaseViewModel
     {
         _patientService = patientService;
         _visitService = visitService;
+        _patientId = id;
 
         var patient = patientService.Get(id);
 
@@ -74,27 +76,14 @@ public class PatientInfoViewModel : BaseViewModel
 
     private IEnumerable<VisitOfPatientListItemViewModel> GetVisits()
     {
-        return new List<VisitOfPatientListItemViewModel>()
-        {
-            new()
+        return _visitService.GetAll()
+            .Where(v => v.PatientId == _patientId)
+            .Select(v => new VisitOfPatientListItemViewModel
             {
-                Id = 1,
-                Date = DateTime.Today,
-                Diagnosis = "p12 f3"
-            },
-            new()
-            {
-                Id = 2,
-                Date = DateTime.Today.AddDays(-3),
-                Diagnosis = "Соняшник цвіте в полі, а птахи співають весняні пісні, надія на краще завжди з нами!"
-            },
-            new()
-            {
-                Id = 3,
-                Date = DateTime.Today.AddDays(-1),
-                Diagnosis = "p12 f3 12"
-            },
-        };
+                Id = v.Id,
+                Date = v.Date,
+                Diagnosis = v.Diagnosis
+            });
     }
 
     private int CalculateAge(DateTime birthDate)

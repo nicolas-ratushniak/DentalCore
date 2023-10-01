@@ -36,6 +36,7 @@ public class VisitService : IVisitService
         }
 
         var itemsNoDuplicates = dto.TreatmentItems
+            .Where(t => t.Quantity > 0)
             .GroupBy(t => t.ProcedureId)
             .Select(g => new TreatmentItemDto
             {
@@ -72,12 +73,14 @@ public class VisitService : IVisitService
             Payments = new List<Payment>(),
             TreatmentItems = new List<TreatmentItem>()
         };
+        
+        var procedures = _context.Procedures.ToList();
 
         foreach (var item in itemsNoDuplicates)
         {
             Validator.ValidateObject(item, new ValidationContext(item), true);
 
-            var procedure = FindProcedure(item.ProcedureId);
+            var procedure = procedures.Single(p => p.Id == item.ProcedureId);
 
             visit.TreatmentItems.Add(new TreatmentItem
             {
@@ -148,6 +151,11 @@ public class VisitService : IVisitService
 
     public int CalculateTotalPrice(IEnumerable<TreatmentItemDto> treatmentItems, int discountPercent)
     {
+        if (discountPercent < 0 || discountPercent > 100)
+        {
+            throw new ArgumentOutOfRangeException(nameof(discountPercent));
+        }
+        
         var purePrice = 0.0M;
         var items = treatmentItems.ToList();
 
@@ -160,9 +168,12 @@ public class VisitService : IVisitService
             throw new ArgumentException("The list of items should not have duplicates", nameof(treatmentItems));
         }
 
+        var procedures = _context.Procedures.ToList();
+        
         foreach (var item in items)
         {
-            var procedure = FindProcedure(item.ProcedureId);
+            var procedure = procedures.Single(p => p.Id == item.ProcedureId);
+            
             var priceNoDiscount = procedure.Price * item.Quantity;
 
             purePrice += procedure.IsDiscountAllowed
@@ -172,7 +183,7 @@ public class VisitService : IVisitService
 
         if (purePrice <= 50)
         {
-            return 50;
+            return (int)purePrice;
         }
 
         var remainder = purePrice % 50;
@@ -191,13 +202,5 @@ public class VisitService : IVisitService
         return _context.Payments
             .Where(p => p.VisitId == id)
             .Sum(p => p.Sum);
-    }
-
-    private Procedure FindProcedure(int procedureId)
-    {
-        return _context.Procedures
-                   .Where(p => !p.IsDeleted)
-                   .SingleOrDefault(p => p.Id == procedureId)
-               ?? throw new EntityNotFoundException("Procedure not found");
     }
 }
