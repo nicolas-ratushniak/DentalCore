@@ -49,7 +49,7 @@ public class VisitService : IVisitService
 
         if (dto.FirstPayment > totalPrice)
         {
-            throw new ValidationException("Введена сума не має перевищувати суму чеку");
+            throw new ValidationException("Внесена сума не має перевищувати суму чеку");
         }
 
         var patient = _context.Patients.Find(dto.PatientId)

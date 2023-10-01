@@ -391,6 +391,10 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             
+            <TextBlock Grid.Column="0"
+                       Text="{Binding ErrorMessage}"
+                       Style="{StaticResource ErrorMessage}"/>
+            
             <Button Grid.Column="1"
                     Style="{StaticResource CancelButton}"
                     Command="{Binding CancelCommand}"

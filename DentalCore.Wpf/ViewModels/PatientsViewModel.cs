@@ -15,11 +15,11 @@ public class PatientsViewModel : BaseViewModel
     private readonly IPatientService _patientService;
     private string _patientSearchFilter = string.Empty;
 
-    public ICommand AddPatientCommand { get; set; }
-    public ICommand EditPatientCommand { get; set; }
-    public ICommand ShowPatientCommand { get; set; }
+    public ICommand AddPatientCommand { get; }
+    public ICommand EditPatientCommand { get; }
+    public ICommand ShowPatientCommand { get; }
 
-    public ICollectionView PatientCollectionView { get; set; }
+    public ICollectionView PatientCollectionView { get; }
 
     public string PatientSearchFilter
     {
