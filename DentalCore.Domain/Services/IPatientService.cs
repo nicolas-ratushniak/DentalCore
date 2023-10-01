@@ -7,7 +7,7 @@ public interface IPatientService
 {
     public Patient Get(int id);
     public IEnumerable<Patient> GetAll();
-    public void Add(PatientCreateDto dto);
+    public int Add(PatientCreateDto dto);
     public void Update(PatientUpdateDto dto);
     public int GetDebt(int id);
     public void PayWholeDebt(int id);

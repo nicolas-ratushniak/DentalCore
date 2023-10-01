@@ -37,7 +37,7 @@ public class ProcedureService : IProcedureService
         return _context.Procedures.ToList();
     }
 
-    public void Add(ProcedureCreateDto dto)
+    public int Add(ProcedureCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
@@ -55,6 +55,8 @@ public class ProcedureService : IProcedureService
 
         _context.Procedures.Add(procedure);
         _context.SaveChanges();
+
+        return procedure.Id;
     }
 
     public void Update(ProcedureUpdateDto dto)

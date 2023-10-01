@@ -27,7 +27,7 @@ public class PatientService : IPatientService
         return _context.Patients.ToList();
     }
 
-    public void Add(PatientCreateDto dto)
+    public int Add(PatientCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
@@ -87,6 +87,8 @@ public class PatientService : IPatientService
 
         _context.Patients.Add(patient);
         _context.SaveChanges();
+
+        return patient.Id;
     }
 
     public void Update(PatientUpdateDto dto)

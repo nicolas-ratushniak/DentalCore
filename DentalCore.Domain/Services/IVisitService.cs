@@ -7,7 +7,7 @@ public interface IVisitService
 {
     public Visit Get(int id);
     public IEnumerable<Visit> GetAll();
-    public void Add(VisitCreateDto dto);
+    public int Add(VisitCreateDto dto);
     public void AddPayment(int id, int sum);
     public int GetDebt(int id);
     public int GetMoneyPayed(int id);

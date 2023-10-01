@@ -26,7 +26,7 @@ public class VisitService : IVisitService
         return _context.Visits.ToList();
     }
 
-    public void Add(VisitCreateDto dto)
+    public int Add(VisitCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
@@ -105,6 +105,8 @@ public class VisitService : IVisitService
 
         _context.Visits.Add(visit);
         _context.SaveChanges();
+
+        return visit.Id;
     }
 
     public void AddPayment(int id, int sum)

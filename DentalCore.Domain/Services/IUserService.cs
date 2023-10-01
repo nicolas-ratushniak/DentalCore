@@ -11,7 +11,7 @@ public interface IUserService
     public User GetIncludeSoftDeleted(int id);
     public IEnumerable<User> GetAll();
     public IEnumerable<User> GetAllIncludeSoftDeleted();
-    public void Add(UserCreateDto dto);
+    public int Add(UserCreateDto dto);
     public void Update(UserUpdateDto dto);
     public void SoftDelete(int id);
 }

@@ -56,7 +56,7 @@ public class UserService : IUserService
         return _context.Users.ToList();
     }
 
-    public void Add(UserCreateDto dto)
+    public int Add(UserCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
@@ -84,6 +84,8 @@ public class UserService : IUserService
 
         _context.Users.Add(user);
         _context.SaveChanges();
+
+        return user.Id;
     }
 
     public void Update(UserUpdateDto dto)

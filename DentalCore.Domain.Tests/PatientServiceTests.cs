@@ -55,7 +55,7 @@ public class PatientServiceTests
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(testDto);
+        Action throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<EntityNotFoundException>(throwsEx);
@@ -89,7 +89,7 @@ public class PatientServiceTests
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(testDto);
+        Action throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -121,7 +121,7 @@ public class PatientServiceTests
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(testDto);
+        Action throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -153,7 +153,7 @@ public class PatientServiceTests
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(testDto);
+        Action throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -185,7 +185,7 @@ public class PatientServiceTests
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(testDto);
+        Action throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -215,7 +215,7 @@ public class PatientServiceTests
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(testDto);
+        Action throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
@@ -263,7 +263,7 @@ public class PatientServiceTests
         var service = new PatientService(new AppDbContext(options));
 
         // act
-        var throwsEx = () => service.Add(testDto);
+        Action throwsEx = () => service.Add(testDto);
 
         // assert
         Assert.Throws<ValidationException>(throwsEx);
