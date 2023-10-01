@@ -135,6 +135,10 @@ public class PatientService : IPatientService
                 patient.Allergies.Add(allergy);
             }
         }
+        else
+        {
+            patient.Allergies = null;
+        }
         
         if (dto.DiseaseIds is not null)
         {
@@ -147,6 +151,10 @@ public class PatientService : IPatientService
                 
                 patient.Diseases.Add(disease);
             }
+        }
+        else
+        {
+            patient.Diseases = null;
         }
 
         _context.Patients.Update(patient);
