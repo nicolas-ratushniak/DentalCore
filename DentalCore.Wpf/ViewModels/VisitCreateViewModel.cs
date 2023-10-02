@@ -8,6 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Dto;
+using DentalCore.Domain.Exceptions;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Services.Navigation;
@@ -21,10 +22,10 @@ public class VisitCreateViewModel : BaseViewModel
     private readonly INavigationService _navigationService;
     private readonly IVisitService _visitService;
     private readonly IUserService _userService;
-    private readonly IPatientService _patientService;
     private readonly IProcedureService _procedureService;
+    private readonly int _patientId;
     private DoctorListItemViewModel? _selectedDoctor;
-    private string _diagnosis;
+    private string? _diagnosis;
     private int _discountPercent;
     private int _firstPayment;
     private int _priceWithoutDiscount;
@@ -35,17 +36,16 @@ public class VisitCreateViewModel : BaseViewModel
     private TreatmentItemListItemViewModel? _selectedTreatmentItem;
     private bool _isDoctorListVisible;
     private bool _isTreatmentItemListVisible;
-    private int _patientId;
 
     public ICommand RemoveTreatmentItemCommand { get; }
     public ICommand UpdatePriceCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
-    
+
     public ICollectionView DoctorCollectionView { get; }
     public ICollectionView SelectedTreatmentItemCollectionView { get; }
     public ICollectionView NonSelectedTreatmentItemCollectionView { get; }
-    
+
     public string? ErrorMessage
     {
         get => _errorMessage;
@@ -138,7 +138,7 @@ public class VisitCreateViewModel : BaseViewModel
 
     #region UiProperties
 
-    public string Diagnosis
+    public string? Diagnosis
     {
         get => _diagnosis;
         set
@@ -213,38 +213,43 @@ public class VisitCreateViewModel : BaseViewModel
         _navigationService = navigationService;
         _visitService = visitService;
         _userService = userService;
-        _patientService = patientService;
         _procedureService = procedureService;
         _patientId = id;
-        
+
+        if (patientService.GetAll().All(p => p.Id != id))
+        {
+            throw new EntityNotFoundException("Patient not found");
+        }
+
         DoctorCollectionView = CollectionViewSource.GetDefaultView(GetDoctors());
         DoctorCollectionView.Filter = o => o is DoctorListItemViewModel d &&
                                            (d.Surname.ToLower().StartsWith(DoctorSearchFilter.ToLower()) ||
                                             d.Name.ToLower().StartsWith(DoctorSearchFilter.ToLower()));
 
         _treatmentItems = new ObservableCollection<TreatmentItemListItemViewModel>(GetTreatmentItems());
-        
-        NonSelectedTreatmentItemCollectionView = new CollectionViewSource { Source=_treatmentItems }.View;
+
+        NonSelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
         NonSelectedTreatmentItemCollectionView.Filter = o => o is TreatmentItemListItemViewModel t &&
                                                              !t.IsSelected &&
-                                                             t.Name.ToLower().Contains(TreatmentItemSelectionFilter.ToLower());
-        
-        SelectedTreatmentItemCollectionView = new CollectionViewSource { Source=_treatmentItems }.View;
+                                                             t.Name.ToLower()
+                                                                 .Contains(TreatmentItemSelectionFilter.ToLower());
+
+        SelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
         SelectedTreatmentItemCollectionView.Filter = o => o is TreatmentItemListItemViewModel t && t.IsSelected;
 
         CancelCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(ViewType.PatientInfo, id));
         SubmitCommand = new RelayCommand<object>(AddVisit_Execute, AddVisit_CanExecute);
-        
+
         RemoveTreatmentItemCommand = new RelayCommand<int>(itemId =>
         {
             var item = _treatmentItems.Single(t => t.Id == itemId);
             item.IsSelected = false;
-            
+
             SelectedTreatmentItemCollectionView.Refresh();
             NonSelectedTreatmentItemCollectionView.Refresh();
             UpdatePrice();
         });
-        
+
         UpdatePriceCommand = new RelayCommand<object>(_ => UpdatePrice());
     }
 
@@ -262,7 +267,7 @@ public class VisitCreateViewModel : BaseViewModel
                 ProcedureId = t.Id,
                 Quantity = t.Quantity
             });
-        
+
         var dto = new VisitCreateDto
         {
             PatientId = _patientId,
@@ -310,16 +315,9 @@ public class VisitCreateViewModel : BaseViewModel
 
     private void OnTreatmentItemFilterChanged()
     {
-        var filter = TreatmentItemSelectionFilter;
-
         if (_selectedTreatmentItem is null)
         {
-            IsTreatmentItemListVisible = !string.IsNullOrEmpty(filter);
-        }
-        else
-        {
-            IsTreatmentItemListVisible = true;
-            _selectedTreatmentItem = null;
+            IsTreatmentItemListVisible = !string.IsNullOrEmpty(TreatmentItemSelectionFilter);
         }
 
         NonSelectedTreatmentItemCollectionView.Refresh();
@@ -338,6 +336,8 @@ public class VisitCreateViewModel : BaseViewModel
 
     private void OnSelectedTreatmentItemChanged()
     {
+        IsTreatmentItemListVisible = false;
+
         if (_selectedTreatmentItem is null)
         {
             return;
@@ -345,17 +345,13 @@ public class VisitCreateViewModel : BaseViewModel
 
         var item = _treatmentItems
             .Single(t => t.Id == _selectedTreatmentItem.Id);
-        
+
         item.Quantity = 1;
         item.IsSelected = true;
-        
-        SelectedTreatmentItemCollectionView.Refresh();
-        NonSelectedTreatmentItemCollectionView.Refresh();
-        UpdatePrice();
 
-        _selectedTreatmentItem = null;
         TreatmentItemSelectionFilter = string.Empty;
-        IsTreatmentItemListVisible = false;
+        SelectedTreatmentItemCollectionView.Refresh();
+        UpdatePrice();
     }
 
     private void UpdatePrice()
