@@ -5,8 +5,6 @@ namespace DentalCore.Wpf.ViewModels.Factories;
 
 public class ViewModelFactory : IViewModelFactory
 {
-    private readonly Func<HomeViewModel> _createHomeVm;
-    private readonly Func<LoginViewModel> _createLoginVm;
     private readonly Func<PatientsViewModel> _createPatientsVm;
     private readonly Func<int, PatientInfoViewModel> _createPatientInfoVm;
     private readonly Func<PatientCreateViewModel> _createPatientCreateVm;
@@ -16,8 +14,6 @@ public class ViewModelFactory : IViewModelFactory
     private readonly Func<int, VisitCreateViewModel> _createVisitCreateVm;
 
     public ViewModelFactory(
-        Func<HomeViewModel> createHomeVm,
-        Func<LoginViewModel> createLoginVm,
         Func<PatientsViewModel> createPatientsVm,
         Func<int, PatientInfoViewModel> createPatientInfoVm,
         Func<PatientCreateViewModel> createPatientCreateVm,
@@ -26,8 +22,6 @@ public class ViewModelFactory : IViewModelFactory
         Func<int, VisitInfoViewModel> createVisitInfoView,
         Func<int, VisitCreateViewModel> createVisitCreateVm)
     {
-        _createHomeVm = createHomeVm;
-        _createLoginVm = createLoginVm;
         _createPatientsVm = createPatientsVm;
         _createPatientInfoVm = createPatientInfoVm;
         _createPatientCreateVm = createPatientCreateVm;
@@ -41,8 +35,6 @@ public class ViewModelFactory : IViewModelFactory
     {
         return viewType switch
         {
-            ViewType.Home => _createHomeVm(),
-            ViewType.Login => _createLoginVm(),
             ViewType.Patients => _createPatientsVm(),
             ViewType.PatientInfo => _createPatientInfoVm((int)viewParameter!),
             ViewType.PatientCreate => _createPatientCreateVm(),

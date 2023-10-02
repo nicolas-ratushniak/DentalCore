@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using DentalCore.Data.Models;
-using DentalCore.Wpf.Services.Authentication;
+﻿using System;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels.Factories;
 
@@ -9,22 +7,10 @@ namespace DentalCore.Wpf.ViewModels;
 public class MainViewModel : BaseViewModel
 {
     private readonly IViewModelFactory _viewModelFactory;
-    private readonly IAuthenticationService _authenticationService;
-    private User? _currentUser;
     private BaseViewModel _currentViewModel;
     private ViewType _currentNavBarOption;
 
     public INavigationService Navigator { get; set; }
-    public User? CurrentUser
-    {
-        get => _currentUser;
-        set
-        {
-            if (Equals(value, _currentUser)) return;
-            _currentUser = value;
-            OnPropertyChanged();
-        }
-    }
 
     public BaseViewModel CurrentViewModel
     {
@@ -48,13 +34,10 @@ public class MainViewModel : BaseViewModel
         }
     }
 
-    public MainViewModel(IViewModelFactory viewModelFactory, INavigationService navigationService, IAuthenticationService authenticationService)
+    public MainViewModel(IViewModelFactory viewModelFactory, INavigationService navigationService)
     {
         Navigator = navigationService;
         _viewModelFactory = viewModelFactory;
-        _authenticationService = authenticationService;
-
-        CultureInfo.CurrentCulture = new CultureInfo("uk-UA");
         
         Navigator.CurrentViewTypeChanged += OnCurrentViewTypeChanged;
         Navigator.NavigateTo(ViewType.Patients, null);
@@ -72,13 +55,16 @@ public class MainViewModel : BaseViewModel
 
         CurrentViewModel = _viewModelFactory.CreateViewModel(newViewType, args.ViewParameter);
 
-        CurrentNavBarOption = newViewType switch
+        switch (newViewType)
         {
-            ViewType.Login => ViewType.Login,
-            ViewType.Patients or ViewType.PatientCreate 
-                or ViewType.PatientInfo or ViewType.PatientUpdate => ViewType.Patients,
-            ViewType.Visits or ViewType.VisitCreate or ViewType.VisitInfo => ViewType.Visits,
-            _ => ViewType.Home
-        };
+            case ViewType.Patients or ViewType.PatientCreate or ViewType.PatientInfo or ViewType.PatientUpdate:
+                CurrentNavBarOption = ViewType.Patients;
+                break;
+            case ViewType.Visits or ViewType.VisitCreate or ViewType.VisitInfo:
+                CurrentNavBarOption = ViewType.Visits;
+                break;
+            default:
+                throw new InvalidOperationException("Unknown view type passed");
+        }
     }
 }

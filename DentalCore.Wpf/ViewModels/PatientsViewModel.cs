@@ -40,10 +40,19 @@ public class PatientsViewModel : BaseViewModel
         List<PatientListItemViewModel> patientsList = GetPatients();
 
         PatientCollectionView = CollectionViewSource.GetDefaultView(patientsList);
-        PatientCollectionView.SortDescriptions.Add(new SortDescription(nameof(PatientListItemViewModel.FullName), ListSortDirection.Descending));
-        PatientCollectionView.Filter = o => o is PatientListItemViewModel p &&
-                                            (p.Surname.ToLower().StartsWith(PatientSearchFilter.ToLower()) ||
-                                             p.Name.ToLower().StartsWith(PatientSearchFilter.ToLower()));
+        PatientCollectionView.SortDescriptions.Add(
+            new SortDescription(nameof(PatientListItemViewModel.FullName), ListSortDirection.Descending));
+        
+        PatientCollectionView.Filter = o =>
+        {
+            if (o is PatientListItemViewModel p)
+            {
+                return p.Surname.ToLower().StartsWith(PatientSearchFilter.ToLower()) ||
+                       p.Name.ToLower().StartsWith(PatientSearchFilter.ToLower());
+            }
+
+            return false;
+        };
 
         AddPatientCommand = new RelayCommand<object>(_ =>
             navigationService.NavigateTo(ViewType.PatientCreate, null));

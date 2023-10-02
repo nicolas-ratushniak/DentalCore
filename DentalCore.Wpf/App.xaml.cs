@@ -41,9 +41,6 @@ public partial class App : Application
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();
 
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
-
-                services.AddSingleton<Func<HomeViewModel>>(s => () => new HomeViewModel());
-                services.AddSingleton<Func<LoginViewModel>>(s => () => new LoginViewModel());
                 
                 services.AddSingleton<Func<PatientsViewModel>>(s => () => new PatientsViewModel(
                     s.GetRequiredService<INavigationService>(),

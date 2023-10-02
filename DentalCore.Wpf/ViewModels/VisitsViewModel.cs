@@ -17,7 +17,7 @@ public class VisitsViewModel : BaseViewModel
     private readonly IPatientService _patientService;
     private string _visitSearchFilter = string.Empty;
 
-    public ICommand ShowVisitCommand { get;  }
+    public ICommand ShowVisitCommand { get; }
 
     public ICollectionView VisitCollectionView { get; }
 
@@ -34,32 +34,43 @@ public class VisitsViewModel : BaseViewModel
         }
     }
 
-    public VisitsViewModel(INavigationService navigationService, IVisitService visitService, IPatientService patientService)
+    public VisitsViewModel(
+        INavigationService navigationService,
+        IVisitService visitService,
+        IPatientService patientService)
     {
         _visitService = visitService;
         _patientService = patientService;
 
         VisitCollectionView = CollectionViewSource.GetDefaultView(GetVisitsForToday());
-        VisitCollectionView.SortDescriptions.Add(new SortDescription(nameof(TodayVisitListItemViewModel.Time), ListSortDirection.Descending));
-        VisitCollectionView.Filter = o => o is TodayVisitListItemViewModel v &&
-                                            (v.Surname.ToLower().StartsWith(VisitSearchFilter.ToLower()) ||
-                                             v.Name.ToLower().StartsWith(VisitSearchFilter.ToLower()));
+        VisitCollectionView.SortDescriptions.Add(
+            new SortDescription(nameof(TodayVisitListItemViewModel.Time), ListSortDirection.Descending));
 
-        ShowVisitCommand = new RelayCommand<int>(id =>
-            navigationService.NavigateTo(ViewType.VisitInfo, id));
+        VisitCollectionView.Filter = o =>
+        {
+            if (o is TodayVisitListItemViewModel tv)
+            {
+                return tv.Surname.ToLower().StartsWith(VisitSearchFilter.ToLower()) ||
+                       tv.Name.ToLower().StartsWith(VisitSearchFilter.ToLower());
+            }
+
+            return false;
+        };
+
+        ShowVisitCommand = new RelayCommand<int>(id => navigationService.NavigateTo(ViewType.VisitInfo, id));
     }
 
     private List<TodayVisitListItemViewModel> GetVisitsForToday()
     {
         var patients = _patientService.GetAll().ToList();
-        
+
         return _visitService.GetAll()
             .Where(v => v.Date.Date == DateTime.Today)
             .Select(v =>
             {
                 var patient = patients
                     .Single(p => p.Id == v.PatientId);
-                
+
                 return new TodayVisitListItemViewModel
                 {
                     Id = v.Id,
@@ -72,5 +83,4 @@ public class VisitsViewModel : BaseViewModel
             })
             .ToList();
     }
-
 }

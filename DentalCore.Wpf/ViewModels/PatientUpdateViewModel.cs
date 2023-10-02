@@ -21,6 +21,8 @@ public class PatientUpdateViewModel : BaseViewModel
     private readonly INavigationService _navigationService;
     private readonly IPatientService _patientService;
     private readonly ICommonService _commonService;
+    private readonly int _patientId;
+    
     private string _name;
     private string _surname;
     private string _patronymic;
@@ -32,14 +34,13 @@ public class PatientUpdateViewModel : BaseViewModel
     private CityListItemViewModel? _selectedCity;
     private string _birthDate;
     private string? _errorMessage;
-    private int _patientId;
 
-    public ICommand CancelCommand { get; set; }
-    public ICommand SubmitCommand { get; set; }
+    public ICommand CancelCommand { get; }
+    public ICommand SubmitCommand { get; }
 
-    public ICollectionView CityCollectionView { get; set; }
+    public ICollectionView CityCollectionView { get; }
 
-    public ObservableCollection<DiseaseListItemViewModel> Diseases { get; set; }
+    public ObservableCollection<DiseaseListItemViewModel> Diseases { get; }
 
     public string? ErrorMessage
     {
@@ -198,8 +199,6 @@ public class PatientUpdateViewModel : BaseViewModel
         _navigationService = navigationService;
         _patientService = patientService;
         _commonService = commonService;
-        
-        // CultureInfo.CurrentCulture = new CultureInfo("uk-UA");
 
         var patient = patientService.Get(id);
         var cities = GetCities().ToList();

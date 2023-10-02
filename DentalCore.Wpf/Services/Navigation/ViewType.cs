@@ -2,8 +2,8 @@
 
 public enum ViewType
 {
-    Home,
-    Login,
+    // Home,
+    // Login,
     
     Patients,
     PatientInfo,

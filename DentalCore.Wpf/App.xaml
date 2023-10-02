@@ -2,13 +2,13 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 
-             xmlns:local="clr-namespace:DentalCore.Wpf"
              xmlns:views="clr-namespace:DentalCore.Wpf.Views"
              xmlns:viewModels="clr-namespace:DentalCore.Wpf.ViewModels"
              xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:converters="clr-namespace:DentalCore.Wpf.Converters">
+
     <Application.Resources>
-        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
 
         <Color x:Key="ColorAccent">#5CBAB8</Color>
         <Color x:Key="ColorMinor">#C1F376</Color>
@@ -48,7 +48,7 @@
             <Setter Property="FontWeight" Value="500" />
             <Setter Property="FontSize" Value="18" />
         </Style>
-        
+
         <!-- Border -->
         <Style x:Key="NiceBorder" TargetType="Border">
             <Setter Property="BorderThickness" Value="1" />
@@ -194,14 +194,6 @@
         </Style>
 
         <!-- Binding views to related view models -->
-        <DataTemplate DataType="{x:Type viewModels:HomeViewModel}">
-            <views:HomeView />
-        </DataTemplate>
-
-        <DataTemplate DataType="{x:Type viewModels:LoginViewModel}">
-            <views:LoginView />
-        </DataTemplate>
-
         <DataTemplate DataType="{x:Type viewModels:PatientsViewModel}">
             <views:PatientsView />
         </DataTemplate>

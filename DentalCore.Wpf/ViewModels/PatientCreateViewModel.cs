@@ -21,6 +21,7 @@ public class PatientCreateViewModel : BaseViewModel
     private readonly INavigationService _navigationService;
     private readonly IPatientService _patientService;
     private readonly ICommonService _commonService;
+    
     private string _name;
     private string _surname;
     private string _patronymic;
@@ -187,7 +188,9 @@ public class PatientCreateViewModel : BaseViewModel
 
     #endregion
 
-    public PatientCreateViewModel(INavigationService navigationService, IPatientService patientService,
+    public PatientCreateViewModel(
+        INavigationService navigationService, 
+        IPatientService patientService,
         ICommonService commonService)
     {
         _navigationService = navigationService;

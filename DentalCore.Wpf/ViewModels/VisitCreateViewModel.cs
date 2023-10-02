@@ -24,16 +24,17 @@ public class VisitCreateViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly IProcedureService _procedureService;
     private readonly int _patientId;
+    
     private DoctorListItemViewModel? _selectedDoctor;
+    private TreatmentItemListItemViewModel? _selectedTreatmentItem;
+    private string _doctorSearchFilter = string.Empty;
+    private string _treatmentItemSelectionFilter = string.Empty;
     private string? _diagnosis;
     private int _discountPercent;
     private int _firstPayment;
     private int _priceWithoutDiscount;
     private int _totalSum;
-    private string _doctorSearchFilter = string.Empty;
-    private string _treatmentItemSelectionFilter = string.Empty;
     private string? _errorMessage;
-    private TreatmentItemListItemViewModel? _selectedTreatmentItem;
     private bool _isDoctorListVisible;
     private bool _isTreatmentItemListVisible;
 
@@ -222,17 +223,29 @@ public class VisitCreateViewModel : BaseViewModel
         }
 
         DoctorCollectionView = CollectionViewSource.GetDefaultView(GetDoctors());
-        DoctorCollectionView.Filter = o => o is DoctorListItemViewModel d &&
-                                           (d.Surname.ToLower().StartsWith(DoctorSearchFilter.ToLower()) ||
-                                            d.Name.ToLower().StartsWith(DoctorSearchFilter.ToLower()));
+        DoctorCollectionView.Filter = o =>
+        {
+            if (o is DoctorListItemViewModel d)
+            {
+                return d.Surname.ToLower().StartsWith(DoctorSearchFilter.ToLower()) ||
+                       d.Name.ToLower().StartsWith(DoctorSearchFilter.ToLower());
+            }
+
+            return false;
+        };
 
         _treatmentItems = new ObservableCollection<TreatmentItemListItemViewModel>(GetTreatmentItems());
 
         NonSelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
-        NonSelectedTreatmentItemCollectionView.Filter = o => o is TreatmentItemListItemViewModel t &&
-                                                             !t.IsSelected &&
-                                                             t.Name.ToLower()
-                                                                 .Contains(TreatmentItemSelectionFilter.ToLower());
+        NonSelectedTreatmentItemCollectionView.Filter = o =>
+        {
+            if (o is TreatmentItemListItemViewModel t)
+            {
+                return !t.IsSelected && t.Name.ToLower().Contains(TreatmentItemSelectionFilter.ToLower());
+            }
+
+            return false;
+        };
 
         SelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
         SelectedTreatmentItemCollectionView.Filter = o => o is TreatmentItemListItemViewModel t && t.IsSelected;

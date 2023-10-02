@@ -13,10 +13,9 @@ namespace DentalCore.Wpf.ViewModels;
 
 public class PatientInfoViewModel : BaseViewModel
 {
-    private readonly IPatientService _patientService;
     private readonly IVisitService _visitService;
+    private readonly int _patientId;
     private int _debt;
-    private int _patientId;
 
     public ICommand AddVisitCommand { get; }
     public ICommand ShowVisitCommand { get; }
@@ -44,13 +43,12 @@ public class PatientInfoViewModel : BaseViewModel
     public bool HasDebt => Debt > 0;
 
     public PatientInfoViewModel(
-        int id, 
+        int id,
         INavigationService navigationService,
         IPatientService patientService,
-        IVisitService visitService  
-        )
+        IVisitService visitService
+    )
     {
-        _patientService = patientService;
         _visitService = visitService;
         _patientId = id;
 
@@ -62,16 +60,19 @@ public class PatientInfoViewModel : BaseViewModel
         AllergyNames = patientService.GetAllergies(id).Select(a => a.Name);
         DiseasesNames = patientService.GetDiseases(id).Select(d => d.Name);
         Debt = patientService.GetDebt(id);
-        // Debt = 100;
-        
+
         var age = CalculateAge(patient.BirthDate);
         AgeString = age == 1 ? "1 рік" : $"{age} років";
 
         VisitCollectionView = CollectionViewSource.GetDefaultView(GetVisits());
-        VisitCollectionView.SortDescriptions.Add(new SortDescription(nameof(VisitOfPatientListItemViewModel.Date), ListSortDirection.Descending));
+        VisitCollectionView.SortDescriptions.Add(
+            new SortDescription(nameof(VisitOfPatientListItemViewModel.Date), ListSortDirection.Descending));
 
-        AddVisitCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(ViewType.VisitCreate, id));
-        ShowVisitCommand = new RelayCommand<int>(visitId => navigationService.NavigateTo(ViewType.VisitInfo, visitId));
+        AddVisitCommand = new RelayCommand<object>(_ =>
+            navigationService.NavigateTo(ViewType.VisitCreate, id));
+
+        ShowVisitCommand = new RelayCommand<int>(visitId =>
+            navigationService.NavigateTo(ViewType.VisitInfo, visitId));
     }
 
     private IEnumerable<VisitOfPatientListItemViewModel> GetVisits()
