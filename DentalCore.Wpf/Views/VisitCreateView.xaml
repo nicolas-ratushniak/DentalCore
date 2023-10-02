@@ -25,18 +25,6 @@
             </Setter>
         </Style>
 
-        <Style x:Key="NicePatientList" TargetType="ListBox">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate DataType="{x:Type inners:PatientListItemViewModel}">
-                        <TextBlock Text="{Binding Path=FullName}"
-                                   FontSize="18" />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
         <Style x:Key="NiceTreatmentItemList" TargetType="ListBox">
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="ItemTemplate">
@@ -131,8 +119,8 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                    FontSize="28"
                    FontWeight="Bold"
-                   Text="Новий візит" 
-                   Margin="0 0 0 24"/>
+                   Text="Новий візит"
+                   Margin="0 0 0 24" />
 
 
         <Grid Grid.Row="1" Grid.Column="0"
@@ -188,7 +176,7 @@
                     </Border>
                 </Popup>
             </Grid>
-            
+
             <!-- Select Treatment Item -->
             <Grid Grid.Row="1"
                   Margin="0 0 0 10">
@@ -345,6 +333,7 @@
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -354,12 +343,12 @@
                                Text="Всього: "
                                Margin="0 0 12 0" />
 
-                    <TextBlock Grid.Column="1"
+                    <TextBlock Grid.Column="2"
                                FontWeight="Bold"
                                FontSize="18"
                                Text="{Binding TotalSum, StringFormat= {}{0} грн }" />
                 </Grid>
-                
+
                 <Grid Grid.Row="2"
                       Margin="0 0 0 5">
 
@@ -382,31 +371,30 @@
                 </Grid>
             </Grid>
         </Grid>
-        
+
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
               Margin="0 24 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
+
             <TextBlock Grid.Column="0"
                        Text="{Binding ErrorMessage}"
-                       Style="{StaticResource ErrorMessage}"/>
-            
+                       Style="{StaticResource ErrorMessage}" />
+
             <Button Grid.Column="1"
                     Style="{StaticResource CancelButton}"
                     Command="{Binding CancelCommand}"
                     Content="Скасувати"
-                    Margin="0 0 24 0"/>
-            
+                    Margin="0 0 24 0" />
+
             <Button Grid.Column="2"
                     Style="{StaticResource NiceButton}"
                     Command="{Binding SubmitCommand}"
-                    Content="Зберегти"/>
-            
-        </Grid>
+                    Content="Зберегти" />
 
+        </Grid>
     </Grid>
 </UserControl>
