@@ -91,7 +91,6 @@
                                                     <ImageBrush ImageSource="../Assets/quit.png" Stretch="Fill" />
                                                 </Button.Background>
                                             </Button>
-
                                         </Grid>
                                     </Border>
                                 </ControlTemplate>
@@ -104,297 +103,248 @@
 
     </UserControl.Resources>
 
-    <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MaxHeight="400" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" MaxWidth="450" />
-            <ColumnDefinition Width="*" MaxWidth="450" />
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="90*" />
+            <ColumnDefinition Width="5*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                   FontSize="28"
-                   FontWeight="Bold"
-                   Text="Новий візит"
-                   Margin="0 0 0 24" />
-
-
-        <Grid Grid.Row="1" Grid.Column="0"
-              Margin="0 0 12 0">
+        <Grid Grid.Column="1"
+              Margin="0 24">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <!-- Select Doctor -->
-            <Grid Grid.Row="0"
-                  Margin="0 0 0 10">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <controls:PlaceholderTextBox Grid.Row="0"
-                                             Text="{Binding DoctorSearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             Placeholder="Оберіть лікаря" />
-
-                <Popup Grid.Row="1"
-                       IsOpen="{Binding IsDoctorListVisible}"
-                       ClipToBounds="True"
-                       AllowsTransparency="True"
-                       PopupAnimation="Slide"
-                       StaysOpen="False">
-
-                    <Border Style="{StaticResource NiceBorder}"
-                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
-                            MaxHeight="250"
-                            Background="White">
-                        <Grid>
-                            <TextBlock Text="Нікого не знайдено"
-                                       Panel.ZIndex="1"
-                                       TextWrapping="Wrap"
-                                       Foreground="{StaticResource BrushGrey}"
-                                       FontSize="16"
-                                       Visibility="{Binding ElementName=DoctorPopup, Path=HasItems,
-                                               Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-
-                            <ListBox x:Name="DoctorPopup"
-                                     ScrollViewer.CanContentScroll="True"
-                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     Style="{StaticResource NiceDoctorList}"
-                                     ItemsSource="{Binding DoctorCollectionView}"
-                                     SelectedItem="{Binding SelectedDoctor, Mode=TwoWay}" />
-                        </Grid>
-                    </Border>
-                </Popup>
-            </Grid>
-
-            <!-- Select Treatment Item -->
-            <Grid Grid.Row="1"
-                  Margin="0 0 0 10">
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <controls:PlaceholderTextBox Grid.Row="0"
-                                             Text="{Binding TreatmentItemSelectionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             Placeholder="Оберіть процедуру" />
-
-                <Popup Grid.Row="1"
-                       IsOpen="{Binding IsTreatmentItemListVisible}"
-                       ClipToBounds="True"
-                       AllowsTransparency="True"
-                       PopupAnimation="Slide"
-                       StaysOpen="False">
-
-                    <Border Style="{StaticResource NiceBorder}"
-                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
-                            MaxHeight="250"
-                            Background="White">
-                        <Grid>
-                            <TextBlock Text="Нічого не знайдено"
-                                       Panel.ZIndex="1"
-                                       TextWrapping="Wrap"
-                                       Foreground="{StaticResource BrushGrey}"
-                                       FontSize="16"
-                                       Visibility="{Binding ElementName=TreatmentItemPopup, Path=HasItems,
-                                               Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-
-                            <ListBox x:Name="TreatmentItemPopup"
-                                     ScrollViewer.CanContentScroll="True"
-                                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                     Style="{StaticResource NiceTreatmentItemList}"
-                                     ItemsSource="{Binding NonSelectedTreatmentItemCollectionView}"
-                                     SelectedItem="{Binding SelectedTreatmentItem, Mode=TwoWay}" />
-                        </Grid>
-                    </Border>
-                </Popup>
-            </Grid>
-
-            <!-- Selected Treatment Items -->
-            <Border Grid.Row="2"
-                    BorderThickness="1"
-                    BorderBrush="Black"
-                    CornerRadius="5"
-                    Padding="5">
-
-                <ListBox Style="{StaticResource AdvancedTreatmentItemList}"
-                         ItemsSource="{Binding SelectedTreatmentItemCollectionView}"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         ScrollViewer.VerticalScrollBarVisibility="Hidden" />
-            </Border>
-        </Grid>
-
-        <Grid Grid.Row="1" Grid.Column="1"
-              Margin="12 0 12 0">
-
-            <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0"
-                  Margin="0 0 0 24">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0"
-                           FontSize="16"
-                           Text="Діагноз"
-                           Margin="0 0 0 15" />
-
-                <Border Grid.Row="1"
-                        Style="{StaticResource NiceBorder}"
-                        Padding="3">
-
-                    <TextBox Grid.Row="1"
-                             Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}"
-                             BorderThickness="0"
-                             FontSize="18"
-                             TextWrapping="Wrap" />
-                </Border>
-            </Grid>
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Text="Новий візит"
+                       Margin="0 0 0 24" />
 
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0"
-                        BorderBrush="#000"
-                        BorderThickness="0 0 0 1">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-                        <Grid Grid.Row="0"
-                              Margin="0 0 0 5">
+                <!-- Select Doctor -->
+                <Grid Grid.Row="0" Grid.Column="0"
+                      Margin="0 0 0 10">
 
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                            <TextBlock Grid.Column="0"
-                                       FontSize="18"
-                                       Text="Сума: "
-                                       Margin="0 0 12 0" />
+                    <controls:PlaceholderTextBox Grid.Row="0"
+                                                 Text="{Binding DoctorSearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Placeholder="Оберіть лікаря" />
 
-                            <TextBlock Grid.Column="2"
-                                       FontSize="18"
-                                       TextAlignment="Right"
-                                       Text="{Binding PriceWithoutDiscount, StringFormat= {}{0} грн }" />
-                        </Grid>
+                    <Popup Grid.Row="1"
+                           IsOpen="{Binding IsDoctorListVisible}"
+                           ClipToBounds="True"
+                           AllowsTransparency="True"
+                           PopupAnimation="Slide"
+                           StaysOpen="False">
 
-                        <!-- <Grid Grid.Row="1" -->
-                        <!--       Margin="0 0 0 5"> -->
-                        <!--     <Grid.ColumnDefinitions> -->
-                        <!--         <ColumnDefinition Width="Auto" /> -->
-                        <!--         <ColumnDefinition Width="*" /> -->
-                        <!--         <ColumnDefinition Width="40" /> -->
-                        <!--     </Grid.ColumnDefinitions> -->
-                        <!-- -->
-                        <!--     <TextBlock Grid.Column="0" -->
-                        <!--                FontSize="18" -->
-                        <!--                Text="Знижка (%): " -->
-                        <!--                VerticalAlignment="Center" -->
-                        <!--                Margin="0 0 12 0" /> -->
-                        <!-- -->
-                        <!--     <controls:IntegerTextBox Grid.Column="2" -->
-                        <!--                              Height="35" -->
-                        <!--                              AcceptZero="True" -->
-                        <!--                              MaxDigits="2" -->
-                        <!--                              Value="{Binding DiscountPercent, Mode=TwoWay, -->
-                        <!--                                  UpdateSourceTrigger=PropertyChanged}" /> -->
-                        <!-- </Grid> -->
-                    </Grid>
+                        <Border Style="{StaticResource NiceBorder}"
+                                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                MaxHeight="250"
+                                Background="White">
+                            <Grid>
+                                <TextBlock Text="Нікого не знайдено"
+                                           Panel.ZIndex="1"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource BrushGrey}"
+                                           FontSize="16"
+                                           Visibility="{Binding ElementName=DoctorPopup, Path=HasItems,
+                                               Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+
+                                <ListBox x:Name="DoctorPopup"
+                                         ScrollViewer.CanContentScroll="True"
+                                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         Style="{StaticResource NiceDoctorList}"
+                                         ItemsSource="{Binding DoctorCollectionView}"
+                                         SelectedItem="{Binding SelectedDoctor, Mode=TwoWay}" />
+                            </Grid>
+                        </Border>
+                    </Popup>
+                </Grid>
+
+                <!-- Diagnosis -->
+                <Grid Grid.Row="1" Column="0">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="3*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               FontSize="16"
+                               Text="Діагноз"
+                               Margin="0 0 0 15" />
+
+                    <Border Grid.Row="1"
+                            Style="{StaticResource NiceBorder}"
+                            Padding="3">
+
+                        <TextBox Grid.Row="1"
+                                 Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}"
+                                 BorderThickness="0"
+                                 FontSize="18"
+                                 TextWrapping="Wrap" />
+                    </Border>
+                </Grid>
+
+                <!-- Select Treatment Item -->
+                <Grid Grid.Row="0" Grid.Column="2"
+                      Margin="0 0 0 10">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <controls:PlaceholderTextBox Grid.Row="0"
+                                                 Text="{Binding TreatmentItemSelectionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                 Placeholder="Оберіть процедуру" />
+
+                    <Popup Grid.Row="1"
+                           IsOpen="{Binding IsTreatmentItemListVisible}"
+                           ClipToBounds="True"
+                           AllowsTransparency="True"
+                           PopupAnimation="Slide"
+                           StaysOpen="False">
+
+                        <Border Style="{StaticResource NiceBorder}"
+                                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                MaxHeight="250"
+                                Background="White">
+                            <Grid>
+                                <TextBlock Text="Нічого не знайдено"
+                                           Panel.ZIndex="1"
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource BrushGrey}"
+                                           FontSize="16"
+                                           Visibility="{Binding ElementName=TreatmentItemPopup, Path=HasItems,
+                                           Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+
+                                <ListBox x:Name="TreatmentItemPopup"
+                                         ScrollViewer.CanContentScroll="True"
+                                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         Style="{StaticResource NiceTreatmentItemList}"
+                                         ItemsSource="{Binding NonSelectedTreatmentItemCollectionView}"
+                                         SelectedItem="{Binding SelectedTreatmentItem, Mode=TwoWay}" />
+                            </Grid>
+                        </Border>
+                    </Popup>
+                </Grid>
+
+                <!-- Selected Treatment Items -->
+                <Border Grid.Row="1" Grid.Column="2"
+                        BorderThickness="1"
+                        BorderBrush="Black"
+                        CornerRadius="5"
+                        Padding="5">
+
+                    <ListBox Style="{StaticResource AdvancedTreatmentItemList}"
+                             ItemsSource="{Binding SelectedTreatmentItemCollectionView}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden" />
                 </Border>
 
-                <Grid Grid.Row="1"
-                      Margin="0 10 0 24">
+                <!-- Total Sum and First Payment -->
+                <Grid Grid.Row="2" Grid.Column="2"
+                      Margin="0 24 0 0">
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0"
-                               FontWeight="Bold"
-                               FontSize="18"
-                               Text="Всього: "
-                               Margin="0 0 12 0" />
+                    <Grid Grid.Row="0"
+                          Margin="0 0 0 12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="2"
-                               FontWeight="Bold"
-                               FontSize="18"
-                               Text="{Binding TotalSum, StringFormat= {}{0} грн }" />
-                </Grid>
+                        <TextBlock Grid.Column="0"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Text="Всього: "
+                                   Margin="0 0 12 0" />
 
-                <Grid Grid.Row="2"
-                      Margin="0 0 0 5">
+                        <TextBlock Grid.Column="2"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Text="{Binding TotalSum, StringFormat= {}{0} грн }" />
+                    </Grid>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Row="1"
+                          Margin="0 0 0 5">
 
-                    <TextBlock Grid.Column="0"
-                               FontSize="18"
-                               Text="Внесено коштів: "
-                               Margin="0 0 12 0" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <controls:IntegerTextBox Grid.Column="2"
-                                             Width="80"
-                                             AcceptZero="True"
-                                             Value="{Binding FirstPayment, 
-                                             Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock Grid.Column="0"
+                                   FontSize="18"
+                                   Text="Внесено коштів: "
+                                   Margin="0 0 12 0" />
+
+                        <controls:IntegerTextBox Grid.Column="2"
+                                                 Width="80"
+                                                 AcceptZero="True"
+                                                 Value="{Binding FirstPayment,
+                                                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid>
                 </Grid>
             </Grid>
-        </Grid>
 
-        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-              Margin="0 24 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="2"
+                  Margin="0 24 0 0">
 
-            <TextBlock Grid.Column="0"
-                       Text="{Binding ErrorMessage}"
-                       Style="{StaticResource ErrorMessage}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1"
-                    Style="{StaticResource CancelButton}"
-                    Command="{Binding CancelCommand}"
-                    Content="Скасувати"
-                    Margin="0 0 24 0" />
+                <TextBlock Grid.Column="0"
+                           Text="{Binding ErrorMessage}"
+                           Style="{StaticResource ErrorMessage}" />
 
-            <Button Grid.Column="2"
-                    Style="{StaticResource NiceButton}"
-                    Command="{Binding SubmitCommand}"
-                    Content="Зберегти" />
+                <Button Grid.Column="1"
+                        Style="{StaticResource CancelButton}"
+                        Command="{Binding CancelCommand}"
+                        Content="Скасувати"
+                        Margin="0 0 24 0" />
 
+                <Button Grid.Column="2"
+                        Style="{StaticResource NiceButton}"
+                        Command="{Binding SubmitCommand}"
+                        Content="Зберегти" />
+
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>
