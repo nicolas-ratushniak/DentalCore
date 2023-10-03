@@ -30,9 +30,7 @@ public class VisitCreateViewModel : BaseViewModel
     private string _doctorSearchFilter = string.Empty;
     private string _treatmentItemSelectionFilter = string.Empty;
     private string? _diagnosis;
-    private int _discountPercent;
     private int _firstPayment;
-    private int _priceWithoutDiscount;
     private int _totalSum;
     private string? _errorMessage;
     private bool _isDoctorListVisible;
@@ -138,8 +136,6 @@ public class VisitCreateViewModel : BaseViewModel
 
     #endregion
 
-    #region UiProperties
-
     public string? Diagnosis
     {
         get => _diagnosis;
@@ -153,19 +149,6 @@ public class VisitCreateViewModel : BaseViewModel
         }
     }
 
-    public int DiscountPercent
-    {
-        get => _discountPercent;
-        set
-        {
-            if (value == _discountPercent) return;
-            _discountPercent = value;
-
-            OnPropertyChanged();
-            UpdatePrice();
-        }
-    }
-
     public int FirstPayment
     {
         get => _firstPayment;
@@ -176,20 +159,6 @@ public class VisitCreateViewModel : BaseViewModel
 
             OnPropertyChanged();
             CommandManager.InvalidateRequerySuggested();
-        }
-    }
-
-    #endregion
-
-    public int PriceWithoutDiscount
-    {
-        get => _priceWithoutDiscount;
-        private set
-        {
-            if (value == _priceWithoutDiscount) return;
-            _priceWithoutDiscount = value;
-    
-            OnPropertyChanged();
         }
     }
 
@@ -285,7 +254,7 @@ public class VisitCreateViewModel : BaseViewModel
         {
             PatientId = _patientId,
             DoctorId = SelectedDoctor!.Id,
-            DiscountPercent = DiscountPercent,
+            DiscountPercent = 0,
             FirstPayment = FirstPayment,
             Diagnosis = Diagnosis,
             Date = DateTime.Now,
@@ -385,8 +354,7 @@ public class VisitCreateViewModel : BaseViewModel
             })
             .ToList();
 
-        PriceWithoutDiscount = _visitService.CalculateTotalPrice(items, 0);
-        TotalSum = _visitService.CalculateTotalPrice(items, DiscountPercent);
+        TotalSum = _visitService.CalculateTotalPrice(items, 0);
         FirstPayment = TotalSum;
     }
 
