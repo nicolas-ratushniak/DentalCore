@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              
-             xmlns:local="clr-namespace:DentalCore.Wpf.Views"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000">
 
@@ -35,8 +34,7 @@
                                                    FontSize="18"
                                                    VerticalAlignment="Center"
                                                    TextAlignment="Right"
-                                                   Text="{Binding Quantity}"
-                                                   Margin="0 0 12 0" />
+                                                   Text="{Binding Quantity}" />
 
                                         <TextBlock Grid.Column="2"
                                                    FontSize="18"
@@ -131,8 +129,7 @@
                                Text="Діагноз" />
 
                     <Border Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
-                            Style="{StaticResource NiceBorder}"
-                            BorderBrush="#000">
+                            Style="{StaticResource NiceBorder}">
 
                         <TextBlock Grid.Row="1"
                                    Text="{Binding Diagnosis}"
@@ -150,6 +147,7 @@
 
                     <TextBlock Grid.Row="0"
                                FontSize="16"
+                               Foreground="{StaticResource BrushGrey}"
                                Text="Процедури: "
                                Margin="0 0 0 12" />
 
@@ -178,10 +176,12 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Row="0" Grid.Column="0"
+                                   FontWeight="Bold"
                                    FontSize="18"
                                    Text="Всього: " />
 
                         <TextBlock Grid.Row="0" Grid.Column="2"
+                                   FontWeight="Bold"
                                    FontSize="18"
                                    Text="{Binding TotalSum, StringFormat={}{0} грн}" />
 
