@@ -37,6 +37,7 @@ public class VisitCreateViewModel : BaseViewModel
     private string? _errorMessage;
     private bool _isDoctorListVisible;
     private bool _isTreatmentItemListVisible;
+    private bool _canSelectTreatmentItem = true;
 
     public ICommand RemoveTreatmentItemCommand { get; }
     public ICommand UpdatePriceCommand { get; }
@@ -105,7 +106,7 @@ public class VisitCreateViewModel : BaseViewModel
         get => _selectedTreatmentItem;
         set
         {
-            if (Equals(value, _selectedTreatmentItem)) return;
+            if (Equals(value, _selectedTreatmentItem) || !_canSelectTreatmentItem) return;
             _selectedTreatmentItem = value;
 
             OnPropertyChanged();
@@ -187,7 +188,7 @@ public class VisitCreateViewModel : BaseViewModel
         {
             if (value == _priceWithoutDiscount) return;
             _priceWithoutDiscount = value;
-
+    
             OnPropertyChanged();
         }
     }
@@ -327,14 +328,15 @@ public class VisitCreateViewModel : BaseViewModel
 
     private void OnTreatmentItemFilterChanged()
     {
-        if (_selectedTreatmentItem is null)
+        if (string.IsNullOrEmpty(TreatmentItemSelectionFilter))
         {
-            IsTreatmentItemListVisible = !string.IsNullOrEmpty(TreatmentItemSelectionFilter);
-            NonSelectedTreatmentItemCollectionView.Refresh();
+            IsTreatmentItemListVisible = false;
         }
         else
         {
-            IsTreatmentItemListVisible = false;
+            NonSelectedTreatmentItemCollectionView.Refresh();
+            IsTreatmentItemListVisible = true;
+            _canSelectTreatmentItem = true;
         }
     }
 
@@ -351,25 +353,25 @@ public class VisitCreateViewModel : BaseViewModel
 
     private void OnSelectedTreatmentItemChanged()
     {
+        TreatmentItemSelectionFilter = string.Empty;
+        _canSelectTreatmentItem = false;
+        
         if (_selectedTreatmentItem is null)
         {
             return;
         }
-
-        TreatmentItemSelectionFilter = string.Empty;
-
+        
         var item = _treatmentItems
             .Single(t => t.Id == _selectedTreatmentItem.Id);
 
         item.Quantity = 1;
         item.IsSelected = true;
 
-        _selectedTreatmentItem = null;
-
         SelectedTreatmentItemCollectionView.Refresh();
         NonSelectedTreatmentItemCollectionView.Refresh();
-
         UpdatePrice();
+        
+        _selectedTreatmentItem = null;
     }
 
     private void UpdatePrice()
