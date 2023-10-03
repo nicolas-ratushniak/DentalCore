@@ -41,8 +41,8 @@ public class PatientsViewModel : BaseViewModel
 
         PatientCollectionView = CollectionViewSource.GetDefaultView(patientsList);
         PatientCollectionView.SortDescriptions.Add(
-            new SortDescription(nameof(PatientListItemViewModel.FullName), ListSortDirection.Descending));
-        
+            new SortDescription(nameof(PatientListItemViewModel.FullName), ListSortDirection.Ascending));
+
         PatientCollectionView.Filter = o =>
         {
             if (o is PatientListItemViewModel p)
