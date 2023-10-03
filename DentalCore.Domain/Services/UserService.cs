@@ -1,21 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using System.Text;
 using DentalCore.Data;
 using DentalCore.Domain.Dto;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Exceptions;
-using Microsoft.AspNetCore.Identity;
 
 namespace DentalCore.Domain.Services;
 
 public class UserService : IUserService
 {
     private readonly AppDbContext _context;
-    private readonly IPasswordHasher<User> _hasher;
+    private readonly HashAlgorithm _hashAlgorithm;
 
-    public UserService(AppDbContext context, IPasswordHasher<User> hasher)
+    public UserService(AppDbContext context)
     {
         _context = context;
-        _hasher = hasher;
+        _hashAlgorithm = MD5.Create();
     }
 
     public User Get(int id)
@@ -35,9 +36,7 @@ public class UserService : IUserService
     public bool CheckPassword(int id, string password)
     {
         var user = Get(id);
-
-        var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, password);
-        return result == PasswordVerificationResult.Success;
+        return GetPasswordHash(password) == user.PasswordHash;
     }
 
     public User GetIncludeSoftDeleted(int id)
@@ -80,7 +79,7 @@ public class UserService : IUserService
             Phone = dto.Phone
         };
 
-        user.PasswordHash = _hasher.HashPassword(user, dto.Password);
+        user.PasswordHash = GetPasswordHash(dto.Password);
 
         _context.Users.Add(user);
         _context.SaveChanges();
@@ -105,7 +104,7 @@ public class UserService : IUserService
         var user = Get(dto.Id);
 
         user.Login = dto.Login;
-        user.PasswordHash = _hasher.HashPassword(user, dto.Password);
+        user.PasswordHash = GetPasswordHash(dto.Password);
         user.Name = dto.Name;
         user.Surname = dto.Surname;
         user.Phone = dto.Phone;
@@ -122,5 +121,18 @@ public class UserService : IUserService
 
         _context.Users.Update(user);
         _context.SaveChanges();
+    }
+    
+    private string GetPasswordHash(string password)
+    {
+        var data = _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));
+        var sb = new StringBuilder();
+
+        foreach (var dataByte in data)
+        {
+            sb.Append(dataByte.ToString("x2"));
+        }
+
+        return sb.ToString();
     }
 }

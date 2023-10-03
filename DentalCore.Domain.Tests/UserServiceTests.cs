@@ -21,7 +21,7 @@ public class UserServiceTests
 
         var testDto = GetDefaultCreateDto();
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         service.Add(testDto);
@@ -48,7 +48,7 @@ public class UserServiceTests
         var testDto = GetDefaultCreateDto();
         testDto.Login = invalidLogin;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Add(testDto);
@@ -70,7 +70,7 @@ public class UserServiceTests
         var testDto = GetDefaultCreateDto();
         testDto.Password = invalidPassword;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Add(testDto);
@@ -92,7 +92,7 @@ public class UserServiceTests
         var testDto = GetDefaultCreateDto();
         testDto.Name = invalidName;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Add(testDto);
@@ -114,7 +114,7 @@ public class UserServiceTests
         var testDto = GetDefaultCreateDto();
         testDto.Surname = invalidSurname;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Add(testDto);
@@ -138,7 +138,7 @@ public class UserServiceTests
         var testDto = GetDefaultCreateDto();
         testDto.Phone = invalidPhone;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Add(testDto);
@@ -175,7 +175,7 @@ public class UserServiceTests
         var testDto = GetDefaultCreateDto();
         testDto.Login = duplicateLogin;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Add(testDto);
@@ -214,7 +214,7 @@ public class UserServiceTests
         testDto.Name = duplicateName;
         testDto.Surname = duplicateSurname;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Add(testDto);
@@ -248,7 +248,7 @@ public class UserServiceTests
 
         var testDto = GetDefaultUpdateDto(1);
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         service.Update(testDto);
@@ -270,7 +270,7 @@ public class UserServiceTests
 
         var testDto = GetDefaultUpdateDto(1);
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -309,7 +309,7 @@ public class UserServiceTests
         var testDto = GetDefaultUpdateDto(1);
         testDto.Login = invalidLogin;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -346,7 +346,7 @@ public class UserServiceTests
         var testDto = GetDefaultUpdateDto(1);
         testDto.Password = invalidPassword;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -383,7 +383,7 @@ public class UserServiceTests
         var testDto = GetDefaultUpdateDto(1);
         testDto.Name = invalidName;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -420,7 +420,7 @@ public class UserServiceTests
         var testDto = GetDefaultUpdateDto(1);
         testDto.Surname = invalidSurname;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -459,7 +459,7 @@ public class UserServiceTests
         var testDto = GetDefaultUpdateDto(1);
         testDto.Phone = invalidPhone;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -506,7 +506,7 @@ public class UserServiceTests
         var testDto = GetDefaultUpdateDto(1);
         testDto.Login = duplicateLogin;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -555,7 +555,7 @@ public class UserServiceTests
         testDto.Name = duplicateName;
         testDto.Surname = duplicateSurname;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.Update(testDto);
@@ -587,7 +587,7 @@ public class UserServiceTests
             context.SaveChanges();
         }
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         service.SoftDelete(1);
@@ -607,7 +607,7 @@ public class UserServiceTests
             .UseInMemoryDatabase(Guid.NewGuid().ToString())
             .Options;
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.SoftDelete(1);
@@ -640,7 +640,7 @@ public class UserServiceTests
             context.SaveChanges();
         }
 
-        var service = new UserService(new AppDbContext(options), new PasswordHasher<User>());
+        var service = new UserService(new AppDbContext(options));
 
         // act
         Action throwsEx = () => service.SoftDelete(1);
