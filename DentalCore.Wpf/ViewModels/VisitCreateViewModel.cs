@@ -24,7 +24,7 @@ public class VisitCreateViewModel : BaseViewModel
     private readonly IUserService _userService;
     private readonly IProcedureService _procedureService;
     private readonly int _patientId;
-    
+
     private DoctorListItemViewModel? _selectedDoctor;
     private TreatmentItemListItemViewModel? _selectedTreatmentItem;
     private string _doctorSearchFilter = string.Empty;
@@ -237,18 +237,15 @@ public class VisitCreateViewModel : BaseViewModel
         _treatmentItems = new ObservableCollection<TreatmentItemListItemViewModel>(GetTreatmentItems());
 
         NonSelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
-        NonSelectedTreatmentItemCollectionView.Filter = o =>
-        {
-            if (o is TreatmentItemListItemViewModel t)
-            {
-                return !t.IsSelected && t.Name.ToLower().Contains(TreatmentItemSelectionFilter.ToLower());
-            }
 
-            return false;
-        };
+        NonSelectedTreatmentItemCollectionView.Filter = o =>
+            o is TreatmentItemListItemViewModel t && !t.IsSelected &&
+            t.Name.ToLower().Contains(TreatmentItemSelectionFilter.ToLower());
 
         SelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
-        SelectedTreatmentItemCollectionView.Filter = o => o is TreatmentItemListItemViewModel t && t.IsSelected;
+
+        SelectedTreatmentItemCollectionView.Filter = o =>
+            o is TreatmentItemListItemViewModel t && t.IsSelected;
 
         CancelCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(ViewType.PatientInfo, id));
         SubmitCommand = new RelayCommand<object>(AddVisit_Execute, AddVisit_CanExecute);
@@ -256,10 +253,12 @@ public class VisitCreateViewModel : BaseViewModel
         RemoveTreatmentItemCommand = new RelayCommand<int>(itemId =>
         {
             var item = _treatmentItems.Single(t => t.Id == itemId);
+            item.Quantity = 0;
             item.IsSelected = false;
 
             SelectedTreatmentItemCollectionView.Refresh();
             NonSelectedTreatmentItemCollectionView.Refresh();
+
             UpdatePrice();
         });
 
@@ -331,9 +330,12 @@ public class VisitCreateViewModel : BaseViewModel
         if (_selectedTreatmentItem is null)
         {
             IsTreatmentItemListVisible = !string.IsNullOrEmpty(TreatmentItemSelectionFilter);
+            NonSelectedTreatmentItemCollectionView.Refresh();
         }
-
-        NonSelectedTreatmentItemCollectionView.Refresh();
+        else
+        {
+            IsTreatmentItemListVisible = false;
+        }
     }
 
     private void OnSelectedDoctorChanged()
@@ -349,12 +351,12 @@ public class VisitCreateViewModel : BaseViewModel
 
     private void OnSelectedTreatmentItemChanged()
     {
-        IsTreatmentItemListVisible = false;
-
         if (_selectedTreatmentItem is null)
         {
             return;
         }
+
+        TreatmentItemSelectionFilter = string.Empty;
 
         var item = _treatmentItems
             .Single(t => t.Id == _selectedTreatmentItem.Id);
@@ -362,8 +364,11 @@ public class VisitCreateViewModel : BaseViewModel
         item.Quantity = 1;
         item.IsSelected = true;
 
-        TreatmentItemSelectionFilter = string.Empty;
+        _selectedTreatmentItem = null;
+
         SelectedTreatmentItemCollectionView.Refresh();
+        NonSelectedTreatmentItemCollectionView.Refresh();
+
         UpdatePrice();
     }
 
