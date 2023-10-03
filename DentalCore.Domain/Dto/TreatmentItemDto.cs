@@ -8,6 +8,6 @@ public class TreatmentItemDto
     public int ProcedureId { get; set; }
     
     [Required]
-    [Range(1, int.MaxValue)]
+    [Range(1, int.MaxValue, ErrorMessage = "Кількість у процедурі має бути більше 1")]
     public int Quantity { get; set; }
 }

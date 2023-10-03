@@ -12,19 +12,19 @@ public class PatientCreateDto
     public Gender Gender { get; set; }
 
     [Required]
-    [StringLength(30, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2, ErrorMessage = "Ім'я повинно бути від 2 до 30 символів")]
     public string Name { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(30, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2, ErrorMessage = "Пізвище повинно бути від 2 до 30 символів")]
     public string Surname { get; set; } = string.Empty;
 
     [Required]
-    [StringLength(30, MinimumLength = 2)]
+    [StringLength(30, MinimumLength = 2, ErrorMessage = "По батькові повинно бути від 2 до 30 символів")]
     public string Patronymic { get; set; } = string.Empty;
 
     [Required]
-    [RegularExpression(@"^0\d{9}$")]
+    [RegularExpression(@"^0\d{9}$", ErrorMessage = "Телефон має починатися з 0 і містити 10 цифр")]
     public string Phone { get; set; } = string.Empty;
     
     [Required]

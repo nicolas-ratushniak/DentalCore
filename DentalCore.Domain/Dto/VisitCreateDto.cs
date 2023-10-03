@@ -18,7 +18,7 @@ public class VisitCreateDto
     [Range(0, int.MaxValue)]
     public int FirstPayment { get; set; }
 
-    [StringLength(100)] 
+    [StringLength(100, ErrorMessage = "Діагноз не має перевищувати 100 символів")] 
     public string? Diagnosis { get; set; }
     
     [Required]
