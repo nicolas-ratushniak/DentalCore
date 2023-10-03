@@ -97,7 +97,7 @@ public class PatientServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("Too long naaaaaaaaame")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Add_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
@@ -129,7 +129,7 @@ public class PatientServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("Too long surnaaaaaaame")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Add_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
@@ -161,7 +161,7 @@ public class PatientServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("Too long patronymiiic")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Add_PatronymicHasInvalidLenght_ThrowsValidationException(string invalidPatronymic)
     {
         // arrange
@@ -442,7 +442,7 @@ public class PatientServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("Too long naaaaaaaaame")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Update_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
@@ -486,7 +486,7 @@ public class PatientServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("Too long surnaaaaaaame")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Update_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
@@ -530,7 +530,7 @@ public class PatientServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("Too long patronymiiic")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Update_PatronymicHasInvalidLenght_ThrowsValidationException(string invalidPatronymic)
     {
         // arrange

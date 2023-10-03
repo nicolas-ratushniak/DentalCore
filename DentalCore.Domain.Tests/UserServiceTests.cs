@@ -59,7 +59,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("")]
-    [InlineData("123456789 123456789 A")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Add_PasswordHasInvalidLenght_ThrowsValidationException(string invalidPassword)
     {
         // arrange
@@ -81,7 +81,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789 123456789 A")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Add_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
@@ -103,7 +103,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789 123456789 A")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Add_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
@@ -320,7 +320,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("")]
-    [InlineData("123456789 123456789 A")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Update_PasswordHasInvalidLenght_ThrowsValidationException(string invalidPassword)
     {
         // arrange
@@ -357,7 +357,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789 123456789 A")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Update_NameHasInvalidLenght_ThrowsValidationException(string invalidName)
     {
         // arrange
@@ -394,7 +394,7 @@ public class UserServiceTests
 
     [Theory]
     [InlineData("A")]
-    [InlineData("123456789 123456789 A")]
+    [InlineData("123456789 123456789 123456789 A")]
     public void Update_SurnameHasInvalidLenght_ThrowsValidationException(string invalidSurname)
     {
         // arrange
