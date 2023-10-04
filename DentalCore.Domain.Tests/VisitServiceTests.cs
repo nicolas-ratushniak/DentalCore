@@ -40,7 +40,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -107,7 +107,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -191,7 +191,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -271,7 +271,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -346,7 +346,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -463,7 +463,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -516,7 +516,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -584,7 +584,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -649,7 +649,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -715,7 +715,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -780,7 +780,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -838,7 +838,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -907,7 +907,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -982,7 +982,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1059,7 +1059,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1078,7 +1078,7 @@ public class VisitServiceTests
             {
                 DiscountPercent = 0,
                 TotalPrice = totalSum,
-                Date = DateTime.Today,
+                DateAdded = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor,
                 TreatmentItems = new List<TreatmentItem>
@@ -1143,7 +1143,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1162,7 +1162,7 @@ public class VisitServiceTests
             {
                 DiscountPercent = 0,
                 TotalPrice = totalSum,
-                Date = DateTime.Today,
+                DateAdded = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor,
                 TreatmentItems = new List<TreatmentItem>
@@ -1219,7 +1219,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1238,7 +1238,7 @@ public class VisitServiceTests
             {
                 DiscountPercent = 0,
                 TotalPrice = totalSum,
-                Date = DateTime.Today,
+                DateAdded = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor,
                 Payments = new List<Payment>(),
@@ -1320,7 +1320,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1339,7 +1339,7 @@ public class VisitServiceTests
             {
                 DiscountPercent = 0,
                 TotalPrice = totalSum,
-                Date = DateTime.Today,
+                DateAdded = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor,
                 TreatmentItems = new List<TreatmentItem>
@@ -1410,7 +1410,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1429,7 +1429,7 @@ public class VisitServiceTests
             {
                 DiscountPercent = 0,
                 TotalPrice = totalSum,
-                Date = DateTime.Today,
+                DateAdded = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor,
                 TreatmentItems = new List<TreatmentItem>
@@ -1482,7 +1482,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1501,7 +1501,7 @@ public class VisitServiceTests
             {
                 DiscountPercent = 0,
                 TotalPrice = 100,
-                Date = DateTime.Today,
+                DateAdded = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor,
                 TreatmentItems = new List<TreatmentItem>
@@ -1579,7 +1579,7 @@ public class VisitServiceTests
                 Patronymic = "Patronymic",
                 Phone = "0000000000",
                 BirthDate = DateTime.Today,
-                DateCreated = DateTime.Today,
+                DateAdded = DateTime.Today,
                 City = city
             };
 
@@ -1598,7 +1598,7 @@ public class VisitServiceTests
             {
                 DiscountPercent = 0,
                 TotalPrice = 100,
-                Date = DateTime.Today,
+                DateAdded = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor,
                 TreatmentItems = new List<TreatmentItem>

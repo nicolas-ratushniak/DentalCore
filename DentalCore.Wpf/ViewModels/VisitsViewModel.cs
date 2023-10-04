@@ -65,7 +65,7 @@ public class VisitsViewModel : BaseViewModel
         var patients = _patientService.GetAll().ToList();
 
         return _visitService.GetAll()
-            .Where(v => v.Date.Date == DateTime.Today)
+            .Where(v => v.DateAdded.Date == DateTime.Today)
             .Select(v =>
             {
                 var patient = patients
@@ -74,7 +74,7 @@ public class VisitsViewModel : BaseViewModel
                 return new TodayVisitListItemViewModel
                 {
                     Id = v.Id,
-                    Time = TimeOnly.FromDateTime(v.Date),
+                    Time = TimeOnly.FromDateTime(v.DateAdded),
                     Diagnosis = v.Diagnosis,
                     Name = patient.Name,
                     Surname = patient.Surname,

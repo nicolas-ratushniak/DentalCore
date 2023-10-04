@@ -69,7 +69,7 @@ public class VisitService : IVisitService
             DiscountPercent = dto.DiscountPercent,
             Diagnosis = dto.Diagnosis,
             TotalPrice = totalPrice,
-            Date = dto.Date,
+            DateAdded = dto.Date,
             Payments = new List<Payment>(),
             TreatmentItems = new List<TreatmentItem>()
         };

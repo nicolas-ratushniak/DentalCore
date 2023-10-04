@@ -9,4 +9,5 @@ public class TreatmentItem
     public int Quantity { get; set; }
     public int Price { get; set; }
     public bool IsDiscountAllowed { get; set; }
+    public int DiscountSum { get; set; }
 }

@@ -54,7 +54,7 @@ public class PatientService : IPatientService
             Patronymic = dto.Patronymic,
             Phone = dto.Phone,
             BirthDate = dto.BirthDate,
-            DateCreated = DateTime.Today,
+            DateAdded = DateTime.Today,
             City = city,
             Allergies = new List<Allergy>(),
             Diseases = new List<Disease>()
