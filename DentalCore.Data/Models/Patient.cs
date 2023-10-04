@@ -7,6 +7,7 @@ public class Patient
 {
     public int Id { get; set; }
     public int CityId { get; set; }
+    public City City { get; set; }
     public Gender Gender { get; set; }
     
     [MaxLength(30)]
@@ -26,8 +27,7 @@ public class Patient
 
     [Column(TypeName = "date")]
     public DateTime DateCreated { get; set; }
-
-    public City City { get; set; }
+    
     public ICollection<Allergy>? Allergies { get; set; }
     public ICollection<Payment>? Payments { get; set; }
     public ICollection<Disease>? Diseases { get; set; }
