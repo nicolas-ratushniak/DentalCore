@@ -5,11 +5,8 @@ namespace DentalCore.Domain.Dto;
 
 public class PatientCreateDto
 {
-    [Required]
-    public int CityId { get; set; }
-    
-    [Required]
-    public Gender Gender { get; set; }
+    [Required] public int CityId { get; set; }
+    [Required] public Gender Gender { get; set; }
 
     [Required]
     [StringLength(30, MinimumLength = 2, ErrorMessage = "Ім'я повинно бути від 2 до 30 символів")]
@@ -27,10 +24,8 @@ public class PatientCreateDto
     [RegularExpression(@"^0\d{9}$", ErrorMessage = "Телефон має починатися з 0 і містити 10 цифр")]
     public string Phone { get; set; } = string.Empty;
     
-    [Required]
-    public DateTime BirthDate { get; set; }
-    
-    public IEnumerable<string>? AllergyNames { get; set; }
-    
-    public IEnumerable<int>? DiseaseIds { get; set; }
+    [Required] public DateTime BirthDate { get; set; }
+    public List<int> AllergyIds { get; set; } = new();
+    public List<AllergyCreateDto> NewAllergies { get; set; } = new();
+    public List<int> DiseaseIds { get; set; } = new();
 }

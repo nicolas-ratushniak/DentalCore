@@ -15,8 +15,8 @@ public class Patient
     [MaxLength(10)] public string Phone { get; set; }
     [Column(TypeName = "date")] public DateTime BirthDate { get; set; }
     public bool IsDeleted { get; set; }
-    public DateTime DateDeleted { get; set; }
-    public DateTime DateAdded { get; set; }
+    public DateTime? DeletedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
 
     public List<Allergy> Allergies { get; set; } = new();
     public List<PatientAllergy> PatientAllergies { get; set; } = new();

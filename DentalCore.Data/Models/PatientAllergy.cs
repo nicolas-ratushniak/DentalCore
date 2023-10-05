@@ -6,5 +6,5 @@ public class PatientAllergy
     public Patient Patient { get; set; }
     public int AllergyId { get; set; }
     public Allergy Allergy { get; set; }
-    public DateTime DateAdded { get; set; }
+    public DateTime CreatedOn { get; set; }
 }

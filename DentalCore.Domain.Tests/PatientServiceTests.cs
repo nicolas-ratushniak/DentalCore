@@ -248,7 +248,7 @@ public class PatientServiceTests
                 Patronymic = duplicatePatronymic,
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -292,7 +292,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -375,7 +375,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -421,7 +421,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -465,7 +465,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -509,7 +509,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -553,7 +553,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -595,7 +595,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             });
 
@@ -643,7 +643,7 @@ public class PatientServiceTests
                     Patronymic = "Patronymic1",
                     Phone = "0111111111",
                     BirthDate = DateTime.Today,
-                    DateAdded = DateTime.Today,
+                    CreatedOn = DateTime.Today,
                     City = city
                 },
                 new Patient
@@ -654,7 +654,7 @@ public class PatientServiceTests
                     Patronymic = duplicatePatronymic,
                     Phone = "0111111111",
                     BirthDate = DateTime.Today,
-                    DateAdded = DateTime.Today,
+                    CreatedOn = DateTime.Today,
                     City = city
                 });
 
@@ -699,7 +699,7 @@ public class PatientServiceTests
                     Patronymic = "Patronymic1",
                     Phone = "0111111111",
                     BirthDate = DateTime.Today,
-                    DateAdded = DateTime.Today,
+                    CreatedOn = DateTime.Today,
                     City = city
                 });
 
@@ -750,7 +750,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             };
 
@@ -759,7 +759,7 @@ public class PatientServiceTests
                 DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor
             };
@@ -767,7 +767,7 @@ public class PatientServiceTests
             var payment = new Payment
             {
                 VisitId = 1,
-                DateTime = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Sum = 100,
                 Visit = visit
             };
@@ -820,7 +820,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             };
 
@@ -829,21 +829,21 @@ public class PatientServiceTests
                 DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor
             };
 
             var payment1 = new Payment
             {
-                DateTime = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Sum = 20,
                 Visit = visit
             };
 
             var payment2 = new Payment
             {
-                DateTime = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Sum = 10,
                 Visit = visit
             };
@@ -913,7 +913,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             };
 
@@ -922,7 +922,7 @@ public class PatientServiceTests
                 DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor
             };
@@ -932,21 +932,21 @@ public class PatientServiceTests
                 DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor
             };
 
             var payment1 = new Payment
             {
-                DateTime = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Sum = 20,
                 Visit = visit1
             };
 
             var payment2 = new Payment
             {
-                DateTime = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Sum = 40,
                 Visit = visit2
             };
@@ -1004,7 +1004,7 @@ public class PatientServiceTests
                 Patronymic = "Patronymic1",
                 Phone = "0111111111",
                 BirthDate = DateTime.Today,
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 City = city
             };
 
@@ -1013,14 +1013,14 @@ public class PatientServiceTests
                 DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
-                DateAdded = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Patient = patient,
                 Doctor = doctor
             };
 
             var payment = new Payment
             {
-                DateTime = DateTime.Today,
+                CreatedOn = DateTime.Today,
                 Sum = 100,
                 Visit = visit
             };

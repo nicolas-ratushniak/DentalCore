@@ -48,41 +48,40 @@ public class PatientService : IPatientService
         var patient = new Patient
         {
             CityId = dto.CityId,
+            City = city,
             Gender = dto.Gender,
             Name = dto.Name,
             Surname = dto.Surname,
             Patronymic = dto.Patronymic,
             Phone = dto.Phone,
             BirthDate = dto.BirthDate,
-            DateAdded = DateTime.Today,
-            City = city,
-            Allergies = new List<Allergy>(),
-            Diseases = new List<Disease>()
+            CreatedOn = DateTime.Now
         };
 
-        if (dto.AllergyNames is not null)
+        foreach (var allergyId in dto.AllergyIds)
         {
-            foreach (var allergyName in dto.AllergyNames)
-            {
-                var allergy = new Allergy
-                {
-                    Name = allergyName,
-                    Patient = patient
-                };
+            var allergy = _context.Allergies.Find(allergyId)
+                          ?? throw new EntityNotFoundException("Allergy not found");
 
-                patient.Allergies.Add(allergy);
-            }
+            patient.Allergies.Add(allergy);
         }
-        
-        if (dto.DiseaseIds is not null)
+
+        foreach (var newAllergy in dto.NewAllergies)
         {
-            foreach (var diseaseId in dto.DiseaseIds)
+            var allergy = new Allergy
             {
-                var disease = _context.Diseases.Find(diseaseId)
-                              ?? throw new EntityNotFoundException("Disease not found");
-                
-                patient.Diseases.Add(disease);
-            }
+                Name = newAllergy.Name
+            };
+
+            patient.Allergies.Add(allergy);
+        }
+
+        foreach (var diseaseId in dto.DiseaseIds)
+        {
+            var disease = _context.Diseases.Find(diseaseId)
+                          ?? throw new EntityNotFoundException("Disease not found");
+
+            patient.Diseases.Add(disease);
         }
 
         _context.Patients.Add(patient);
@@ -119,42 +118,35 @@ public class PatientService : IPatientService
         patient.Patronymic = dto.Patronymic;
         patient.Phone = dto.Phone;
         patient.BirthDate = dto.BirthDate;
-        
-        if (dto.AllergyNames is not null)
-        {
-            patient.Allergies = new List<Allergy>();
-            
-            foreach (var allergyName in dto.AllergyNames)
-            {
-                var allergy = new Allergy
-                {
-                    Name = allergyName,
-                    Patient = patient
-                };
 
-                patient.Allergies.Add(allergy);
-            }
-        }
-        else
+        patient.Allergies = new List<Allergy>();
+
+        foreach (var allergyId in dto.AllergyIds)
         {
-            patient.Allergies = null;
+            var allergy = _context.Allergies.Find(allergyId)
+                          ?? throw new EntityNotFoundException("Allergy not found");
+
+            patient.Allergies.Add(allergy);
         }
-        
-        if (dto.DiseaseIds is not null)
+
+        foreach (var newAllergy in dto.NewAllergies)
         {
-            patient.Diseases = new List<Disease>();
-            
-            foreach (var diseaseId in dto.DiseaseIds)
+            var allergy = new Allergy
             {
-                var disease = _context.Diseases.Find(diseaseId)
-                              ?? throw new EntityNotFoundException("Disease not found");
-                
-                patient.Diseases.Add(disease);
-            }
+                Name = newAllergy.Name
+            };
+
+            patient.Allergies.Add(allergy);
         }
-        else
+
+        patient.Diseases = new List<Disease>();
+
+        foreach (var diseaseId in dto.DiseaseIds)
         {
-            patient.Diseases = null;
+            var disease = _context.Diseases.Find(diseaseId)
+                          ?? throw new EntityNotFoundException("Disease not found");
+
+            patient.Diseases.Add(disease);
         }
 
         _context.Patients.Update(patient);
@@ -198,7 +190,7 @@ public class PatientService : IPatientService
             var payment = new Payment
             {
                 VisitId = visit.Id,
-                DateTime = paymentTime,
+                CreatedOn = paymentTime,
                 Sum = remainsToPay
             };
 
@@ -210,7 +202,12 @@ public class PatientService : IPatientService
 
     public IEnumerable<Allergy> GetAllergies(int id)
     {
-        return _context.Allergies.Where(a => a.PatientId == id);
+        var patient = _context.Patients
+                          .Include(p => p.Allergies)
+                          .SingleOrDefault(p => p.Id == id)
+                      ?? throw new EntityNotFoundException();
+
+        return patient.Allergies;
     }
 
     public IEnumerable<Disease> GetDiseases(int id)
@@ -220,7 +217,7 @@ public class PatientService : IPatientService
                           .SingleOrDefault(p => p.Id == id)
                       ?? throw new EntityNotFoundException();
 
-        return patient.Diseases ?? new List<Disease>();
+        return patient.Diseases;
     }
 
     private IEnumerable<Visit> GetVisits(int id)

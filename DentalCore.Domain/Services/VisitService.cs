@@ -69,7 +69,7 @@ public class VisitService : IVisitService
             DiscountSum = discountSum,
             Diagnosis = dto.Diagnosis,
             TotalPrice = totalPrice,
-            DateAdded = dto.Date,
+            CreatedOn = dto.Date,
             Payments = new List<Payment>(),
             TreatmentItems = new List<TreatmentItem>(),
         };
@@ -97,7 +97,7 @@ public class VisitService : IVisitService
         {
             var payment = new Payment
             {
-                DateTime = DateTime.Now,
+                CreatedOn = DateTime.Now,
                 Sum = dto.FirstPayment,
                 Visit = visit
             };
@@ -124,7 +124,7 @@ public class VisitService : IVisitService
         var payment = new Payment
         {
             VisitId = id,
-            DateTime = DateTime.Now,
+            CreatedOn = DateTime.Now,
             Sum = sum,
             Visit = visit
         };

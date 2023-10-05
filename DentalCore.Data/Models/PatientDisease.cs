@@ -6,5 +6,5 @@ public class PatientDisease
     public Patient Patient { get; set; }
     public int DiseaseId { get; set; }
     public Disease Disease { get; set; }
-    public DateTime DateAdded { get; set; }
+    public DateTime CreatedOn { get; set; }
 }

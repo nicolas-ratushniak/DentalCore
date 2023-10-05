@@ -9,6 +9,6 @@ public class Procedure
     public int Price { get; set; }
     public bool IsDiscountAllowed { get; set; }
     public bool IsDeleted { get; set; }
-    public DateTime DateDeleted { get; set; }
-    public DateTime DateUpdated { get; set; }
+    public DateTime? DeletedOn { get; set; }
+    public DateTime? UpdatedOn { get; set; }
 }

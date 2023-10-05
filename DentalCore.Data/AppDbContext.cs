@@ -25,9 +25,20 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Allergy>(a =>
-            a.HasKey(nameof(Allergy.PatientId), nameof(Allergy.Name)));
-
+        modelBuilder.Entity<Allergy>()
+            .HasMany(e => e.Patients)
+            .WithMany(e => e.Allergies)
+            .UsingEntity<PatientAllergy>(
+                pa => pa.Property(e => e.CreatedOn)
+                    .HasDefaultValueSql("GETDATE()"));
+        
+        modelBuilder.Entity<Disease>()
+            .HasMany(e => e.Patients)
+            .WithMany(e => e.Diseases)
+            .UsingEntity<PatientDisease>(
+                pa => pa.Property(e => e.CreatedOn)
+                    .HasDefaultValueSql("GETDATE()"));
+        
         modelBuilder.Entity<TreatmentItem>(t =>
             t.HasKey(nameof(TreatmentItem.VisitId), nameof(TreatmentItem.ProcedureId)));
 
