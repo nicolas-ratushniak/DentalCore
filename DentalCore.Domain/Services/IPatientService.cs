@@ -13,4 +13,5 @@ public interface IPatientService
     public void PayWholeDebt(int id);
     public IEnumerable<Allergy> GetAllergies(int id);
     public IEnumerable<Disease> GetDiseases(int id);
+    public IEnumerable<Phone> GetPhones(int id);
 }

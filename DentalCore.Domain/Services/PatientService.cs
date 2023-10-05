@@ -53,11 +53,23 @@ public class PatientService : IPatientService
             Name = dto.Name,
             Surname = dto.Surname,
             Patronymic = dto.Patronymic,
-            Phone = dto.Phone,
             BirthDate = dto.BirthDate,
             CreatedOn = DateTime.Now
         };
 
+        foreach (var phoneDto in dto.Phones)
+        {
+            var phone = new Phone
+            {
+                Patient = patient,
+                PhoneNumber = phoneDto.PhoneNumber,
+                IsMain = phoneDto.IsMain,
+                Tag = phoneDto.Tag
+            };
+            
+            patient.Phones.Add(phone);
+        }
+        
         foreach (var allergyId in dto.AllergyIds)
         {
             var allergy = _context.Allergies.Find(allergyId)
@@ -106,8 +118,24 @@ public class PatientService : IPatientService
         patient.Name = dto.Name;
         patient.Surname = dto.Surname;
         patient.Patronymic = dto.Patronymic;
-        patient.Phone = dto.Phone;
         patient.BirthDate = dto.BirthDate;
+
+        patient.Phones = new List<Phone>();
+        
+        foreach (var phoneDto in dto.Phones)
+        {
+            Validator.ValidateObject(phoneDto, new ValidationContext(phoneDto), true);
+            
+            var phone = new Phone
+            {
+                Patient = patient,
+                PhoneNumber = phoneDto.PhoneNumber,
+                IsMain = phoneDto.IsMain,
+                Tag = phoneDto.Tag
+            };
+            
+            patient.Phones.Add(phone);
+        }
 
         patient.Allergies = new List<Allergy>();
 
@@ -198,6 +226,11 @@ public class PatientService : IPatientService
                       ?? throw new EntityNotFoundException();
 
         return patient.Diseases;
+    }
+
+    public IEnumerable<Phone> GetPhones(int id)
+    {
+        return _context.Phones.Where(p => p.PatientId == id);
     }
 
     private IEnumerable<Visit> GetVisits(int id)

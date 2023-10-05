@@ -24,14 +24,18 @@ namespace DentalCore.Data.Migrations
 
             modelBuilder.Entity("DentalCore.Data.Models.Allergy", b =>
                 {
-                    b.Property<int>("PatientId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(40)
                         .HasColumnType("nvarchar(40)");
 
-                    b.HasKey("PatientId", "Name");
+                    b.HasKey("Id");
 
                     b.ToTable("Allergies");
                 });
@@ -86,11 +90,17 @@ namespace DentalCore.Data.Migrations
                     b.Property<int>("CityId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Gender")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -101,11 +111,6 @@ namespace DentalCore.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("Surname")
                         .IsRequired()
@@ -119,6 +124,46 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("DentalCore.Data.Models.PatientAllergy", b =>
+                {
+                    b.Property<int>("AllergyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("AllergyId", "PatientId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("PatientAllergies");
+                });
+
+            modelBuilder.Entity("DentalCore.Data.Models.PatientDisease", b =>
+                {
+                    b.Property<int>("DiseaseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.HasKey("DiseaseId", "PatientId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("PatientDiseases");
+                });
+
             modelBuilder.Entity("DentalCore.Data.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -127,7 +172,7 @@ namespace DentalCore.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("PatientId")
@@ -148,6 +193,34 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Payments");
                 });
 
+            modelBuilder.Entity("DentalCore.Data.Models.Phone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsMain")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Phones");
+                });
+
             modelBuilder.Entity("DentalCore.Data.Models.Procedure", b =>
                 {
                     b.Property<int>("Id")
@@ -155,6 +228,9 @@ namespace DentalCore.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -170,6 +246,9 @@ namespace DentalCore.Data.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Procedures");
@@ -181,6 +260,9 @@ namespace DentalCore.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ProcedureId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DiscountSum")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDiscountAllowed")
@@ -206,6 +288,9 @@ namespace DentalCore.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -250,14 +335,14 @@ namespace DentalCore.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Diagnosis")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("DiscountPercent")
+                    b.Property<int>("DiscountSum")
                         .HasColumnType("int");
 
                     b.Property<int>("DoctorId")
@@ -278,32 +363,6 @@ namespace DentalCore.Data.Migrations
                     b.ToTable("Visits");
                 });
 
-            modelBuilder.Entity("DiseasePatient", b =>
-                {
-                    b.Property<int>("DiseasesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PatientsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DiseasesId", "PatientsId");
-
-                    b.HasIndex("PatientsId");
-
-                    b.ToTable("DiseasePatient");
-                });
-
-            modelBuilder.Entity("DentalCore.Data.Models.Allergy", b =>
-                {
-                    b.HasOne("DentalCore.Data.Models.Patient", "Patient")
-                        .WithMany("Allergies")
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Patient");
-                });
-
             modelBuilder.Entity("DentalCore.Data.Models.Patient", b =>
                 {
                     b.HasOne("DentalCore.Data.Models.City", "City")
@@ -313,6 +372,44 @@ namespace DentalCore.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("City");
+                });
+
+            modelBuilder.Entity("DentalCore.Data.Models.PatientAllergy", b =>
+                {
+                    b.HasOne("DentalCore.Data.Models.Allergy", "Allergy")
+                        .WithMany("PatientAllergies")
+                        .HasForeignKey("AllergyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DentalCore.Data.Models.Patient", "Patient")
+                        .WithMany("PatientAllergies")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Allergy");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("DentalCore.Data.Models.PatientDisease", b =>
+                {
+                    b.HasOne("DentalCore.Data.Models.Disease", "Disease")
+                        .WithMany("PatientDiseases")
+                        .HasForeignKey("DiseaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DentalCore.Data.Models.Patient", "Patient")
+                        .WithMany("PatientDiseases")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Disease");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("DentalCore.Data.Models.Payment", b =>
@@ -328,6 +425,17 @@ namespace DentalCore.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Visit");
+                });
+
+            modelBuilder.Entity("DentalCore.Data.Models.Phone", b =>
+                {
+                    b.HasOne("DentalCore.Data.Models.Patient", "Patient")
+                        .WithMany("Phones")
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("DentalCore.Data.Models.TreatmentItem", b =>
@@ -368,26 +476,25 @@ namespace DentalCore.Data.Migrations
                     b.Navigation("Patient");
                 });
 
-            modelBuilder.Entity("DiseasePatient", b =>
+            modelBuilder.Entity("DentalCore.Data.Models.Allergy", b =>
                 {
-                    b.HasOne("DentalCore.Data.Models.Disease", null)
-                        .WithMany()
-                        .HasForeignKey("DiseasesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("PatientAllergies");
+                });
 
-                    b.HasOne("DentalCore.Data.Models.Patient", null)
-                        .WithMany()
-                        .HasForeignKey("PatientsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("DentalCore.Data.Models.Disease", b =>
+                {
+                    b.Navigation("PatientDiseases");
                 });
 
             modelBuilder.Entity("DentalCore.Data.Models.Patient", b =>
                 {
-                    b.Navigation("Allergies");
+                    b.Navigation("PatientAllergies");
+
+                    b.Navigation("PatientDiseases");
 
                     b.Navigation("Payments");
+
+                    b.Navigation("Phones");
 
                     b.Navigation("Visits");
                 });

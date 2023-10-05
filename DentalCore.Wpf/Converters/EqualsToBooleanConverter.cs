@@ -13,6 +13,6 @@ public class EqualsToBooleanConverter : IValueConverter
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return Binding.DoNothing;
+        return value?.Equals(true) == true ? parameter : Binding.DoNothing;
     }
 }

@@ -21,12 +21,9 @@ public class PatientUpdateDto
     [StringLength(30, MinimumLength = 2, ErrorMessage = "По батькові повинно бути від 2 до 30 символів")]
     public string Patronymic { get; set; } = string.Empty;
 
-    [Required]
-    [RegularExpression(@"^0\d{9}$", ErrorMessage = "Телефон має починатися з 0 і містити 10 цифр")]
-    public string Phone { get; set; } = string.Empty;
-
     [Required] public DateTime BirthDate { get; set; }
 
     public List<int> AllergyIds { get; set; } = new();
     public List<int> DiseaseIds { get; set; } = new();
+    public List<PhoneCreateDto> Phones { get; set; } = new();
 }

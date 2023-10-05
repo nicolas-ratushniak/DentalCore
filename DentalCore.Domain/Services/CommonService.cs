@@ -26,4 +26,9 @@ public class CommonService : ICommonService
     {
         return _context.Cities.ToList();
     }
+
+    public IEnumerable<Allergy> GetAllergies()
+    {
+        return _context.Allergies.ToList();
+    }
 }

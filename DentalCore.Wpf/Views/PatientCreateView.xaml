@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DentalCore.Wpf.Views"
              xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
-             xmlns:viewModels="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
+             xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:models="clr-namespace:DentalCore.Data.Models;assembly=DentalCore.Data"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000">
@@ -20,7 +20,19 @@
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="ItemTemplate">
                 <Setter.Value>
-                    <DataTemplate DataType="{x:Type viewModels:CityListItemViewModel}">
+                    <DataTemplate DataType="{x:Type inners:CityListItemViewModel}">
+                        <TextBlock Text="{Binding Path=Name}"
+                                   FontSize="18" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="NiceAllergyList" TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate DataType="{x:Type inners:AllergyListItemViewModel}">
                         <TextBlock Text="{Binding Path=Name}"
                                    FontSize="18" />
                     </DataTemplate>
@@ -58,6 +70,54 @@
             </Setter>
         </Style>
 
+        <Style x:Key="AdvancedAllergyList" TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0" />
+
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Padding="0 10"
+                                            Margin="10 0"
+                                            BorderBrush="#a2a6a8"
+                                            BorderThickness="0 0 0 1">
+
+                                        <Grid Margin="10 0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0"
+                                                       FontSize="16"
+                                                       VerticalAlignment="Center"
+                                                       TextWrapping="Wrap"
+                                                       Text="{Binding Name}" />
+
+                                            <Button Grid.Column="1"
+                                                    Width="16"
+                                                    Height="16"
+                                                    BorderThickness="0"
+                                                    Command="{Binding DataContext.RemoveAllergyCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                    CommandParameter="{Binding Id}">
+                                                <Button.Background>
+                                                    <ImageBrush ImageSource="../Assets/quit.png" Stretch="Fill" />
+                                                </Button.Background>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
     </UserControl.Resources>
 
     <Grid>
@@ -76,6 +136,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            <!-- Title -->
             <TextBlock Grid.Row="0"
                        FontSize="28"
                        FontWeight="Bold"
@@ -90,6 +151,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+                <!-- General Data -->
                 <Grid Grid.Column="0"
                       Margin="0 0 12 0">
 
@@ -129,14 +191,14 @@
                                 Margin="0 0 0 15">
 
                         <RadioButton Content="Чоловік"
-                                     IsChecked="{Binding Gender, Mode=OneWay,
+                                     IsChecked="{Binding Gender,
                                  Converter={StaticResource EqualsToBoolConverter},
                                  ConverterParameter={x:Static models:Gender.Male}}"
                                      VerticalContentAlignment="Center"
                                      Margin="0 0 20 0" />
 
                         <RadioButton Content="Жінка"
-                                     IsChecked="{Binding Gender, Mode=OneWay,
+                                     IsChecked="{Binding Gender,
                                  Converter={StaticResource EqualsToBoolConverter},
                                  ConverterParameter={x:Static models:Gender.Female}}"
                                      VerticalContentAlignment="Center" />
@@ -202,6 +264,7 @@
                                                  Margin="0 0 0 15" />
                 </Grid>
 
+                <!-- Select Allergies -->
                 <Grid Grid.Column="1"
                       Margin="12 0 12 0">
 
@@ -210,21 +273,79 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0"
-                               FontSize="16"
-                               Text="Алергії (кожна з нового рядка)"
-                               Margin="0 0 0 15" />
+                    <!-- Search for Allergy -->
+                    <Grid Grid.Row="0"
+                          Margin="0 0 0 10">
 
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <controls:PlaceholderTextBox Grid.Row="0"
+                                                     Text="{Binding AllergySelectionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                     Placeholder="Оберіть алергію" />
+
+                        <Popup Grid.Row="1"
+                               IsOpen="{Binding IsAllergyListVisible}"
+                               ClipToBounds="True"
+                               AllowsTransparency="True"
+                               PopupAnimation="Slide"
+                               StaysOpen="False">
+
+                            <Border Style="{StaticResource NiceBorder}"
+                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                    MaxHeight="250"
+                                    Background="White">
+                                <Grid>
+                                    <TextBlock Text="Нічого не знайдено"
+                                               Panel.ZIndex="1"
+                                               TextWrapping="Wrap"
+                                               Foreground="{StaticResource BrushGrey}"
+                                               FontSize="16"
+                                               Visibility="{Binding ElementName=TreatmentItemPopup, Path=HasItems,
+                                           Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+
+                                    <ListBox x:Name="TreatmentItemPopup"
+                                             ScrollViewer.CanContentScroll="True"
+                                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                             Style="{StaticResource NiceAllergyList}"
+                                             ItemsSource="{Binding NotSelectedAllergyCollectionView}"
+                                             SelectedItem="{Binding SelectedAllergy, Mode=TwoWay}" />
+                                </Grid>
+                            </Border>
+                        </Popup>
+                    </Grid>
+
+                    <!-- Selected Allergy List -->
                     <Border Grid.Row="1"
-                            Style="{StaticResource NiceBorder}"
-                            Padding="3">
+                            BorderThickness="1"
+                            BorderBrush="Black"
+                            CornerRadius="5"
+                            Padding="5">
 
-                        <TextBox Grid.Row="1"
-                                 Text="{Binding AllergyNamesInput, UpdateSourceTrigger=PropertyChanged}"
-                                 BorderThickness="0"
-                                 FontSize="18"
-                                 AcceptsReturn="True" />
+                        <ListBox Style="{StaticResource AdvancedAllergyList}"
+                                 ItemsSource="{Binding SelectedAllergyCollectionView}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Hidden" />
                     </Border>
+
+                    <!-- <TextBlock Grid.Row="0" -->
+                    <!--            FontSize="16" -->
+                    <!--            Text="Алергії (кожна з нового рядка)" -->
+                    <!--            Margin="0 0 0 15" /> -->
+                    <!-- -->
+                    <!-- <Border Grid.Row="1" -->
+                    <!--         Style="{StaticResource NiceBorder}" -->
+                    <!--         Padding="3"> -->
+                    <!-- -->
+                    <!--     <TextBox Grid.Row="1" -->
+                    <!--              Text="{Binding AllergyNamesInput, UpdateSourceTrigger=PropertyChanged}" -->
+                    <!--              BorderThickness="0" -->
+                    <!--              FontSize="18" -->
+                    <!--              AcceptsReturn="True" /> -->
+                    <!-- </Border> -->
                 </Grid>
 
                 <Grid Grid.Column="2">
