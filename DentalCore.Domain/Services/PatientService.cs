@@ -66,16 +66,6 @@ public class PatientService : IPatientService
             patient.Allergies.Add(allergy);
         }
 
-        foreach (var newAllergy in dto.NewAllergies)
-        {
-            var allergy = new Allergy
-            {
-                Name = newAllergy.Name
-            };
-
-            patient.Allergies.Add(allergy);
-        }
-
         foreach (var diseaseId in dto.DiseaseIds)
         {
             var disease = _context.Diseases.Find(diseaseId)
@@ -125,16 +115,6 @@ public class PatientService : IPatientService
         {
             var allergy = _context.Allergies.Find(allergyId)
                           ?? throw new EntityNotFoundException("Allergy not found");
-
-            patient.Allergies.Add(allergy);
-        }
-
-        foreach (var newAllergy in dto.NewAllergies)
-        {
-            var allergy = new Allergy
-            {
-                Name = newAllergy.Name
-            };
 
             patient.Allergies.Add(allergy);
         }

@@ -28,6 +28,5 @@ public class PatientUpdateDto
     [Required] public DateTime BirthDate { get; set; }
 
     public List<int> AllergyIds { get; set; } = new();
-    public List<AllergyCreateDto> NewAllergies { get; set; } = new();
     public List<int> DiseaseIds { get; set; } = new();
 }
