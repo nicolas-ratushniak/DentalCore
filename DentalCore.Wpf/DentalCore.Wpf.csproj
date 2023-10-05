@@ -37,4 +37,12 @@
       <None Remove="Assets\quit.png" />
       <Resource Include="Assets\quit.png" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\Components\AllergySelector.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+    </ItemGroup>
 </Project>
