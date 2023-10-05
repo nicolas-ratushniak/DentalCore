@@ -354,7 +354,7 @@ public class VisitCreateViewModel : BaseViewModel
             })
             .ToList();
 
-        TotalSum = _visitService.CalculateTotalPrice(items, 0);
+        TotalSum = _visitService.CalculateTotalWithDiscount(items, 0, out _);
         FirstPayment = TotalSum;
     }
 

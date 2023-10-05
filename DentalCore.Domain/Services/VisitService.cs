@@ -45,7 +45,7 @@ public class VisitService : IVisitService
             })
             .ToList();
 
-        var totalPrice = CalculateTotalPrice(itemsNoDuplicates, dto.DiscountPercent);
+        var totalPrice = CalculateTotalWithDiscount(itemsNoDuplicates, dto.DiscountPercent, out int discountSum);
 
         if (dto.FirstPayment > totalPrice)
         {
@@ -66,14 +66,14 @@ public class VisitService : IVisitService
             Patient = patient,
             DoctorId = dto.DoctorId,
             Doctor = doctor,
-            DiscountPercent = dto.DiscountPercent,
+            DiscountSum = discountSum,
             Diagnosis = dto.Diagnosis,
             TotalPrice = totalPrice,
             DateAdded = dto.Date,
             Payments = new List<Payment>(),
-            TreatmentItems = new List<TreatmentItem>()
+            TreatmentItems = new List<TreatmentItem>(),
         };
-        
+
         var procedures = _context.Procedures.ToList();
 
         foreach (var item in itemsNoDuplicates)
@@ -149,15 +149,17 @@ public class VisitService : IVisitService
         return GetMoneyPayedUnsafe(id);
     }
 
-    public int CalculateTotalPrice(IEnumerable<TreatmentItemDto> treatmentItems, int discountPercent)
+    public int CalculateTotalWithDiscount(IEnumerable<TreatmentItemDto> selectedTreatmentItems, int discountPercent,
+        out int discountSum)
     {
         if (discountPercent < 0 || discountPercent > 100)
         {
             throw new ArgumentOutOfRangeException(nameof(discountPercent));
         }
-        
-        var purePrice = 0.0M;
-        var items = treatmentItems.ToList();
+
+        var preciseTotalWithDiscount = 0.0M;
+        var preciseTotalNoDiscount = 0.0M;
+        var items = selectedTreatmentItems.ToList();
 
         var hasDuplicates = items
             .GroupBy(t => t.ProcedureId)
@@ -165,30 +167,45 @@ public class VisitService : IVisitService
 
         if (hasDuplicates)
         {
-            throw new ArgumentException("The list of items should not have duplicates", nameof(treatmentItems));
+            throw new ArgumentException("The list of items should not have duplicates", nameof(selectedTreatmentItems));
         }
 
         var procedures = _context.Procedures.ToList();
-        
+
         foreach (var item in items)
         {
             var procedure = procedures.Single(p => p.Id == item.ProcedureId);
-            
-            var priceNoDiscount = procedure.Price * item.Quantity;
 
-            purePrice += procedure.IsDiscountAllowed
-                ? priceNoDiscount * (1 - discountPercent / 100.0M)
-                : priceNoDiscount;
+            var itemPriceNoDiscount = procedure.Price * item.Quantity;
+
+            preciseTotalNoDiscount += itemPriceNoDiscount;
+            preciseTotalWithDiscount += procedure.IsDiscountAllowed
+                ? itemPriceNoDiscount * (1 - discountPercent / 100.0M)
+                : itemPriceNoDiscount;
         }
 
-        if (purePrice <= 50)
+        int roundedTotalNoDiscount;
+        int roundedTotalWithDiscount;
+
+        if (preciseTotalWithDiscount <= 50)
         {
-            return (int)purePrice;
+            roundedTotalNoDiscount = (int)Math.Round(preciseTotalNoDiscount, MidpointRounding.ToPositiveInfinity);
+            roundedTotalWithDiscount = (int)Math.Round(preciseTotalWithDiscount, MidpointRounding.ToPositiveInfinity);
+        }
+        else
+        {
+            roundedTotalNoDiscount = RoundPrice(preciseTotalNoDiscount);
+            roundedTotalWithDiscount = RoundPrice(preciseTotalWithDiscount);
         }
 
-        var remainder = purePrice % 50;
+        discountSum = roundedTotalNoDiscount - roundedTotalWithDiscount;
+        return roundedTotalWithDiscount;
 
-        return remainder < 25 ? (int)(purePrice - remainder) : (int)(purePrice - remainder) + 50;
+        static int RoundPrice(decimal price)
+        {
+            var remainder = price % 50;
+            return remainder < 25 ? (int)(price - remainder) : (int)(price - remainder) + 50;
+        }
     }
 
     public IEnumerable<TreatmentItem> GetTreatmentItems(int id)

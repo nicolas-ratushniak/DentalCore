@@ -756,7 +756,7 @@ public class PatientServiceTests
 
             var visit = new Visit
             {
-                DiscountPercent = 0,
+                DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
                 DateAdded = DateTime.Today,
@@ -826,7 +826,7 @@ public class PatientServiceTests
 
             var visit = new Visit
             {
-                DiscountPercent = 0,
+                DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
                 DateAdded = DateTime.Today,
@@ -919,7 +919,7 @@ public class PatientServiceTests
 
             var visit1 = new Visit
             {
-                DiscountPercent = 0,
+                DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
                 DateAdded = DateTime.Today,
@@ -929,7 +929,7 @@ public class PatientServiceTests
 
             var visit2 = new Visit
             {
-                DiscountPercent = 0,
+                DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
                 DateAdded = DateTime.Today,
@@ -1010,7 +1010,7 @@ public class PatientServiceTests
 
             var visit = new Visit
             {
-                DiscountPercent = 0,
+                DiscountSum = 0,
                 TotalPrice = 100,
                 Diagnosis = "diagnosis",
                 DateAdded = DateTime.Today,
