@@ -57,6 +57,8 @@ public class UserService : IUserService
 
     public int Add(UserCreateDto dto)
     {
+        var createdOn = DateTime.Now;
+        
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Users.Any(u => u.Login == dto.Login))
@@ -76,7 +78,8 @@ public class UserService : IUserService
             Login = dto.Login,
             Name = dto.Name,
             Surname = dto.Surname,
-            Phone = dto.Phone
+            Phone = dto.Phone,
+            CreatedOn = createdOn
         };
 
         user.PasswordHash = GetPasswordHash(dto.Password);
@@ -89,6 +92,8 @@ public class UserService : IUserService
 
     public void Update(UserUpdateDto dto)
     {
+        var updatedOn = DateTime.Now;
+        
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Users.Any(u => u.Login == dto.Login && u.Id != dto.Id))
@@ -108,6 +113,7 @@ public class UserService : IUserService
         user.Name = dto.Name;
         user.Surname = dto.Surname;
         user.Phone = dto.Phone;
+        user.UpdatedOn = updatedOn;
 
         _context.Users.Update(user);
         _context.SaveChanges();
@@ -115,9 +121,11 @@ public class UserService : IUserService
 
     public void SoftDelete(int id)
     {
+        var deletedOn = DateTime.Now;
         var user = Get(id);
 
         user.IsDeleted = true;
+        user.DeletedOn = deletedOn;
 
         _context.Users.Update(user);
         _context.SaveChanges();

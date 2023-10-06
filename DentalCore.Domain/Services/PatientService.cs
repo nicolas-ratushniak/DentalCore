@@ -18,17 +18,31 @@ public class PatientService : IPatientService
 
     public Patient Get(int id)
     {
+        return _context.Patients
+            .Where(p => !p.IsDeleted)
+            .SingleOrDefault(p => p.Id == id) ?? throw new EntityNotFoundException();
+    }
+
+    public Patient GetIncludeSoftDeleted(int id)
+    {
         return _context.Patients.Find(id)
-               ?? throw new EntityNotFoundException();
+            ?? throw new EntityNotFoundException();
     }
 
     public IEnumerable<Patient> GetAll()
+    {
+        return _context.Patients.Where(p => !p.IsDeleted);
+    }
+
+    public IEnumerable<Patient> GetAllIncludeSoftDeleted()
     {
         return _context.Patients.ToList();
     }
 
     public int Add(PatientCreateDto dto)
     {
+        var createdOn = DateTime.Now;
+        
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Patients.Any(p =>
@@ -54,7 +68,7 @@ public class PatientService : IPatientService
             Surname = dto.Surname,
             Patronymic = dto.Patronymic,
             BirthDate = dto.BirthDate,
-            CreatedOn = DateTime.Now
+            CreatedOn = createdOn
         };
 
         foreach (var phoneDto in dto.Phones)
@@ -94,6 +108,8 @@ public class PatientService : IPatientService
 
     public void Update(PatientUpdateDto dto)
     {
+        var updatedOn = DateTime.Now;
+        
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Patients.Any(p =>
@@ -119,6 +135,7 @@ public class PatientService : IPatientService
         patient.Surname = dto.Surname;
         patient.Patronymic = dto.Patronymic;
         patient.BirthDate = dto.BirthDate;
+        patient.UpdatedOn = updatedOn;
 
         patient.Phones = new List<Phone>();
         
@@ -158,6 +175,18 @@ public class PatientService : IPatientService
         }
 
         _context.Patients.Update(patient);
+        _context.SaveChanges();
+    }
+
+    public void SoftDelete(int id)
+    {
+        var deletedOn = DateTime.Now;
+        var patient = Get(id);
+        
+        patient.IsDeleted = true;
+        patient.DeletedOn = deletedOn;
+        
+        _context.Update(patient);
         _context.SaveChanges();
     }
 

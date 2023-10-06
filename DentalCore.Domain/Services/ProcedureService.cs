@@ -39,6 +39,8 @@ public class ProcedureService : IProcedureService
 
     public int Add(ProcedureCreateDto dto)
     {
+        var createdOn = DateTime.Now;
+        
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Procedures.Any(p => p.Name == dto.Name))
@@ -50,7 +52,8 @@ public class ProcedureService : IProcedureService
         {
             Name = dto.Name,
             Price = dto.Price,
-            IsDiscountAllowed = dto.IsDiscountAllowed
+            IsDiscountAllowed = dto.IsDiscountAllowed,
+            CreatedOn = createdOn
         };
 
         _context.Procedures.Add(procedure);
@@ -61,6 +64,8 @@ public class ProcedureService : IProcedureService
 
     public void Update(ProcedureUpdateDto dto)
     {
+        var updatedOn = DateTime.Now;
+        
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Procedures.Any(p => p.Name == dto.Name && p.Id != dto.Id))
@@ -73,6 +78,7 @@ public class ProcedureService : IProcedureService
         procedure.Name = dto.Name;
         procedure.Price = dto.Price;
         procedure.IsDiscountAllowed = dto.IsDiscountAllowed;
+        procedure.UpdatedOn = updatedOn;
 
         _context.Procedures.Update(procedure);
         _context.SaveChanges();
@@ -80,9 +86,11 @@ public class ProcedureService : IProcedureService
 
     public void SoftDelete(int id)
     {
+        var deletedOn = DateTime.Now;
         var procedure = Get(id);
-
+        
         procedure.IsDeleted = true;
+        procedure.DeletedOn = deletedOn;
 
         _context.Procedures.Update(procedure);
         _context.SaveChanges();

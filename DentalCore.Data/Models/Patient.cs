@@ -16,6 +16,7 @@ public class Patient
     public bool IsDeleted { get; set; }
     public DateTime? DeletedOn { get; set; }
     public DateTime CreatedOn { get; set; }
+    public DateTime? UpdatedOn { get; set; }
 
     public List<Allergy> Allergies { get; set; } = new();
     public List<PatientAllergy> PatientAllergies { get; set; } = new();

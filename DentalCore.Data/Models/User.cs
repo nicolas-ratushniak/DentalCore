@@ -13,6 +13,8 @@ public class User
     [MaxLength(10)] public string Phone { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedOn { get; set; }
+    public DateTime CreatedOn { get; set; }
+    public DateTime? UpdatedOn { get; set; }
 }
 
 public enum UserRole

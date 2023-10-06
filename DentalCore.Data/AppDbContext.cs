@@ -18,16 +18,16 @@ public class AppDbContext : DbContext
     public DbSet<Visit> Visits { get; set; }
     public DbSet<Phone> Phones { get; set; }
 
-    public AppDbContext(DbContextOptions options) : base(options)
-    {
-    }
-
-    // // for migrations
-    // public AppDbContext() { }
-    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // public AppDbContext(DbContextOptions options) : base(options)
     // {
-    //     optionsBuilder.UseSqlServer("Server=NorthernRival\\MSSQLSERVER,1433;Database=DentalCoreDb;Trusted_Connection=True;Encrypt=Optional");
     // }
+
+    // for migrations
+    public AppDbContext() { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseSqlServer("Server=NorthernRival\\MSSQLSERVER,1433;Database=DentalCoreDb;Trusted_Connection=True;Encrypt=Optional");
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
