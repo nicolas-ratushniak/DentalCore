@@ -9,10 +9,12 @@ namespace DentalCore.Domain.Services;
 public class VisitService : IVisitService
 {
     private readonly AppDbContext _context;
+    private readonly IPaymentService _paymentService;
 
-    public VisitService(AppDbContext context)
+    public VisitService(AppDbContext context, IPaymentService paymentService)
     {
         _context = context;
+        _paymentService = paymentService;
     }
 
     public Visit Get(int id)
@@ -45,7 +47,7 @@ public class VisitService : IVisitService
             })
             .ToList();
 
-        var totalPrice = CalculateTotalWithDiscount(itemsNoDuplicates, dto.DiscountPercent, out int discountSum);
+        var totalPrice = _paymentService.CalculateTotalWithDiscount(itemsNoDuplicates, dto.DiscountPercent, out int discountSum);
 
         if (dto.FirstPayment > totalPrice)
         {
@@ -111,113 +113,10 @@ public class VisitService : IVisitService
 
         return visit.Id;
     }
-
-    public void AddPayment(int id, int sum)
-    {
-        var visit = Get(id);
-
-        if (sum < 0 || sum > visit.TotalPrice - GetMoneyPayed(id))
-        {
-            throw new ArgumentOutOfRangeException(nameof(sum));
-        }
-
-        var payment = new Payment
-        {
-            VisitId = id,
-            CreatedOn = DateTime.Now,
-            Sum = sum,
-            Visit = visit
-        };
-
-        _context.Payments.Add(payment);
-        _context.SaveChanges();
-    }
-
-    public int GetDebt(int id)
-    {
-        var visit = Get(id);
-        return visit.TotalPrice - GetMoneyPayedUnsafe(id);
-    }
-
-    public int GetMoneyPayed(int id)
-    {
-        if (!_context.Visits.Any(v => v.Id == id))
-        {
-            throw new EntityNotFoundException("Visit not found");
-        }
-
-        return GetMoneyPayedUnsafe(id);
-    }
-
-    public int CalculateTotalWithDiscount(IEnumerable<TreatmentItemDto> selectedTreatmentItems, int discountPercent,
-        out int discountSum)
-    {
-        if (discountPercent < 0 || discountPercent > 100)
-        {
-            throw new ArgumentOutOfRangeException(nameof(discountPercent));
-        }
-
-        var preciseTotalWithDiscount = 0.0M;
-        var preciseTotalNoDiscount = 0.0M;
-        var items = selectedTreatmentItems.ToList();
-
-        var hasDuplicates = items
-            .GroupBy(t => t.ProcedureId)
-            .Any(g => g.Count() > 1);
-
-        if (hasDuplicates)
-        {
-            throw new ArgumentException("The list of items should not have duplicates", nameof(selectedTreatmentItems));
-        }
-
-        var procedures = _context.Procedures.ToList();
-
-        foreach (var item in items)
-        {
-            var procedure = procedures.Single(p => p.Id == item.ProcedureId);
-
-            var itemPriceNoDiscount = procedure.Price * item.Quantity;
-
-            preciseTotalNoDiscount += itemPriceNoDiscount;
-            preciseTotalWithDiscount += procedure.IsDiscountAllowed
-                ? itemPriceNoDiscount * (1 - discountPercent / 100.0M)
-                : itemPriceNoDiscount;
-        }
-
-        int roundedTotalNoDiscount;
-        int roundedTotalWithDiscount;
-
-        if (preciseTotalWithDiscount <= 50)
-        {
-            roundedTotalNoDiscount = (int)Math.Round(preciseTotalNoDiscount, MidpointRounding.ToPositiveInfinity);
-            roundedTotalWithDiscount = (int)Math.Round(preciseTotalWithDiscount, MidpointRounding.ToPositiveInfinity);
-        }
-        else
-        {
-            roundedTotalNoDiscount = RoundPrice(preciseTotalNoDiscount);
-            roundedTotalWithDiscount = RoundPrice(preciseTotalWithDiscount);
-        }
-
-        discountSum = roundedTotalNoDiscount - roundedTotalWithDiscount;
-        return roundedTotalWithDiscount;
-
-        static int RoundPrice(decimal price)
-        {
-            var remainder = price % 50;
-            return remainder < 25 ? (int)(price - remainder) : (int)(price - remainder) + 50;
-        }
-    }
-
+    
     public IEnumerable<TreatmentItem> GetTreatmentItems(int id)
     {
         return _context.TreatmentItems
             .Where(t => t.VisitId == id);
-    }
-
-    private int GetMoneyPayedUnsafe(int id)
-    {
-        return _context.Payments
-            .Where(p => p.VisitId == id)
-            .Sum(p => p.Sum);
     }
 }

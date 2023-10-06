@@ -36,6 +36,7 @@ public partial class App : Application
                 services.AddSingleton<IProcedureService, ProcedureService>();
                 services.AddSingleton<IUserService, UserService>();
                 services.AddSingleton<IVisitService, VisitService>();
+                services.AddSingleton<IPaymentService, PaymentService>();
 
                 services.AddSingleton<INavigationService, NavigationService>();
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();
@@ -50,7 +51,8 @@ public partial class App : Application
                     id,
                     s.GetRequiredService<INavigationService>(),
                     s.GetRequiredService<IPatientService>(),
-                    s.GetRequiredService<IVisitService>()));
+                    s.GetRequiredService<IVisitService>(),
+                    s.GetRequiredService<IPaymentService>()));
 
                 services.AddSingleton<Func<PatientCreateViewModel>>(s => () => new PatientCreateViewModel(
                     s.GetRequiredService<INavigationService>(),
@@ -73,7 +75,8 @@ public partial class App : Application
                     s.GetRequiredService<IVisitService>(),
                     s.GetRequiredService<IPatientService>(),
                     s.GetRequiredService<IUserService>(),
-                    s.GetRequiredService<IProcedureService>()));
+                    s.GetRequiredService<IProcedureService>(),
+                    s.GetRequiredService<IPaymentService>()));
                 
                 services.AddSingleton<Func<int, VisitCreateViewModel>>(s => id => new VisitCreateViewModel(
                     id,
@@ -81,7 +84,8 @@ public partial class App : Application
                     s.GetRequiredService<IVisitService>(),
                     s.GetRequiredService<IUserService>(),
                     s.GetRequiredService<IPatientService>(),
-                    s.GetRequiredService<IProcedureService>()));
+                    s.GetRequiredService<IProcedureService>(),
+                    s.GetRequiredService<IPaymentService>()));
                 
                 services.AddTransient<MainViewModel>();
 

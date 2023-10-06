@@ -21,6 +21,7 @@ public class VisitCreateViewModel : BaseViewModel
     private readonly INavigationService _navigationService;
     private readonly IVisitService _visitService;
     private readonly IUserService _userService;
+    private readonly IPaymentService _paymentService;
     private readonly int _patientId;
 
     private DoctorListItemViewModel? _selectedDoctor;
@@ -129,11 +130,13 @@ public class VisitCreateViewModel : BaseViewModel
         IVisitService visitService,
         IUserService userService,
         IPatientService patientService,
-        IProcedureService procedureService)
+        IProcedureService procedureService,
+        IPaymentService paymentService)
     {
         _navigationService = navigationService;
         _visitService = visitService;
         _userService = userService;
+        _paymentService = paymentService;
         _patientId = id;
 
         if (patientService.GetAll().All(p => p.Id != id))
@@ -237,7 +240,7 @@ public class VisitCreateViewModel : BaseViewModel
     {
         var items = TreatmentSelector.GetSelectedTreatmentItems().ToList();
 
-        TotalSum = _visitService.CalculateTotalWithDiscount(items, 0, out _);
+        TotalSum = _paymentService.CalculateTotalWithDiscount(items, 0, out _);
         FirstPayment = TotalSum;
     }
 

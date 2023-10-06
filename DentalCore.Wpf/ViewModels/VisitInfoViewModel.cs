@@ -20,7 +20,8 @@ public class VisitInfoViewModel : BaseViewModel
         IVisitService visitService,
         IPatientService patientService,
         IUserService userService,
-        IProcedureService procedureService)
+        IProcedureService procedureService,
+        IPaymentService paymentService)
     {
         var visit = visitService.Get(id);
         var doctor = userService.GetIncludeSoftDeleted(visit.DoctorId);
@@ -31,7 +32,7 @@ public class VisitInfoViewModel : BaseViewModel
         PatientShortName = $"{patient.Surname} {patient.Name[0]}.{patient.Patronymic[0]}.";
         Diagnosis = visit.Diagnosis;
         TotalSum = visit.TotalPrice;
-        HasPayed = visitService.GetMoneyPayed(id);
+        HasPayed = paymentService.GetMoneyPayedForVisit(id);
 
         var procedures = procedureService.GetAllIncludeSoftDeleted().ToList();
 

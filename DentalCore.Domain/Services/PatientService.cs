@@ -190,53 +190,6 @@ public class PatientService : IPatientService
         _context.SaveChanges();
     }
 
-    public int GetDebt(int id)
-    {
-        if (!_context.Patients.Any(p => p.Id == id))
-        {
-            throw new EntityNotFoundException("Patient not found");
-        }
-
-        var shouldHavePayed = GetVisits(id).Sum(v => v.TotalPrice);
-        var actuallyPayed = GetPayments(id).Sum(p => p.Sum);
-
-        return shouldHavePayed - actuallyPayed;
-    }
-
-    public void PayWholeDebt(int id)
-    {
-        if (!_context.Patients.Any(p => p.Id == id))
-        {
-            throw new EntityNotFoundException("Patient not found");
-        }
-
-        var paymentTime = DateTime.Now;
-
-        foreach (var visit in GetVisits(id))
-        {
-            var alreadyPaid = _context.Payments.Where(p => p.VisitId == visit.Id)
-                .Sum(p => p.Sum);
-
-            var remainsToPay = visit.TotalPrice - alreadyPaid;
-
-            if (remainsToPay <= 0)
-            {
-                continue;
-            }
-
-            var payment = new Payment
-            {
-                VisitId = visit.Id,
-                CreatedOn = paymentTime,
-                Sum = remainsToPay
-            };
-
-            _context.Payments.Add(payment);
-        }
-
-        _context.SaveChanges();
-    }
-
     public IEnumerable<Allergy> GetAllergies(int id)
     {
         var patient = _context.Patients
@@ -260,17 +213,5 @@ public class PatientService : IPatientService
     public IEnumerable<Phone> GetPhones(int id)
     {
         return _context.Phones.Where(p => p.PatientId == id);
-    }
-
-    private IEnumerable<Visit> GetVisits(int id)
-    {
-        return _context.Visits.Where(v => v.PatientId == id);
-    }
-
-    private IEnumerable<Payment> GetPayments(int id)
-    {
-        return _context.Payments
-            .Include(p => p.Visit)
-            .Where(p => p.Visit.PatientId == id);
     }
 }

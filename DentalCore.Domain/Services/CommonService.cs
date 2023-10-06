@@ -17,11 +17,6 @@ public class CommonService : ICommonService
         return _context.Diseases.ToList();
     }
 
-    public IEnumerable<Payment> GetPayments()
-    {
-        return _context.Payments.ToList();
-    }
-
     public IEnumerable<City> GetCities()
     {
         return _context.Cities.ToList();

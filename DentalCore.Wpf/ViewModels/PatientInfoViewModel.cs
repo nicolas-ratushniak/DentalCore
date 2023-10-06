@@ -46,7 +46,8 @@ public class PatientInfoViewModel : BaseViewModel
         int id,
         INavigationService navigationService,
         IPatientService patientService,
-        IVisitService visitService
+        IVisitService visitService,
+        IPaymentService paymentService
     )
     {
         _visitService = visitService;
@@ -59,7 +60,7 @@ public class PatientInfoViewModel : BaseViewModel
         Patronymic = patient.Patronymic;
         AllergyNames = patientService.GetAllergies(id).Select(a => a.Name);
         DiseasesNames = patientService.GetDiseases(id).Select(d => d.Name);
-        Debt = patientService.GetDebt(id);
+        Debt = paymentService.GetPatientDebt(id);
 
         var age = CalculateAge(patient.BirthDate);
         AgeString = age == 1 ? "1 рік" : $"{age} років";
