@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,39 +11,31 @@ using DentalCore.Domain.Exceptions;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Services.Navigation;
+using DentalCore.Wpf.ViewModels.Components;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels;
 
 public class VisitCreateViewModel : BaseViewModel
 {
-    private readonly ObservableCollection<TreatmentItemListItemViewModel> _treatmentItems;
     private readonly INavigationService _navigationService;
     private readonly IVisitService _visitService;
     private readonly IUserService _userService;
-    private readonly IProcedureService _procedureService;
     private readonly int _patientId;
 
     private DoctorListItemViewModel? _selectedDoctor;
-    private TreatmentItemListItemViewModel? _selectedTreatmentItem;
     private string _doctorSearchFilter = string.Empty;
-    private string _treatmentItemSelectionFilter = string.Empty;
     private string? _diagnosis;
     private int _firstPayment;
     private int _totalSum;
     private string? _errorMessage;
     private bool _isDoctorListVisible;
-    private bool _isTreatmentItemListVisible;
-    private bool _canSelectTreatmentItem = true;
 
-    public ICommand RemoveTreatmentItemCommand { get; }
-    public ICommand UpdatePriceCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
 
     public ICollectionView DoctorCollectionView { get; }
-    public ICollectionView SelectedTreatmentItemCollectionView { get; }
-    public ICollectionView NonSelectedTreatmentItemCollectionView { get; }
+    public TreatmentSelectorComponent TreatmentSelector { get; }
 
     public string? ErrorMessage
     {
@@ -57,8 +48,6 @@ public class VisitCreateViewModel : BaseViewModel
         }
     }
 
-    #region SearchAndFilters
-
     public string DoctorSearchFilter
     {
         get => _doctorSearchFilter;
@@ -69,19 +58,6 @@ public class VisitCreateViewModel : BaseViewModel
 
             OnPropertyChanged();
             OnDoctorFilterChanged();
-        }
-    }
-
-    public string TreatmentItemSelectionFilter
-    {
-        get => _treatmentItemSelectionFilter;
-        set
-        {
-            if (value == _treatmentItemSelectionFilter) return;
-            _treatmentItemSelectionFilter = value;
-
-            OnPropertyChanged();
-            OnTreatmentItemFilterChanged();
         }
     }
 
@@ -99,19 +75,6 @@ public class VisitCreateViewModel : BaseViewModel
         }
     }
 
-    public TreatmentItemListItemViewModel? SelectedTreatmentItem
-    {
-        get => _selectedTreatmentItem;
-        set
-        {
-            if (Equals(value, _selectedTreatmentItem) || !_canSelectTreatmentItem) return;
-            _selectedTreatmentItem = value;
-
-            OnPropertyChanged();
-            OnSelectedTreatmentItemChanged();
-        }
-    }
-
     public bool IsDoctorListVisible
     {
         get => _isDoctorListVisible;
@@ -122,19 +85,6 @@ public class VisitCreateViewModel : BaseViewModel
             OnPropertyChanged();
         }
     }
-
-    public bool IsTreatmentItemListVisible
-    {
-        get => _isTreatmentItemListVisible;
-        set
-        {
-            if (value == _isTreatmentItemListVisible) return;
-            _isTreatmentItemListVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    #endregion
 
     public string? Diagnosis
     {
@@ -184,7 +134,6 @@ public class VisitCreateViewModel : BaseViewModel
         _navigationService = navigationService;
         _visitService = visitService;
         _userService = userService;
-        _procedureService = procedureService;
         _patientId = id;
 
         if (patientService.GetAll().All(p => p.Id != id))
@@ -192,7 +141,12 @@ public class VisitCreateViewModel : BaseViewModel
             throw new EntityNotFoundException("Patient not found");
         }
 
-        DoctorCollectionView = CollectionViewSource.GetDefaultView(GetDoctors());
+        TreatmentSelector = new TreatmentSelectorComponent(procedureService);
+        TreatmentSelector.SelectedTreatmentSetChanged += OnSelectedTreatmentsChanged;
+
+        var doctors = GetDoctors();
+        
+        DoctorCollectionView = CollectionViewSource.GetDefaultView(doctors);
         DoctorCollectionView.Filter = o =>
         {
             if (o is DoctorListItemViewModel d)
@@ -204,51 +158,24 @@ public class VisitCreateViewModel : BaseViewModel
             return false;
         };
 
-        _treatmentItems = new ObservableCollection<TreatmentItemListItemViewModel>(GetTreatmentItems());
-
-        NonSelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
-
-        NonSelectedTreatmentItemCollectionView.Filter = o =>
-            o is TreatmentItemListItemViewModel t && !t.IsSelected &&
-            t.Name.ToLower().Contains(TreatmentItemSelectionFilter.ToLower());
-
-        SelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
-
-        SelectedTreatmentItemCollectionView.Filter = o =>
-            o is TreatmentItemListItemViewModel t && t.IsSelected;
-
         CancelCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(ViewType.PatientInfo, id));
         SubmitCommand = new RelayCommand<object>(AddVisit_Execute, AddVisit_CanExecute);
+    }
 
-        RemoveTreatmentItemCommand = new RelayCommand<int>(itemId =>
-        {
-            var item = _treatmentItems.Single(t => t.Id == itemId);
-            item.Quantity = 0;
-            item.IsSelected = false;
-
-            SelectedTreatmentItemCollectionView.Refresh();
-            NonSelectedTreatmentItemCollectionView.Refresh();
-
-            UpdatePrice();
-        });
-
-        UpdatePriceCommand = new RelayCommand<object>(_ => UpdatePrice());
+    public override void Dispose()
+    {
+        TreatmentSelector.SelectedTreatmentSetChanged -= OnSelectedTreatmentsChanged;
+        base.Dispose();
     }
 
     private bool AddVisit_CanExecute(object obj)
     {
-        return SelectedDoctor != null && _treatmentItems.Any(t => t.IsSelected);
+        return SelectedDoctor != null && TreatmentSelector.HasSelectedItems;
     }
 
     private void AddVisit_Execute(object obj)
     {
-        var items = _treatmentItems
-            .Where(t => t.IsSelected && t.Quantity > 0)
-            .Select(t => new TreatmentItemDto
-            {
-                ProcedureId = t.Id,
-                Quantity = t.Quantity
-            });
+        var items = TreatmentSelector.GetSelectedTreatmentItems();
 
         var dto = new VisitCreateDto
         {
@@ -295,20 +222,6 @@ public class VisitCreateViewModel : BaseViewModel
         DoctorCollectionView.Refresh();
     }
 
-    private void OnTreatmentItemFilterChanged()
-    {
-        if (string.IsNullOrEmpty(TreatmentItemSelectionFilter))
-        {
-            IsTreatmentItemListVisible = false;
-        }
-        else
-        {
-            NonSelectedTreatmentItemCollectionView.Refresh();
-            IsTreatmentItemListVisible = true;
-            _canSelectTreatmentItem = true;
-        }
-    }
-
     private void OnSelectedDoctorChanged()
     {
         if (_selectedDoctor is null)
@@ -320,39 +233,9 @@ public class VisitCreateViewModel : BaseViewModel
         IsDoctorListVisible = false;
     }
 
-    private void OnSelectedTreatmentItemChanged()
+    private void OnSelectedTreatmentsChanged(object? sender, EventArgs e)
     {
-        TreatmentItemSelectionFilter = string.Empty;
-        _canSelectTreatmentItem = false;
-        
-        if (_selectedTreatmentItem is null)
-        {
-            return;
-        }
-        
-        var item = _treatmentItems
-            .Single(t => t.Id == _selectedTreatmentItem.Id);
-
-        item.Quantity = 1;
-        item.IsSelected = true;
-
-        SelectedTreatmentItemCollectionView.Refresh();
-        NonSelectedTreatmentItemCollectionView.Refresh();
-        UpdatePrice();
-        
-        _selectedTreatmentItem = null;
-    }
-
-    private void UpdatePrice()
-    {
-        var items = _treatmentItems
-            .Where(t => t.IsSelected && t.Quantity > 0)
-            .Select(t => new TreatmentItemDto
-            {
-                ProcedureId = t.Id,
-                Quantity = t.Quantity
-            })
-            .ToList();
+        var items = TreatmentSelector.GetSelectedTreatmentItems().ToList();
 
         TotalSum = _visitService.CalculateTotalWithDiscount(items, 0, out _);
         FirstPayment = TotalSum;
@@ -367,18 +250,6 @@ public class VisitCreateViewModel : BaseViewModel
                 Id = d.Id,
                 Name = d.Name,
                 Surname = d.Surname
-            });
-    }
-
-    private IEnumerable<TreatmentItemListItemViewModel> GetTreatmentItems()
-    {
-        return _procedureService.GetAll()
-            .Select(p => new TreatmentItemListItemViewModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Quantity = 0,
-                Price = p.Price
             });
     }
 }

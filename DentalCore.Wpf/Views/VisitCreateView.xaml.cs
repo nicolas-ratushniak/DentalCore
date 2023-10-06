@@ -10,10 +10,4 @@ public partial class VisitCreateView : UserControl
     {
         InitializeComponent();
     }
-
-    private void TreatmentItem_OnQuantityChanged(object sender, RoutedPropertyChangedEventArgs<int> e)
-    {
-        var viewModel = (VisitCreateViewModel)DataContext;
-        viewModel.UpdatePriceCommand.Execute(null);
-    }
 }
