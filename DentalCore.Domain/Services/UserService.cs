@@ -58,7 +58,7 @@ public class UserService : IUserService
     public int Add(UserCreateDto dto)
     {
         var createdOn = DateTime.Now;
-        
+
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Users.Any(u => u.Login == dto.Login))
@@ -66,7 +66,9 @@ public class UserService : IUserService
             throw new ValidationException("У базі вже є користувач з таким логіном");
         }
 
-        if (_context.Users.Any(u => u.Name == dto.Name && u.Surname == dto.Surname))
+        if (_context.Users.Any(u =>
+                u.Name == dto.Name &&
+                u.Surname == dto.Surname))
         {
             throw new ValidationException("У базі вже є користувач з таким ПІБ");
         }
@@ -93,15 +95,20 @@ public class UserService : IUserService
     public void Update(UserUpdateDto dto)
     {
         var updatedOn = DateTime.Now;
-        
+
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Users.Any(u => u.Login == dto.Login && u.Id != dto.Id))
+        if (_context.Users.Any(u =>
+                u.Login == dto.Login &&
+                u.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є користувач з таким логіном");
         }
 
-        if (_context.Users.Any(u => u.Name == dto.Name && u.Surname == dto.Surname && u.Id != dto.Id))
+        if (_context.Users.Any(u =>
+                u.Name == dto.Name &&
+                u.Surname == dto.Surname &&
+                u.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є користувач з таким ПІБ");
         }
@@ -130,7 +137,7 @@ public class UserService : IUserService
         _context.Users.Update(user);
         _context.SaveChanges();
     }
-    
+
     private string GetPasswordHash(string password)
     {
         var data = _hashAlgorithm.ComputeHash(Encoding.UTF8.GetBytes(password));

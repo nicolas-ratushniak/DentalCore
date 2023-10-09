@@ -47,7 +47,8 @@ public class VisitService : IVisitService
             })
             .ToList();
 
-        var totalPrice = _paymentService.CalculateTotalWithDiscount(itemsNoDuplicates, dto.DiscountPercent, out int discountSum);
+        var totalPrice =
+            _paymentService.CalculateTotalWithDiscount(itemsNoDuplicates, dto.DiscountPercent, out int discountSum);
 
         if (dto.FirstPayment > totalPrice)
         {
@@ -104,8 +105,7 @@ public class VisitService : IVisitService
                 Visit = visit
             };
 
-            visit.Payments = new List<Payment>();
-            visit.Payments.Add(payment);
+            visit.Payments = new List<Payment> { payment };
         }
 
         _context.Visits.Add(visit);
@@ -113,7 +113,7 @@ public class VisitService : IVisitService
 
         return visit.Id;
     }
-    
+
     public IEnumerable<TreatmentItem> GetTreatmentItems(int id)
     {
         return _context.TreatmentItems

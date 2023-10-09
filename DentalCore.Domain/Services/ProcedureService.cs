@@ -40,7 +40,7 @@ public class ProcedureService : IProcedureService
     public int Add(ProcedureCreateDto dto)
     {
         var createdOn = DateTime.Now;
-        
+
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Procedures.Any(p => p.Name == dto.Name))
@@ -65,10 +65,12 @@ public class ProcedureService : IProcedureService
     public void Update(ProcedureUpdateDto dto)
     {
         var updatedOn = DateTime.Now;
-        
+
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Procedures.Any(p => p.Name == dto.Name && p.Id != dto.Id))
+        if (_context.Procedures.Any(p =>
+                p.Name == dto.Name &&
+                p.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
@@ -88,7 +90,7 @@ public class ProcedureService : IProcedureService
     {
         var deletedOn = DateTime.Now;
         var procedure = Get(id);
-        
+
         procedure.IsDeleted = true;
         procedure.DeletedOn = deletedOn;
 

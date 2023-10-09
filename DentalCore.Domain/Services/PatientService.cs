@@ -26,7 +26,7 @@ public class PatientService : IPatientService
     public Patient GetIncludeSoftDeleted(int id)
     {
         return _context.Patients.Find(id)
-            ?? throw new EntityNotFoundException();
+               ?? throw new EntityNotFoundException();
     }
 
     public IEnumerable<Patient> GetAll()
@@ -42,11 +42,13 @@ public class PatientService : IPatientService
     public int Add(PatientCreateDto dto)
     {
         var createdOn = DateTime.Now;
-        
+
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Patients.Any(p =>
-                p.Name == dto.Name && p.Surname == dto.Surname && p.Patronymic == dto.Patronymic))
+                p.Name == dto.Name &&
+                p.Surname == dto.Surname &&
+                p.Patronymic == dto.Patronymic))
         {
             throw new ValidationException("У базі вже є пацієнт з таким ПІБ");
         }
@@ -80,10 +82,10 @@ public class PatientService : IPatientService
                 IsMain = phoneDto.IsMain,
                 Tag = phoneDto.Tag
             };
-            
+
             patient.Phones.Add(phone);
         }
-        
+
         foreach (var allergyId in dto.AllergyIds)
         {
             var allergy = _context.Allergies.Find(allergyId)
@@ -109,11 +111,14 @@ public class PatientService : IPatientService
     public void Update(PatientUpdateDto dto)
     {
         var updatedOn = DateTime.Now;
-        
+
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (_context.Patients.Any(p =>
-                p.Name == dto.Name && p.Surname == dto.Surname && p.Patronymic == dto.Patronymic && p.Id != dto.Id))
+                p.Name == dto.Name &&
+                p.Surname == dto.Surname
+                && p.Patronymic == dto.Patronymic
+                && p.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є пацієнт з таким ПІБ");
         }
@@ -138,11 +143,11 @@ public class PatientService : IPatientService
         patient.UpdatedOn = updatedOn;
 
         patient.Phones = new List<Phone>();
-        
+
         foreach (var phoneDto in dto.Phones)
         {
             Validator.ValidateObject(phoneDto, new ValidationContext(phoneDto), true);
-            
+
             var phone = new Phone
             {
                 Patient = patient,
@@ -150,7 +155,7 @@ public class PatientService : IPatientService
                 IsMain = phoneDto.IsMain,
                 Tag = phoneDto.Tag
             };
-            
+
             patient.Phones.Add(phone);
         }
 
@@ -182,10 +187,10 @@ public class PatientService : IPatientService
     {
         var deletedOn = DateTime.Now;
         var patient = Get(id);
-        
+
         patient.IsDeleted = true;
         patient.DeletedOn = deletedOn;
-        
+
         _context.Update(patient);
         _context.SaveChanges();
     }
