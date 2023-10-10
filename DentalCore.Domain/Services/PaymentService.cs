@@ -21,9 +21,12 @@ public class PaymentService : IPaymentService
                ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<Payment> GetAll()
+    public IEnumerable<Payment> GetAll(DateTime from, DateTime to)
     {
-        return _context.Payments.ToList();
+        return _context.Payments
+            .Where(p => 
+                p.CreatedOn >= from && 
+                p.CreatedOn <= to);
     }
 
     public int GetPatientDebt(int patientId)

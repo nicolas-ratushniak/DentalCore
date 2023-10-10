@@ -6,7 +6,7 @@ namespace DentalCore.Domain.Services;
 public interface IPaymentService
 {
     public Payment Get(int id);
-    public IEnumerable<Payment> GetAll();
+    public IEnumerable<Payment> GetAll(DateTime from, DateTime to);
     public int GetPatientDebt(int patientId);
     public int GetVisitDebt(int visitId);
     public void PayPatientDebt(int patientId);
