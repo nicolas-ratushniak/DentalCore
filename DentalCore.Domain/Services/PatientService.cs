@@ -145,64 +145,9 @@ public class PatientService : IPatientService
         patient.Patronymic = dto.Patronymic;
         patient.BirthDate = dto.BirthDate;
         patient.UpdatedOn = updatedOn;
-
-        patient.Phones = patient.Phones
-            .Where(p => dto.Phones.Any(phone => phone.PhoneNumber == p.PhoneNumber))
-            .ToList();
-
-        foreach (var phoneDto in dto.Phones)
-        {
-            Validator.ValidateObject(phoneDto, new ValidationContext(phoneDto), true);
-
-            var phone = patient.Phones
-                .SingleOrDefault(p => p.PhoneNumber == phoneDto.PhoneNumber);
-
-            if (phone != null)
-            {
-                phone.IsMain = phoneDto.IsMain;
-                phone.Tag = phoneDto.Tag;
-            }
-            else
-            {
-                patient.Phones.Add(new Phone
-                {
-                    Patient = patient,
-                    PhoneNumber = phoneDto.PhoneNumber,
-                    IsMain = phoneDto.IsMain,
-                    Tag = phoneDto.Tag
-                });
-            }
-        }
-
-        patient.Allergies = patient.Allergies
-            .Where(a => dto.AllergyIds.Any(id => id == a.Id))
-            .ToList();
-
-        var allAllergies = _context.Allergies.ToList();
-
-        foreach (var allergyId in dto.AllergyIds
-                     .Where(id => allAllergies.All(a => a.Id != id)))
-        {
-            var allergy = allAllergies.SingleOrDefault(a => a.Id == allergyId)
-                          ?? throw new EntityNotFoundException("Allergy not found");
-
-            patient.Allergies.Add(allergy);
-        }
-
-        patient.Diseases = patient.Diseases
-            .Where(d => dto.DiseaseIds.Any(id => id == d.Id))
-            .ToList();
-
-        var allDiseases = _context.Diseases.ToList();
-
-        foreach (var diseaseId in dto.DiseaseIds
-                     .Where(id => allAllergies.All(d => d.Id != id)))
-        {
-            var disease = allDiseases.SingleOrDefault(d => d.Id == diseaseId)
-                          ?? throw new EntityNotFoundException("Disease not found");
-
-            patient.Diseases.Add(disease);
-        }
+        patient.Phones = GetUpdatedPhones(patient, patient.Phones, dto.Phones);
+        patient.Allergies = GetUpdatedAllergies(patient.Allergies, dto.AllergyIds);
+        patient.Diseases = GetUpdatedDiseases(patient.Diseases, dto.DiseaseIds);
 
         _context.Patients.Update(patient);
         _context.SaveChanges();
@@ -243,5 +188,79 @@ public class PatientService : IPatientService
     public IEnumerable<Phone> GetPhones(int id)
     {
         return _context.Phones.Where(p => p.PatientId == id);
+    }
+
+    private List<Phone> GetUpdatedPhones(Patient patient, ICollection<Phone> oldPhones,
+        IEnumerable<PhoneCreateDto> newPhones)
+    {
+        var result = oldPhones
+            .Where(p => newPhones.Any(phone => phone.PhoneNumber == p.PhoneNumber))
+            .ToList();
+
+        foreach (var phoneDto in newPhones)
+        {
+            Validator.ValidateObject(phoneDto, new ValidationContext(phoneDto), true);
+
+            var phone = oldPhones
+                .SingleOrDefault(p => p.PhoneNumber == phoneDto.PhoneNumber);
+
+            if (phone != null)
+            {
+                phone.IsMain = phoneDto.IsMain;
+                phone.Tag = phoneDto.Tag;
+            }
+            else
+            {
+                result.Add(new Phone
+                {
+                    Patient = patient,
+                    PhoneNumber = phoneDto.PhoneNumber,
+                    IsMain = phoneDto.IsMain,
+                    Tag = phoneDto.Tag
+                });
+            }
+        }
+
+        return result;
+    }
+
+    private List<Allergy> GetUpdatedAllergies(IEnumerable<Allergy> oldAllergies, IEnumerable<int> newAllergyIds)
+    {
+        var result = oldAllergies
+            .Where(a => newAllergyIds.Any(id => id == a.Id))
+            .ToList();
+
+        var allAllergies = _context.Allergies.ToList();
+
+        foreach (var allergyId in newAllergyIds
+                     .Where(id => allAllergies.All(a => a.Id != id)))
+        {
+            var allergy = allAllergies.SingleOrDefault(a => a.Id == allergyId)
+                          ?? throw new EntityNotFoundException("Allergy not found");
+
+            result.Add(allergy);
+        }
+
+        return result;
+    }
+
+    private List<Disease> GetUpdatedDiseases(IEnumerable<Disease> oldDiseases, IEnumerable<int> newDiseasesIds)
+    {
+        var result = oldDiseases
+            .Where(d => newDiseasesIds.Any(id => id == d.Id))
+            .ToList();
+
+        var allDiseases = _context.Diseases.ToList();
+
+        foreach (var diseaseId in newDiseasesIds
+                     .Where(id => allDiseases.All(d => d.Id != id)))
+        {
+            var disease = allDiseases.SingleOrDefault(d => d.Id == diseaseId)
+                          ?? throw new EntityNotFoundException("Disease not found");
+
+            result.Add(disease);
+        }
+
+        return result;
     }
 }
