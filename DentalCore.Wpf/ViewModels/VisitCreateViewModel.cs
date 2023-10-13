@@ -184,7 +184,7 @@ public class VisitCreateViewModel : BaseViewModel
 
     private async Task AddVisit_Execute()
     {
-        if (SelectedDoctor is null || TreatmentSelector.HasSelectedItems)
+        if (SelectedDoctor is null || !TreatmentSelector.HasSelectedItems)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;

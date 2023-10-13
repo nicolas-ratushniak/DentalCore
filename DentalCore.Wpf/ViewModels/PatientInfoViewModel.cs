@@ -42,6 +42,7 @@ public class PatientInfoViewModel : BaseViewModel
             if (value == _debt) return;
             _debt = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(HasDebt));
         }
     }
 
@@ -144,6 +145,7 @@ public class PatientInfoViewModel : BaseViewModel
         {
             DiseasesNames.Add(disease.Name);
         }
+        OnPropertyChanged(nameof(HasAllergiesOrDiseases));
 
         foreach (var visit in await GetVisitsAsync())
         {
