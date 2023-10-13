@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Exceptions;
 using DentalCore.Domain.Services;
@@ -19,13 +20,13 @@ public class AuthenticationService : IAuthenticationService
         _userService = userService;
     }
 
-    public AuthenticationResult LogIn(string login, string password)
+    public async Task<AuthenticationResult> LogInAsync(string login, string password)
     {
         try
         {
-            var user = _userService.Get(login);
+            var user = await _userService.GetAsync(login);
 
-            if (!_userService.CheckPassword(user.Id, password))
+            if (!await _userService.CheckPasswordAsync(user.Id, password))
             {
                 return AuthenticationResult.InvalidPassword;
             }

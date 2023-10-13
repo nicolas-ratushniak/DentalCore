@@ -28,7 +28,8 @@ public partial class App : Application
             .ConfigureServices((builder, services) =>
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-                services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+                services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString), 
+                    ServiceLifetime.Transient);
 
                 services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
                 services.AddSingleton<ICommonService, CommonService>();
@@ -83,7 +84,6 @@ public partial class App : Application
                     s.GetRequiredService<INavigationService>(),
                     s.GetRequiredService<IVisitService>(),
                     s.GetRequiredService<IUserService>(),
-                    s.GetRequiredService<IPatientService>(),
                     s.GetRequiredService<IProcedureService>(),
                     s.GetRequiredService<IPaymentService>()));
                 

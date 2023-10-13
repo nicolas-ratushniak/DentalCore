@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
@@ -26,14 +27,15 @@ public class PatientCreateViewModel : BaseViewModel
     private string _name;
     private string _surname;
     private string _patronymic;
-    private Gender _gender;
+    private Gender _gender = Gender.Male;
     private string _phone;
     private string _citySearchFilter = string.Empty;
     private bool _isCityListVisible;
     private CityListItemViewModel? _selectedCity;
     private string _birthDate;
     private string? _errorMessage;
-    
+    private readonly ObservableCollection<CityListItemViewModel> _cities;
+
     public ICommand CancelCommand { get; set; }
     public ICommand SubmitCommand { get; set; }
 
@@ -191,32 +193,48 @@ public class PatientCreateViewModel : BaseViewModel
         _navigationService = navigationService;
         _patientService = patientService;
         _commonService = commonService;
+        _cities = new ObservableCollection<CityListItemViewModel>();
 
-        // set default
-        Gender = Gender.Male;
-        
         AllergySelector = new AllergySelectorComponent(null, patientService, commonService);
-        
-        Diseases = new ObservableCollection<DiseaseListItemViewModel>(GetDiseases());
 
-        CityCollectionView = CollectionViewSource.GetDefaultView(GetCities());
-        CityCollectionView.Filter = o => o is CityListItemViewModel c &&
-                                         c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
-        
+        Diseases = new ObservableCollection<DiseaseListItemViewModel>();
+
+        CityCollectionView = CollectionViewSource.GetDefaultView(_cities);
+
+        CityCollectionView.Filter = o =>
+            o is CityListItemViewModel c &&
+            c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
+
         CancelCommand = new RelayCommand<object>(_ =>
             _navigationService.NavigateTo(ViewType.Patients, null));
 
-        SubmitCommand = new RelayCommand<object>(Add_Execute, Add_CanExecute);
+        SubmitCommand = new AsyncRelayCommand(Add_Execute);
+
+        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private bool Add_CanExecute(object obj)
+    private async Task LoadData()
     {
-        return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Surname) && !string.IsNullOrEmpty(Patronymic) &&
-               !string.IsNullOrEmpty(Phone) && !string.IsNullOrEmpty(BirthDate) && SelectedCity != null;
+        foreach (var disease in await GetDiseasesAsync())
+        {
+            Diseases.Add(disease);
+        }
+
+        foreach (var city in await GetCitiesAsync())
+        {
+            _cities.Add(city);
+        }
     }
 
-    private void Add_Execute(object obj)
+    private async Task Add_Execute()
     {
+        if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Surname) || string.IsNullOrEmpty(Patronymic) ||
+            string.IsNullOrEmpty(Phone) || string.IsNullOrEmpty(BirthDate) || SelectedCity is null)
+        {
+            ErrorMessage = "Заповніть всі необхідні поля";
+            return;
+        }
+        
         var diseaseIds = Diseases
             .Where(d => d.IsSelected)
             .Select(d => d.Id)
@@ -254,7 +272,7 @@ public class PatientCreateViewModel : BaseViewModel
 
         try
         {
-            var id = _patientService.Add(dto);
+            var id = await _patientService.AddAsync(dto);
             _navigationService.NavigateTo(ViewType.PatientInfo, id);
         }
         catch (ValidationException ex)
@@ -262,6 +280,12 @@ public class PatientCreateViewModel : BaseViewModel
             ErrorMessage = ex.Message;
         }
     }
+
+    // private bool Add_CanExecute()
+    // {
+    //     return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Surname) && !string.IsNullOrEmpty(Patronymic) &&
+    //            !string.IsNullOrEmpty(Phone) && !string.IsNullOrEmpty(BirthDate) && SelectedCity != null;
+    // }
 
     private void OnCityFilterChanged()
     {
@@ -286,9 +310,9 @@ public class PatientCreateViewModel : BaseViewModel
         CityCollectionView.Refresh();
     }
 
-    private IEnumerable<CityListItemViewModel> GetCities()
+    private async Task<IEnumerable<CityListItemViewModel>> GetCitiesAsync()
     {
-        return _commonService.GetCities()
+        return (await _commonService.GetCitiesAsync())
             .Select(c => new CityListItemViewModel
             {
                 Id = c.Id,
@@ -296,9 +320,9 @@ public class PatientCreateViewModel : BaseViewModel
             });
     }
 
-    private IEnumerable<DiseaseListItemViewModel> GetDiseases()
+    private async Task<IEnumerable<DiseaseListItemViewModel>> GetDiseasesAsync()
     {
-        return _commonService.GetDiseases()
+        return (await _commonService.GetDiseasesAsync())
             .Select(d => new DiseaseListItemViewModel
             {
                 Id = d.Id,

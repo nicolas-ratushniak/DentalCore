@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Services;
@@ -14,6 +16,7 @@ public class PatientsViewModel : BaseViewModel
 {
     private readonly IPatientService _patientService;
     private string _patientSearchFilter = string.Empty;
+    private readonly ObservableCollection<PatientListItemViewModel> _patients;
 
     public ICommand AddPatientCommand { get; }
     public ICommand EditPatientCommand { get; }
@@ -37,9 +40,10 @@ public class PatientsViewModel : BaseViewModel
     public PatientsViewModel(INavigationService navigationService, IPatientService patientService)
     {
         _patientService = patientService;
-        List<PatientListItemViewModel> patientsList = GetPatients();
+        _patients = new ObservableCollection<PatientListItemViewModel>();
 
-        PatientCollectionView = CollectionViewSource.GetDefaultView(patientsList);
+        PatientCollectionView = CollectionViewSource.GetDefaultView(_patients);
+        
         PatientCollectionView.SortDescriptions.Add(
             new SortDescription(nameof(PatientListItemViewModel.FullName), ListSortDirection.Ascending));
 
@@ -62,11 +66,21 @@ public class PatientsViewModel : BaseViewModel
 
         ShowPatientCommand = new RelayCommand<int>(id =>
             navigationService.NavigateTo(ViewType.PatientInfo, id));
+
+        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private List<PatientListItemViewModel> GetPatients()
+    private async Task LoadData()
     {
-        return _patientService.GetAll()
+        foreach (var patient in await GetPatientsAsync())
+        {
+            _patients.Add(patient);
+        }
+    }
+
+    private async Task<List<PatientListItemViewModel>> GetPatientsAsync()
+    {
+        return (await _patientService.GetAllAsync())
             .Select(p => new PatientListItemViewModel
             {
                 Id = p.Id,

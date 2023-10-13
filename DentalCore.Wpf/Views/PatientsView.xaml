@@ -7,7 +7,8 @@
              xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:local="clr-namespace:DentalCore.Wpf.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             Loaded="OnLoaded">
 
     <UserControl.Resources>
         <Style x:Key="PatientListBox" TargetType="ListBox">

@@ -26,14 +26,14 @@ public abstract class AsyncCommand : ICommand
         _onException = onException;
     }
 
-    public virtual bool CanExecute(object? parameter)
+    public bool CanExecute(object? parameter)
     {
         return !_isExecuting;
     }
 
     public async void Execute(object? parameter)
     {
-        _isExecuting = true;
+        IsExecuting = true;
 
         try
         {
@@ -44,7 +44,7 @@ public abstract class AsyncCommand : ICommand
             _onException?.Invoke(ex);
         }
 
-        _isExecuting = false;
+        IsExecuting = false;
     }
 
     protected abstract Task ExecuteAsync(object? parameter);

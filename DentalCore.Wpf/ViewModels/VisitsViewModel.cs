@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Services;
@@ -16,6 +18,7 @@ public class VisitsViewModel : BaseViewModel
     private readonly IVisitService _visitService;
     private readonly IPatientService _patientService;
     private string _visitSearchFilter = string.Empty;
+    private readonly ObservableCollection<TodayVisitListItemViewModel> _todayVisits;
 
     public ICommand ShowVisitCommand { get; }
 
@@ -42,7 +45,10 @@ public class VisitsViewModel : BaseViewModel
         _visitService = visitService;
         _patientService = patientService;
 
-        VisitCollectionView = CollectionViewSource.GetDefaultView(GetVisitsForToday());
+        _todayVisits = new ObservableCollection<TodayVisitListItemViewModel>();
+
+        VisitCollectionView = CollectionViewSource.GetDefaultView(_todayVisits);
+        
         VisitCollectionView.SortDescriptions.Add(
             new SortDescription(nameof(TodayVisitListItemViewModel.Time), ListSortDirection.Descending));
 
@@ -58,18 +64,26 @@ public class VisitsViewModel : BaseViewModel
         };
 
         ShowVisitCommand = new RelayCommand<int>(id => navigationService.NavigateTo(ViewType.VisitInfo, id));
+        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private List<TodayVisitListItemViewModel> GetVisitsForToday()
+    private async Task LoadData()
     {
-        var patients = _patientService.GetAll().ToList();
+        foreach (var visit in await GetVisitsForTodayAsync())
+        {
+            _todayVisits.Add(visit);
+        }
+    }
 
-        return _visitService.GetAll()
+    private async Task<List<TodayVisitListItemViewModel>> GetVisitsForTodayAsync()
+    {
+        var patients = (await _patientService.GetAllAsync()).ToList();
+
+        return (await _visitService.GetAllAsync())
             .Where(v => v.CreatedOn.Date == DateTime.Today)
             .Select(v =>
             {
-                var patient = patients
-                    .Single(p => p.Id == v.PatientId);
+                var patient = patients.Single(p => p.Id == v.PatientId);
 
                 return new TodayVisitListItemViewModel
                 {

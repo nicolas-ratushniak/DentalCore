@@ -11,7 +11,8 @@
              xmlns:models="clr-namespace:DentalCore.Data.Models;assembly=DentalCore.Data"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="1000">
+             d:DesignHeight="600" d:DesignWidth="1000"
+             Loaded="OnLoaded">
 
     <UserControl.Resources>
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
@@ -209,6 +210,7 @@
                                                 Margin="12 0 12 0"
                                                 DataContext="{Binding AllergySelector}"/>
 
+                <!-- Select Diseases -->
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

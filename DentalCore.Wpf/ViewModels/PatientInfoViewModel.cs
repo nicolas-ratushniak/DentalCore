@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Services;
@@ -13,14 +15,24 @@ namespace DentalCore.Wpf.ViewModels;
 
 public class PatientInfoViewModel : BaseViewModel
 {
+    private readonly ObservableCollection<VisitOfPatientListItemViewModel> _visits;
     private readonly IVisitService _visitService;
+    private readonly IPaymentService _paymentService;
+    private readonly IPatientService _patientService;
     private readonly int _patientId;
     private int _debt;
+    private string _name;
+    private string _surname;
+    private string _patronymic;
+    private string _ageString;
 
     public ICommand AddVisitCommand { get; }
     public ICommand ShowVisitCommand { get; }
 
     public ICollectionView VisitCollectionView { get; }
+    
+    public ObservableCollection<string> AllergyNames { get; }
+    public ObservableCollection<string> DiseasesNames { get; }
 
     public int Debt
     {
@@ -33,12 +45,50 @@ public class PatientInfoViewModel : BaseViewModel
         }
     }
 
-    public string Name { get; }
-    public string Surname { get; }
-    public string Patronymic { get; }
-    public string AgeString { get; }
-    public IEnumerable<string> AllergyNames { get; }
-    public IEnumerable<string> DiseasesNames { get; }
+    public string Name
+    {
+        get => _name;
+        private set
+        {
+            if (value == _name) return;
+            _name = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string Surname
+    {
+        get => _surname;
+        private set
+        {
+            if (value == _surname) return;
+            _surname = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string Patronymic
+    {
+        get => _patronymic;
+        private set
+        {
+            if (value == _patronymic) return;
+            _patronymic = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string AgeString
+    {
+        get => _ageString;
+        private set
+        {
+            if (value == _ageString) return;
+            _ageString = value;
+            OnPropertyChanged();
+        }
+    }
+
     public bool HasAllergiesOrDiseases => AllergyNames.Any() || DiseasesNames.Any();
     public bool HasDebt => Debt > 0;
 
@@ -51,21 +101,16 @@ public class PatientInfoViewModel : BaseViewModel
     )
     {
         _visitService = visitService;
+        _paymentService = paymentService;
         _patientId = id;
+        _patientService = patientService;
+        
+        _visits = new ObservableCollection<VisitOfPatientListItemViewModel>();
+        AllergyNames = new ObservableCollection<string>();
+        DiseasesNames = new ObservableCollection<string>();
 
-        var patient = patientService.Get(id);
-
-        Name = patient.Name;
-        Surname = patient.Surname;
-        Patronymic = patient.Patronymic;
-        AllergyNames = patientService.GetAllergies(id).Select(a => a.Name);
-        DiseasesNames = patientService.GetDiseases(id).Select(d => d.Name);
-        Debt = paymentService.GetPatientDebt(id);
-
-        var age = CalculateAge(patient.BirthDate);
-        AgeString = age == 1 ? "1 рік" : $"{age} років";
-
-        VisitCollectionView = CollectionViewSource.GetDefaultView(GetVisits());
+        VisitCollectionView = CollectionViewSource.GetDefaultView(_visits);
+        
         VisitCollectionView.SortDescriptions.Add(
             new SortDescription(nameof(VisitOfPatientListItemViewModel.Date), ListSortDirection.Descending));
 
@@ -74,18 +119,36 @@ public class PatientInfoViewModel : BaseViewModel
 
         ShowVisitCommand = new RelayCommand<int>(visitId =>
             navigationService.NavigateTo(ViewType.VisitInfo, visitId));
+
+        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private IEnumerable<VisitOfPatientListItemViewModel> GetVisits()
+    private async Task LoadData()
     {
-        return _visitService.GetAll()
-            .Where(v => v.PatientId == _patientId)
-            .Select(v => new VisitOfPatientListItemViewModel
-            {
-                Id = v.Id,
-                Date = v.CreatedOn,
-                Diagnosis = v.Diagnosis
-            });
+        var patient = await _patientService.GetAsync(_patientId);
+
+        Name = patient.Name;
+        Surname = patient.Surname;
+        Patronymic = patient.Patronymic;
+        Debt = await _paymentService.GetPatientDebtAsync(_patientId);
+
+        var age = CalculateAge(patient.BirthDate);
+        AgeString = age == 1 ? "1 рік" : $"{age} років";
+
+        foreach (var allergy in await _patientService.GetAllergiesAsync(_patientId))
+        {
+            AllergyNames.Add(allergy.Name);
+        }
+
+        foreach (var disease in await _patientService.GetDiseasesAsync(_patientId))
+        {
+            DiseasesNames.Add(disease.Name);
+        }
+
+        foreach (var visit in await GetVisitsAsync())
+        {
+            _visits.Add(visit);
+        }
     }
 
     private int CalculateAge(DateTime birthDate)
@@ -96,5 +159,17 @@ public class PatientInfoViewModel : BaseViewModel
         var b = (birthDate.Year * 100 + birthDate.Month) * 100 + birthDate.Day;
 
         return (a - b) / 10000;
+    }
+
+    private async Task<IEnumerable<VisitOfPatientListItemViewModel>> GetVisitsAsync()
+    {
+        return (await _visitService.GetAllAsync())
+            .Where(v => v.PatientId == _patientId)
+            .Select(v => new VisitOfPatientListItemViewModel
+            {
+                Id = v.Id,
+                Date = v.CreatedOn,
+                Diagnosis = v.Diagnosis
+            });
     }
 }

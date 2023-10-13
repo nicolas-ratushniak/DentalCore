@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
@@ -31,6 +33,7 @@ public class VisitCreateViewModel : BaseViewModel
     private int _totalSum;
     private string? _errorMessage;
     private bool _isDoctorListVisible;
+    private readonly ObservableCollection<DoctorListItemViewModel> _doctors;
 
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
@@ -129,7 +132,6 @@ public class VisitCreateViewModel : BaseViewModel
         INavigationService navigationService,
         IVisitService visitService,
         IUserService userService,
-        IPatientService patientService,
         IProcedureService procedureService,
         IPaymentService paymentService)
     {
@@ -138,18 +140,13 @@ public class VisitCreateViewModel : BaseViewModel
         _userService = userService;
         _paymentService = paymentService;
         _patientId = id;
-
-        if (patientService.GetAll().All(p => p.Id != id))
-        {
-            throw new EntityNotFoundException("Patient not found");
-        }
+        _doctors = new ObservableCollection<DoctorListItemViewModel>();
 
         TreatmentSelector = new TreatmentSelectorComponent(procedureService);
         TreatmentSelector.SelectedTreatmentSetChanged += OnSelectedTreatmentsChanged;
-
-        var doctors = GetDoctors();
         
-        DoctorCollectionView = CollectionViewSource.GetDefaultView(doctors);
+        DoctorCollectionView = CollectionViewSource.GetDefaultView(_doctors);
+        
         DoctorCollectionView.Filter = o =>
         {
             if (o is DoctorListItemViewModel d)
@@ -162,22 +159,37 @@ public class VisitCreateViewModel : BaseViewModel
         };
 
         CancelCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(ViewType.PatientInfo, id));
-        SubmitCommand = new RelayCommand<object>(AddVisit_Execute, AddVisit_CanExecute);
+        SubmitCommand = new AsyncRelayCommand(AddVisit_Execute);
+        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     public override void Dispose()
     {
         TreatmentSelector.SelectedTreatmentSetChanged -= OnSelectedTreatmentsChanged;
         base.Dispose();
+    }   
+
+    private async Task LoadData()
+    {
+        foreach (var doctor in await GetDoctorsAsync())
+        {
+            _doctors.Add(doctor);
+        }
     }
 
-    private bool AddVisit_CanExecute(object obj)
-    {
-        return SelectedDoctor != null && TreatmentSelector.HasSelectedItems;
-    }
+    // private bool AddVisit_CanExecute()
+    // {
+    //     return SelectedDoctor != null && TreatmentSelector.HasSelectedItems;
+    // }
 
-    private void AddVisit_Execute(object obj)
+    private async Task AddVisit_Execute()
     {
+        if (SelectedDoctor is null || TreatmentSelector.HasSelectedItems)
+        {
+            ErrorMessage = "Заповніть всі необхідні поля";
+            return;
+        }
+        
         var items = TreatmentSelector.GetSelectedTreatmentItems();
 
         var dto = new VisitCreateDto
@@ -193,7 +205,7 @@ public class VisitCreateViewModel : BaseViewModel
 
         try
         {
-            _visitService.Add(dto);
+            await _visitService.AddAsync(dto);
             _navigationService.NavigateTo(ViewType.PatientInfo, _patientId);
         }
         catch (ValidationException ex)
@@ -236,17 +248,17 @@ public class VisitCreateViewModel : BaseViewModel
         IsDoctorListVisible = false;
     }
 
-    private void OnSelectedTreatmentsChanged(object? sender, EventArgs e)
+    private async Task OnSelectedTreatmentsChanged(object? sender, EventArgs e)
     {
         var items = TreatmentSelector.GetSelectedTreatmentItems().ToList();
 
-        TotalSum = _paymentService.CalculateTotalWithDiscount(items, 0, out _);
+        (TotalSum, _) = await _paymentService.CalculateTotalWithDiscountAsync(items, 0);
         FirstPayment = TotalSum;
     }
 
-    private IEnumerable<DoctorListItemViewModel> GetDoctors()
+    private async Task<IEnumerable<DoctorListItemViewModel>> GetDoctorsAsync()
     {
-        return _userService.GetAll()
+        return (await _userService.GetAllAsync())
             .Where(u => u.Role == UserRole.Doctor)
             .Select(d => new DoctorListItemViewModel
             {

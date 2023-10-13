@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
@@ -34,6 +35,7 @@ public class PatientUpdateViewModel : BaseViewModel
     private CityListItemViewModel? _selectedCity;
     private string _birthDate;
     private string? _errorMessage;
+    private readonly ObservableCollection<CityListItemViewModel> _cities;
 
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
@@ -189,39 +191,60 @@ public class PatientUpdateViewModel : BaseViewModel
         _navigationService = navigationService;
         _patientService = patientService;
         _commonService = commonService;
-
-        var patient = patientService.Get(id);
-        var cities = GetCities().ToList();
-
-        Name = patient.Name;
-        Surname = patient.Surname;
-        Patronymic = patient.Patronymic;
-        BirthDate = patient.BirthDate.ToString("dd.MM.yyyy");
-        Gender = patient.Gender;
-        Phone = _patientService.GetPhones(patient.Id).First().PhoneNumber;
-        SelectedCity = cities.Single(c => c.Id == patient.CityId);
-
-        Diseases = new ObservableCollection<DiseaseListItemViewModel>(GetDiseases());
+        _cities = new ObservableCollection<CityListItemViewModel>();
+        Diseases = new ObservableCollection<DiseaseListItemViewModel>();
+        
         AllergySelector = new AllergySelectorComponent(_patientId, patientService, commonService);
 
-        CityCollectionView = CollectionViewSource.GetDefaultView(cities);
+        CityCollectionView = CollectionViewSource.GetDefaultView(_cities);
         CityCollectionView.Filter = o => o is CityListItemViewModel c &&
                                          c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
 
         CancelCommand = new RelayCommand<object>(_ =>
             _navigationService.NavigateTo(ViewType.Patients, null));
 
-        SubmitCommand = new RelayCommand<object>(Update_Execute, Update_CanExecute);
+        SubmitCommand = new AsyncRelayCommand(Update_Execute);
+        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private bool Update_CanExecute(object obj)
+    private async Task LoadData()
     {
-        return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Surname) && !string.IsNullOrEmpty(Patronymic) &&
-               !string.IsNullOrEmpty(Phone) && !string.IsNullOrEmpty(BirthDate) && SelectedCity != null;
+        foreach (var disease in await GetDiseasesAsync())
+        {
+            Diseases.Add(disease);
+        }
+
+        foreach (var city in await GetCitiesAsync())
+        {
+            _cities.Add(city);
+        }
+        
+        var patient = await _patientService.GetAsync(_patientId);
+
+        Name = patient.Name;
+        Surname = patient.Surname;
+        Patronymic = patient.Patronymic;
+        BirthDate = patient.BirthDate.ToString("dd.MM.yyyy");
+        Gender = patient.Gender;
+        Phone = (await _patientService.GetPhonesAsync(patient.Id)).First().PhoneNumber;
+        SelectedCity = _cities.Single(c => c.Id == patient.CityId);
     }
 
-    private void Update_Execute(object obj)
+    // private bool Update_CanExecute()
+    // {
+    //     return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Surname) && !string.IsNullOrEmpty(Patronymic) &&
+    //            !string.IsNullOrEmpty(Phone) && !string.IsNullOrEmpty(BirthDate) && SelectedCity != null;
+    // }
+
+    private async Task Update_Execute()
     {
+        if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Surname) || string.IsNullOrEmpty(Patronymic) ||
+                    string.IsNullOrEmpty(Phone) || string.IsNullOrEmpty(BirthDate) || SelectedCity is null)
+        {
+            ErrorMessage = "Заповніть всі необхідні поля";
+            return;
+        }
+        
         var diseaseIds = Diseases
             .Where(d => d.IsSelected)
             .Select(d => d.Id)
@@ -260,7 +283,7 @@ public class PatientUpdateViewModel : BaseViewModel
 
         try
         {
-            _patientService.Update(dto);
+            await _patientService.UpdateAsync(dto);
             _navigationService.NavigateTo(ViewType.Patients, null);
         }
         catch (ValidationException ex)
@@ -292,9 +315,11 @@ public class PatientUpdateViewModel : BaseViewModel
         CityCollectionView.Refresh();
     }
     
-    private IEnumerable<CityListItemViewModel> GetCities()
+    private async Task<IEnumerable<CityListItemViewModel>> GetCitiesAsync()
     {
-        return _commonService.GetCities()
+        var cities = await _commonService.GetCitiesAsync();
+        
+        return cities
             .Select(c => new CityListItemViewModel
             {
                 Id = c.Id,
@@ -302,15 +327,15 @@ public class PatientUpdateViewModel : BaseViewModel
             });
     }
 
-    private IEnumerable<DiseaseListItemViewModel> GetDiseases()
+    private async Task<IEnumerable<DiseaseListItemViewModel>> GetDiseasesAsync()
     {
-        var patientDiseases = _patientService.GetDiseases(_patientId);
-
-        return _commonService.GetDiseases()
+        var diseases = await _commonService.GetCitiesAsync();
+        
+        return diseases
             .Select(d => new DiseaseListItemViewModel
             {
                 Id = d.Id,
-                IsSelected = patientDiseases.Any(dis => dis.Id == d.Id),
+                IsSelected = false,
                 Name = d.Name
             });
     }

@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:DentalCore.Wpf.Views"
              xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             Loaded="OnLoaded">
 
     <UserControl.Resources>
         <Style x:Key="VisitListBox" TargetType="ListBox">

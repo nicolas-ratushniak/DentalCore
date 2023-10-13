@@ -1,5 +1,6 @@
-﻿using System.Windows.Controls;
-using System.Windows.Markup;
+﻿using System.Windows;
+using System.Windows.Controls;
+using DentalCore.Wpf.ViewModels;
 
 namespace DentalCore.Wpf.Views;
 
@@ -8,6 +9,12 @@ public partial class PatientCreateView : UserControl
     public PatientCreateView()
     {
         InitializeComponent();
-        Language = XmlLanguage.GetLanguage("uk-UA");
+    }
+    
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        var viewModel = (BaseViewModel)DataContext;
+        
+        viewModel.LoadedCommand.Execute(null);
     }
 }

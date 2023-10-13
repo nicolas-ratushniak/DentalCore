@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Services;
@@ -12,6 +13,7 @@ namespace DentalCore.Wpf.ViewModels.Components;
 
 public class AllergySelectorComponent : BaseViewModel
 {
+    private readonly int? _patientId;
     private readonly IPatientService _patientService;
     private readonly ICommonService _commonService;
     private readonly ObservableCollection<AllergyListItemViewModel> _allergies;
@@ -25,7 +27,7 @@ public class AllergySelectorComponent : BaseViewModel
     
     public ICollectionView SelectedAllergyCollectionView { get; }
     public ICollectionView NotSelectedAllergyCollectionView { get; }
-    
+
     public string AllergySelectionFilter
     {
         get => _allergySelectionFilter;
@@ -65,22 +67,17 @@ public class AllergySelectorComponent : BaseViewModel
 
     public AllergySelectorComponent(int? patientId, IPatientService patientService, ICommonService commonService)
     {
+        _patientId = patientId;
         _patientService = patientService;
         _commonService = commonService;
-
-        var allergySource = patientId is null
-            ? GetAllergies()
-            : GetPatientAllergies((int)patientId);
-        
-        _allergies = new ObservableCollection<AllergyListItemViewModel>(allergySource);
+        _allergies = new ObservableCollection<AllergyListItemViewModel>();
         
         NotSelectedAllergyCollectionView = new CollectionViewSource { Source = _allergies }.View;
-
+        SelectedAllergyCollectionView = new CollectionViewSource { Source = _allergies }.View;
+        
         NotSelectedAllergyCollectionView.Filter = o =>
             o is AllergyListItemViewModel a && !a.IsSelected &&
             a.Name.ToLower().StartsWith(AllergySelectionFilter.ToLower());
-        
-        SelectedAllergyCollectionView = new CollectionViewSource { Source = _allergies }.View;
 
         SelectedAllergyCollectionView.Filter = o =>
             o is AllergyListItemViewModel a && a.IsSelected;
@@ -93,6 +90,8 @@ public class AllergySelectorComponent : BaseViewModel
             SelectedAllergyCollectionView.Refresh();
             NotSelectedAllergyCollectionView.Refresh();
         });
+
+        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     public IEnumerable<int> GetSelectedAllergiesIds()
@@ -101,7 +100,7 @@ public class AllergySelectorComponent : BaseViewModel
             .Where(a => a.IsSelected)
             .Select(a => a.Id);
     }
-    
+
     private void OnAllergyFilterChanged()
     {
         if (string.IsNullOrEmpty(AllergySelectionFilter))
@@ -136,10 +135,22 @@ public class AllergySelectorComponent : BaseViewModel
 
         _selectedAllergy = null;
     }
-    
-    private IEnumerable<AllergyListItemViewModel> GetAllergies()
+
+    private async Task LoadData()
     {
-        return _commonService.GetAllergies()
+        var allergySource = _patientId is null
+            ? await GetAllergiesAsync()
+            : await GetPatientAllergiesAsync((int)_patientId);
+
+        foreach (var allergy in allergySource)
+        {
+            _allergies.Add(allergy);
+        }
+    }
+
+    private async Task<IEnumerable<AllergyListItemViewModel>> GetAllergiesAsync()
+    {
+        return (await _commonService.GetAllergiesAsync())
             .Select(a => new AllergyListItemViewModel
             {
                 Id = a.Id,
@@ -147,12 +158,12 @@ public class AllergySelectorComponent : BaseViewModel
                 Name = a.Name
             });
     }
-    
-    private IEnumerable<AllergyListItemViewModel> GetPatientAllergies(int patientId)
-    {
-        var patientAllergies = _patientService.GetAllergies(patientId);
 
-        return _commonService.GetAllergies()
+    private async Task<IEnumerable<AllergyListItemViewModel>> GetPatientAllergiesAsync(int patientId)
+    {
+        var patientAllergies = await _patientService.GetAllergiesAsync(patientId);
+
+        return (await _commonService.GetAllergiesAsync())
             .Select(a => new AllergyListItemViewModel
             {
                 Id = a.Id,
