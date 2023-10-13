@@ -5,14 +5,15 @@ namespace DentalCore.Domain.Services;
 
 public interface IPaymentService
 {
-    public Payment Get(int id);
-    public IEnumerable<Payment> GetAll(DateTime from, DateTime to);
-    public int GetPatientDebt(int patientId);
-    public int GetVisitDebt(int visitId);
-    public void PayPatientDebt(int patientId);
-    public void AddVisitPayment(int visitId, int sum);
-    public int GetMoneyPayedForVisit(int visitId);
+    public Task<Payment> GetAsync(int id);
+    public Task<IEnumerable<Payment>> GetAllAsync(DateTime from, DateTime to);
+    public Task<int> GetPatientDebtAsync(int patientId);
+    public Task<int> GetVisitDebtAsync(int visitId);
+    public Task PayPatientDebtAsync(int patientId);
+    public Task AddVisitPaymentAsync(int visitId, int sum);
+    public Task<int> GetMoneyPayedForVisitAsync(int visitId);
 
-    public int CalculateTotalWithDiscount(IEnumerable<TreatmentItemDto> selectedTreatmentItems, int discountPercent,
-        out int discountSum);
+    public Task<(int, int)> CalculateTotalWithDiscountAsync(
+        IEnumerable<TreatmentItemDto> selectedTreatmentItems,
+        int discountPercent);
 }

@@ -5,13 +5,13 @@ namespace DentalCore.Domain.Services;
 
 public interface IUserService
 {
-    public User Get(int id);
-    public User Get(string login);
-    public bool CheckPassword(int id, string password);
-    public User GetIncludeSoftDeleted(int id);
-    public IEnumerable<User> GetAll();
-    public IEnumerable<User> GetAllIncludeSoftDeleted();
-    public int Add(UserCreateDto dto);
-    public void Update(UserUpdateDto dto);
-    public void SoftDelete(int id);
+    public Task<User> GetAsync(int id);
+    public Task<User> GetAsync(string login);
+    public Task<User> GetIncludeSoftDeletedAsync(int id);
+    public Task<IEnumerable<User>> GetAllAsync();
+    public Task<IEnumerable<User>> GetAllIncludeSoftDeletedAsync();
+    public Task<int> AddAsync(UserCreateDto dto);
+    public Task UpdateAsync(UserUpdateDto dto);
+    public Task SoftDeleteAsync(int id);
+    public Task<bool> CheckPasswordAsync(int id, string password);
 }

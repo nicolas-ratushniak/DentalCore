@@ -3,6 +3,7 @@ using DentalCore.Data;
 using DentalCore.Domain.Dto;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentalCore.Domain.Services;
 
@@ -17,18 +18,18 @@ public class VisitService : IVisitService
         _paymentService = paymentService;
     }
 
-    public Visit Get(int id)
+    public async Task<Visit> GetAsync(int id)
     {
-        return _context.Visits.Find(id)
+        return await _context.Visits.FindAsync(id)
                ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<Visit> GetAll()
+    public async Task<IEnumerable<Visit>> GetAllAsync()
     {
-        return _context.Visits.ToList();
+        return await _context.Visits.ToListAsync();
     }
 
-    public int Add(VisitCreateDto dto)
+    public async Task<int> AddAsync(VisitCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
@@ -47,20 +48,20 @@ public class VisitService : IVisitService
             })
             .ToList();
 
-        var totalPrice =
-            _paymentService.CalculateTotalWithDiscount(itemsNoDuplicates, dto.DiscountPercent, out int discountSum);
+        var (totalPrice, discountSum) =
+            await _paymentService.CalculateTotalWithDiscountAsync(itemsNoDuplicates, dto.DiscountPercent);
 
         if (dto.FirstPayment > totalPrice)
         {
             throw new ValidationException("Внесена сума не має перевищувати суму чеку");
         }
 
-        var patient = _context.Patients.Find(dto.PatientId)
+        var patient = await _context.Patients.FindAsync(dto.PatientId)
                       ?? throw new EntityNotFoundException("Patient not found");
 
-        var doctor = _context.Users
+        var doctor = await _context.Users
                          .Where(u => u.Role == UserRole.Doctor && !u.IsDeleted)
-                         .SingleOrDefault(d => d.Id == dto.DoctorId)
+                         .SingleOrDefaultAsync(d => d.Id == dto.DoctorId)
                      ?? throw new EntityNotFoundException("Doctor not found");
 
         var visit = new Visit
@@ -77,7 +78,7 @@ public class VisitService : IVisitService
             TreatmentItems = new List<TreatmentItem>(),
         };
 
-        var procedures = _context.Procedures.ToList();
+        var procedures = await _context.Procedures.ToListAsync();
 
         foreach (var item in itemsNoDuplicates)
         {
@@ -108,15 +109,16 @@ public class VisitService : IVisitService
             visit.Payments = new List<Payment> { payment };
         }
 
-        _context.Visits.Add(visit);
-        _context.SaveChanges();
+        await _context.Visits.AddAsync(visit);
+        await _context.SaveChangesAsync();
 
         return visit.Id;
     }
 
-    public IEnumerable<TreatmentItem> GetTreatmentItems(int id)
+    public async Task<IEnumerable<TreatmentItem>> GetTreatmentItemsAsync(int id)
     {
-        return _context.TreatmentItems
-            .Where(t => t.VisitId == id);
+        return await _context.TreatmentItems
+            .Where(t => t.VisitId == id)
+            .ToListAsync();
     }
 }

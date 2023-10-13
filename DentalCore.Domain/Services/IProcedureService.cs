@@ -5,11 +5,11 @@ namespace DentalCore.Domain.Services;
 
 public interface IProcedureService
 {
-    public Procedure Get(int id);
-    public Procedure GetIncludeSoftDeleted(int id);
-    public IEnumerable<Procedure> GetAll();
-    public IEnumerable<Procedure> GetAllIncludeSoftDeleted();
-    public int Add(ProcedureCreateDto dto);
-    public void Update(ProcedureUpdateDto dto);
-    public void SoftDelete(int id);
+    public Task<Procedure> GetAsync(int id);
+    public Task<Procedure> GetIncludeSoftDeletedAsync(int id);
+    public Task<IEnumerable<Procedure>> GetAllAsync();
+    public Task<IEnumerable<Procedure>> GetAllIncludeSoftDeletedAsync();
+    public Task<int> AddAsync(ProcedureCreateDto dto);
+    public Task UpdateAsync(ProcedureUpdateDto dto);
+    public Task SoftDeleteAsync(int id);
 }

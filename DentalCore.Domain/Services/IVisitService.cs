@@ -5,8 +5,8 @@ namespace DentalCore.Domain.Services;
 
 public interface IVisitService
 {
-    public Visit Get(int id);
-    public IEnumerable<Visit> GetAll();
-    public int Add(VisitCreateDto dto);
-    public IEnumerable<TreatmentItem> GetTreatmentItems(int id);
+    public Task<Visit> GetAsync(int id);
+    public Task<IEnumerable<Visit>> GetAllAsync();
+    public Task<int> AddAsync(VisitCreateDto dto);
+    public Task<IEnumerable<TreatmentItem>> GetTreatmentItemsAsync(int id);
 }

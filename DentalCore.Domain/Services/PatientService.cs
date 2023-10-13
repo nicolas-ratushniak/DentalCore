@@ -16,36 +16,38 @@ public class PatientService : IPatientService
         _context = context;
     }
 
-    public Patient Get(int id)
+    public async Task<Patient> GetAsync(int id)
     {
-        return _context.Patients
+        return await _context.Patients
             .Where(p => !p.IsDeleted)
-            .SingleOrDefault(p => p.Id == id) ?? throw new EntityNotFoundException();
+            .SingleOrDefaultAsync(p => p.Id == id) ?? throw new EntityNotFoundException();
     }
 
-    public Patient GetIncludeSoftDeleted(int id)
+    public async Task<Patient> GetIncludeSoftDeletedAsync(int id)
     {
-        return _context.Patients.Find(id)
+        return await _context.Patients.FindAsync(id)
                ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<Patient> GetAll()
+    public async Task<IEnumerable<Patient>> GetAllAsync()
     {
-        return _context.Patients.Where(p => !p.IsDeleted);
+        return await _context.Patients
+            .Where(p => !p.IsDeleted)
+            .ToListAsync();
     }
 
-    public IEnumerable<Patient> GetAllIncludeSoftDeleted()
+    public async Task<IEnumerable<Patient>> GetAllIncludeSoftDeletedAsync()
     {
-        return _context.Patients.ToList();
+        return await _context.Patients.ToListAsync();
     }
 
-    public int Add(PatientCreateDto dto)
+    public async Task<int> AddAsync(PatientCreateDto dto)
     {
         var createdOn = DateTime.Now;
 
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Patients.Any(p =>
+        if (await _context.Patients.AnyAsync(p =>
                 p.Name == dto.Name &&
                 p.Surname == dto.Surname &&
                 p.Patronymic == dto.Patronymic))
@@ -58,7 +60,7 @@ public class PatientService : IPatientService
             throw new ValidationException("Некоректна дата народження. Подорожі у часі заборонені");
         }
 
-        var city = _context.Cities.Find(dto.CityId)
+        var city = await _context.Cities.FindAsync(dto.CityId)
                    ?? throw new EntityNotFoundException("City not found");
 
         var patient = new Patient
@@ -86,7 +88,7 @@ public class PatientService : IPatientService
             patient.Phones.Add(phone);
         }
 
-        var allAllergies = _context.Allergies.ToList();
+        var allAllergies = await _context.Allergies.ToListAsync();
 
         foreach (var allergyId in dto.AllergyIds)
         {
@@ -96,7 +98,7 @@ public class PatientService : IPatientService
             patient.Allergies.Add(allergy);
         }
 
-        var allDiseases = _context.Diseases.ToList();
+        var allDiseases = await _context.Diseases.ToListAsync();
 
         foreach (var diseaseId in dto.DiseaseIds)
         {
@@ -106,19 +108,19 @@ public class PatientService : IPatientService
             patient.Diseases.Add(disease);
         }
 
-        _context.Patients.Add(patient);
-        _context.SaveChanges();
+        await _context.Patients.AddAsync(patient);
+        await _context.SaveChangesAsync();
 
         return patient.Id;
     }
 
-    public void Update(PatientUpdateDto dto)
+    public async Task UpdateAsync(PatientUpdateDto dto)
     {
         var updatedOn = DateTime.Now;
 
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Patients.Any(p =>
+        if (await _context.Patients.AnyAsync(p =>
                 p.Name == dto.Name &&
                 p.Surname == dto.Surname
                 && p.Patronymic == dto.Patronymic
@@ -132,10 +134,10 @@ public class PatientService : IPatientService
             throw new ValidationException("Некоректна дата народження. Подорожі у часі заборонені");
         }
 
-        var city = _context.Cities.Find(dto.CityId)
+        var city = await _context.Cities.FindAsync(dto.CityId)
                    ?? throw new EntityNotFoundException("City not found");
 
-        var patient = Get(dto.Id);
+        var patient = await GetAsync(dto.Id);
 
         patient.CityId = dto.CityId;
         patient.City = city;
@@ -146,48 +148,50 @@ public class PatientService : IPatientService
         patient.BirthDate = dto.BirthDate;
         patient.UpdatedOn = updatedOn;
         patient.Phones = GetUpdatedPhones(patient, patient.Phones, dto.Phones);
-        patient.Allergies = GetUpdatedAllergies(patient.Allergies, dto.AllergyIds);
-        patient.Diseases = GetUpdatedDiseases(patient.Diseases, dto.DiseaseIds);
+        patient.Allergies = await GetUpdatedAllergiesAsync(patient.Allergies, dto.AllergyIds);
+        patient.Diseases = await GetUpdatedDiseasesAsync(patient.Diseases, dto.DiseaseIds);
 
         _context.Patients.Update(patient);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void SoftDelete(int id)
+    public async Task SoftDeleteAsync(int id)
     {
         var deletedOn = DateTime.Now;
-        var patient = Get(id);
+        var patient = await GetAsync(id);
 
         patient.IsDeleted = true;
         patient.DeletedOn = deletedOn;
 
         _context.Update(patient);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public IEnumerable<Allergy> GetAllergies(int id)
+    public async Task<IEnumerable<Allergy>> GetAllergiesAsync(int id)
     {
-        var patient = _context.Patients
+        var patient = await _context.Patients
                           .Include(p => p.Allergies)
-                          .SingleOrDefault(p => p.Id == id)
+                          .SingleOrDefaultAsync(p => p.Id == id)
                       ?? throw new EntityNotFoundException();
 
         return patient.Allergies;
     }
 
-    public IEnumerable<Disease> GetDiseases(int id)
+    public async Task<IEnumerable<Disease>> GetDiseasesAsync(int id)
     {
-        var patient = _context.Patients
+        var patient = await _context.Patients
                           .Include(p => p.Diseases)
-                          .SingleOrDefault(p => p.Id == id)
+                          .SingleOrDefaultAsync(p => p.Id == id)
                       ?? throw new EntityNotFoundException();
 
         return patient.Diseases;
     }
 
-    public IEnumerable<Phone> GetPhones(int id)
+    public async Task<IEnumerable<Phone>> GetPhonesAsync(int id)
     {
-        return _context.Phones.Where(p => p.PatientId == id);
+        return await _context.Phones
+            .Where(p => p.PatientId == id)
+            .ToListAsync();
     }
 
     private List<Phone> GetUpdatedPhones(Patient patient, ICollection<Phone> oldPhones,
@@ -224,13 +228,13 @@ public class PatientService : IPatientService
         return result;
     }
 
-    private List<Allergy> GetUpdatedAllergies(IEnumerable<Allergy> oldAllergies, IEnumerable<int> newAllergyIds)
+    private async Task<List<Allergy>> GetUpdatedAllergiesAsync(IEnumerable<Allergy> oldAllergies, IEnumerable<int> newAllergyIds)
     {
         var result = oldAllergies
             .Where(a => newAllergyIds.Any(id => id == a.Id))
             .ToList();
 
-        var allAllergies = _context.Allergies.ToList();
+        var allAllergies = await _context.Allergies.ToListAsync();
 
         foreach (var allergyId in newAllergyIds
                      .Where(id => allAllergies.All(a => a.Id != id)))
@@ -244,13 +248,13 @@ public class PatientService : IPatientService
         return result;
     }
 
-    private List<Disease> GetUpdatedDiseases(IEnumerable<Disease> oldDiseases, IEnumerable<int> newDiseasesIds)
+    private async Task<List<Disease>> GetUpdatedDiseasesAsync(IEnumerable<Disease> oldDiseases, IEnumerable<int> newDiseasesIds)
     {
         var result = oldDiseases
             .Where(d => newDiseasesIds.Any(id => id == d.Id))
             .ToList();
 
-        var allDiseases = _context.Diseases.ToList();
+        var allDiseases = await _context.Diseases.ToListAsync();
 
         foreach (var diseaseId in newDiseasesIds
                      .Where(id => allDiseases.All(d => d.Id != id)))

@@ -15,51 +15,52 @@ public class PaymentService : IPaymentService
         _context = context;
     }
 
-    public Payment Get(int id)
+    public async Task<Payment> GetAsync(int id)
     {
-        return _context.Payments.Find(id)
+        return await _context.Payments.FindAsync(id)
                ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<Payment> GetAll(DateTime from, DateTime to)
+    public async Task<IEnumerable<Payment>> GetAllAsync(DateTime from, DateTime to)
     {
-        return _context.Payments
+        return await _context.Payments
             .Where(p => 
                 p.CreatedOn >= from && 
-                p.CreatedOn <= to);
+                p.CreatedOn <= to)
+            .ToListAsync();
     }
 
-    public int GetPatientDebt(int patientId)
+    public async Task<int> GetPatientDebtAsync(int patientId)
     {
-        if (!_context.Patients.Any(p => p.Id == patientId))
+        if (!await _context.Patients.AnyAsync(p => p.Id == patientId))
         {
             throw new EntityNotFoundException("Patient not found");
         }
 
-        var shouldHavePayed = GetPatientVisits(patientId).Sum(v => v.TotalPrice);
-        var actuallyPayed = GetPatientPayments(patientId).Sum(p => p.Sum);
+        var shouldHavePayed = (await GetPatientVisitsAsync(patientId)).Sum(v => v.TotalPrice);
+        var actuallyPayed = (await GetPatientPaymentsAsync(patientId)).Sum(p => p.Sum);
 
         return shouldHavePayed - actuallyPayed;
     }
 
-    public int GetVisitDebt(int visitId)
+    public async Task<int> GetVisitDebtAsync(int visitId)
     {
-        var visit = _context.Visits.Find(visitId)
+        var visit = await _context.Visits.FindAsync(visitId)
                     ?? throw new EntityNotFoundException("Visit not found");
 
-        return visit.TotalPrice - GetMoneyPayedForVisitUnsafe(visitId);
+        return visit.TotalPrice - await GetMoneyPayedForVisitUnsafeAsync(visitId);
     }
 
-    public void PayPatientDebt(int patientId)
+    public async Task PayPatientDebtAsync(int patientId)
     {
-        if (!_context.Patients.Any(p => p.Id == patientId))
+        if (!await _context.Patients.AnyAsync(p => p.Id == patientId))
         {
             throw new EntityNotFoundException("Patient not found");
         }
 
         var paymentTime = DateTime.Now;
 
-        var alreadyPayedPerVisit = _context.Payments
+        var alreadyPayedPerVisit = await _context.Payments
             .Include(p => p.Visit)
             .Where(p => p.Visit.PatientId == patientId)
             .GroupBy(p => p.VisitId)
@@ -68,9 +69,9 @@ public class PaymentService : IPaymentService
                 VisitId = g.Key,
                 AlreadyPaid = g.Sum(payment => payment.Sum)
             })
-            .ToList();
+            .ToListAsync();
 
-        foreach (var visit in GetPatientVisits(patientId))
+        foreach (var visit in await GetPatientVisitsAsync(patientId))
         {
             var alreadyPaid = alreadyPayedPerVisit
                 .Single(t => t.VisitId == visit.Id)
@@ -90,18 +91,18 @@ public class PaymentService : IPaymentService
                 Sum = remainsToPay
             };
 
-            _context.Payments.Add(payment);
+            await _context.Payments.AddAsync(payment);
         }
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void AddVisitPayment(int visitId, int sum)
+    public async Task AddVisitPaymentAsync(int visitId, int sum)
     {
-        var visit = _context.Visits.Find(visitId)
+        var visit = await _context.Visits.FindAsync(visitId)
                     ?? throw new EntityNotFoundException("Visit not found");
 
-        if (sum < 0 || sum > visit.TotalPrice - GetMoneyPayedForVisitUnsafe(visitId))
+        if (sum < 0 || sum > visit.TotalPrice - await GetMoneyPayedForVisitUnsafeAsync(visitId))
         {
             throw new ArgumentOutOfRangeException(nameof(sum));
         }
@@ -114,22 +115,24 @@ public class PaymentService : IPaymentService
             Visit = visit
         };
 
-        _context.Payments.Add(payment);
-        _context.SaveChanges();
+        await _context.Payments.AddAsync(payment);
+        await _context.SaveChangesAsync();
     }
 
-    public int GetMoneyPayedForVisit(int visitId)
+    public async Task<int> GetMoneyPayedForVisitAsync(int visitId)
     {
-        if (!_context.Visits.Any(v => v.Id == visitId))
+        if (!await _context.Visits.AnyAsync(v => v.Id == visitId))
         {
             throw new EntityNotFoundException("Visit not found");
         }
 
-        return GetMoneyPayedForVisitUnsafe(visitId);
+        return await GetMoneyPayedForVisitUnsafeAsync(visitId);
     }
 
-    public int CalculateTotalWithDiscount(IEnumerable<TreatmentItemDto> selectedTreatmentItems, int discountPercent,
-        out int discountSum)
+    /// <summary>
+    /// Returns (total sum, total discount)
+    /// </summary>
+    public async Task<(int, int)> CalculateTotalWithDiscountAsync(IEnumerable<TreatmentItemDto> selectedTreatmentItems, int discountPercent)
     {
         if (discountPercent < 0 || discountPercent > 100)
         {
@@ -149,7 +152,7 @@ public class PaymentService : IPaymentService
             throw new ArgumentException("The list of items should not have duplicates", nameof(selectedTreatmentItems));
         }
 
-        var procedures = _context.Procedures.ToList();
+        var procedures = await _context.Procedures.ToListAsync();
 
         foreach (var item in items)
         {
@@ -177,8 +180,8 @@ public class PaymentService : IPaymentService
             roundedTotalWithDiscount = RoundPrice(preciseTotalWithDiscount);
         }
 
-        discountSum = roundedTotalNoDiscount - roundedTotalWithDiscount;
-        return roundedTotalWithDiscount;
+        var discountSum = roundedTotalNoDiscount - roundedTotalWithDiscount;
+        return (roundedTotalWithDiscount, discountSum);
 
         static int RoundPrice(decimal price)
         {
@@ -187,22 +190,25 @@ public class PaymentService : IPaymentService
         }
     }
 
-    private IEnumerable<Visit> GetPatientVisits(int patientId)
+    private async Task<IEnumerable<Visit>> GetPatientVisitsAsync(int patientId)
     {
-        return _context.Visits.Where(v => v.PatientId == patientId);
+        return await _context.Visits
+            .Where(v => v.PatientId == patientId)
+            .ToListAsync();
     }
 
-    private IEnumerable<Payment> GetPatientPayments(int patientId)
+    private async Task<IEnumerable<Payment>> GetPatientPaymentsAsync(int patientId)
     {
-        return _context.Payments
+        return await _context.Payments
             .Include(p => p.Visit)
-            .Where(p => p.Visit.PatientId == patientId);
+            .Where(p => p.Visit.PatientId == patientId)
+            .ToListAsync();
     }
 
-    private int GetMoneyPayedForVisitUnsafe(int visitId)
+    private async Task<int> GetMoneyPayedForVisitUnsafeAsync(int visitId)
     {
-        return _context.Payments
+        return await _context.Payments
             .Where(p => p.VisitId == visitId)
-            .Sum(p => p.Sum);
+            .SumAsync(p => p.Sum);
     }
 }

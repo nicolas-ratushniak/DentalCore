@@ -5,14 +5,14 @@ namespace DentalCore.Domain.Services;
 
 public interface IPatientService
 {
-    public Patient Get(int id);
-    public Patient GetIncludeSoftDeleted(int id);
-    public IEnumerable<Patient> GetAll();
-    public IEnumerable<Patient> GetAllIncludeSoftDeleted();
-    public int Add(PatientCreateDto dto);
-    public void Update(PatientUpdateDto dto);
-    public void SoftDelete(int id);
-    public IEnumerable<Allergy> GetAllergies(int id);
-    public IEnumerable<Disease> GetDiseases(int id);
-    public IEnumerable<Phone> GetPhones(int id);
+    public Task<Patient> GetAsync(int id);
+    public Task<Patient> GetIncludeSoftDeletedAsync(int id);
+    public Task<IEnumerable<Patient>> GetAllAsync();
+    public Task<IEnumerable<Patient>> GetAllIncludeSoftDeletedAsync();
+    public Task<int> AddAsync(PatientCreateDto dto);
+    public Task UpdateAsync(PatientUpdateDto dto);
+    public Task SoftDeleteAsync(int id);
+    public Task<IEnumerable<Allergy>> GetAllergiesAsync(int id);
+    public Task<IEnumerable<Disease>> GetDiseasesAsync(int id);
+    public Task<IEnumerable<Phone>> GetPhonesAsync(int id);
 }

@@ -1,5 +1,6 @@
 ﻿using DentalCore.Data;
 using DentalCore.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentalCore.Domain.Services;
 
@@ -12,18 +13,18 @@ public class CommonService : ICommonService
         _context = context;
     }
 
-    public IEnumerable<Disease> GetDiseases()
+    public async Task<IEnumerable<Disease>> GetDiseasesAsync()
     {
-        return _context.Diseases.ToList();
+        return await _context.Diseases.ToListAsync();
     }
 
-    public IEnumerable<City> GetCities()
+    public async Task<IEnumerable<City>> GetCitiesAsync()
     {
-        return _context.Cities.ToList();
+        return await _context.Cities.ToListAsync();
     }
 
-    public IEnumerable<Allergy> GetAllergies()
+    public async Task<IEnumerable<Allergy>> GetAllergiesAsync()
     {
-        return _context.Allergies.ToList();
+        return await _context.Allergies.ToListAsync();
     }
 }

@@ -5,6 +5,7 @@ using DentalCore.Data;
 using DentalCore.Domain.Dto;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentalCore.Domain.Services;
 
@@ -19,54 +20,50 @@ public class UserService : IUserService
         _hashAlgorithm = MD5.Create();
     }
 
-    public User Get(int id)
+    public async Task<User> GetAsync(int id)
     {
-        return _context.Users
+        return await _context.Users
             .Where(u => !u.IsDeleted)
-            .SingleOrDefault(u => u.Id == id) ?? throw new EntityNotFoundException();
+            .SingleOrDefaultAsync(u => u.Id == id) ?? throw new EntityNotFoundException();
     }
 
-    public User Get(string login)
+    public async Task<User> GetAsync(string login)
     {
-        return _context.Users
+        return await _context.Users
             .Where(u => !u.IsDeleted)
-            .SingleOrDefault(u => u.Login == login) ?? throw new EntityNotFoundException();
+            .SingleOrDefaultAsync(u => u.Login == login) ?? throw new EntityNotFoundException();
     }
 
-    public bool CheckPassword(int id, string password)
+    public async Task<User> GetIncludeSoftDeletedAsync(int id)
     {
-        var user = Get(id);
-        return GetPasswordHash(password) == user.PasswordHash;
-    }
-
-    public User GetIncludeSoftDeleted(int id)
-    {
-        return _context.Users.Find(id)
+        return await _context.Users.FindAsync(id)
                ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<User> GetAll()
+    public async Task<IEnumerable<User>> GetAllAsync()
     {
-        return _context.Users.Where(u => !u.IsDeleted);
+        return await _context.Users
+            .Where(u => !u.IsDeleted)
+            .ToListAsync();
     }
 
-    public IEnumerable<User> GetAllIncludeSoftDeleted()
+    public async Task<IEnumerable<User>> GetAllIncludeSoftDeletedAsync()
     {
-        return _context.Users.ToList();
+        return await _context.Users.ToListAsync();
     }
 
-    public int Add(UserCreateDto dto)
+    public async Task<int> AddAsync(UserCreateDto dto)
     {
         var createdOn = DateTime.Now;
 
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Users.Any(u => u.Login == dto.Login))
+        if (await _context.Users.AnyAsync(u => u.Login == dto.Login))
         {
             throw new ValidationException("У базі вже є користувач з таким логіном");
         }
 
-        if (_context.Users.Any(u =>
+        if (await _context.Users.AnyAsync(u =>
                 u.Name == dto.Name &&
                 u.Surname == dto.Surname))
         {
@@ -81,31 +78,30 @@ public class UserService : IUserService
             Name = dto.Name,
             Surname = dto.Surname,
             Phone = dto.Phone,
-            CreatedOn = createdOn
+            CreatedOn = createdOn,
+            PasswordHash = GetPasswordHash(dto.Password)
         };
 
-        user.PasswordHash = GetPasswordHash(dto.Password);
-
-        _context.Users.Add(user);
-        _context.SaveChanges();
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
 
         return user.Id;
     }
 
-    public void Update(UserUpdateDto dto)
+    public async Task UpdateAsync(UserUpdateDto dto)
     {
         var updatedOn = DateTime.Now;
 
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Users.Any(u =>
+        if (await _context.Users.AnyAsync(u =>
                 u.Login == dto.Login &&
                 u.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є користувач з таким логіном");
         }
 
-        if (_context.Users.Any(u =>
+        if (await _context.Users.AnyAsync(u =>
                 u.Name == dto.Name &&
                 u.Surname == dto.Surname &&
                 u.Id != dto.Id))
@@ -113,7 +109,7 @@ public class UserService : IUserService
             throw new ValidationException("У базі вже є користувач з таким ПІБ");
         }
 
-        var user = Get(dto.Id);
+        var user = await GetAsync(dto.Id);
 
         user.Login = dto.Login;
         user.PasswordHash = GetPasswordHash(dto.Password);
@@ -123,19 +119,25 @@ public class UserService : IUserService
         user.UpdatedOn = updatedOn;
 
         _context.Users.Update(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void SoftDelete(int id)
+    public async Task SoftDeleteAsync(int id)
     {
         var deletedOn = DateTime.Now;
-        var user = Get(id);
+        var user = await GetAsync(id);
 
         user.IsDeleted = true;
         user.DeletedOn = deletedOn;
 
         _context.Users.Update(user);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> CheckPasswordAsync(int id, string password)
+    {
+        var user = await GetAsync(id);
+        return GetPasswordHash(password) == user.PasswordHash;
     }
 
     private string GetPasswordHash(string password)

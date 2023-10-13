@@ -3,6 +3,7 @@ using DentalCore.Data;
 using DentalCore.Domain.Dto;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentalCore.Domain.Services;
 
@@ -15,35 +16,37 @@ public class ProcedureService : IProcedureService
         _context = context;
     }
 
-    public Procedure Get(int id)
+    public async Task<Procedure> GetAsync(int id)
     {
-        return _context.Procedures
+        return await _context.Procedures
             .Where(p => !p.IsDeleted)
-            .SingleOrDefault(p => p.Id == id) ?? throw new EntityNotFoundException();
+            .SingleOrDefaultAsync(p => p.Id == id) ?? throw new EntityNotFoundException();
     }
 
-    public Procedure GetIncludeSoftDeleted(int id)
+    public async Task<Procedure> GetIncludeSoftDeletedAsync(int id)
     {
-        return _context.Procedures.Find(id) ?? throw new EntityNotFoundException();
+        return await _context.Procedures.FindAsync(id) ?? throw new EntityNotFoundException();
     }
 
-    public IEnumerable<Procedure> GetAll()
+    public async Task<IEnumerable<Procedure>> GetAllAsync()
     {
-        return _context.Procedures.Where(p => !p.IsDeleted);
+        return await _context.Procedures
+            .Where(p => !p.IsDeleted)
+            .ToListAsync();
     }
 
-    public IEnumerable<Procedure> GetAllIncludeSoftDeleted()
+    public async Task<IEnumerable<Procedure>> GetAllIncludeSoftDeletedAsync()
     {
-        return _context.Procedures.ToList();
+        return await _context.Procedures.ToListAsync();
     }
 
-    public int Add(ProcedureCreateDto dto)
+    public async Task<int> AddAsync(ProcedureCreateDto dto)
     {
         var createdOn = DateTime.Now;
 
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Procedures.Any(p => p.Name == dto.Name))
+        if (await _context.Procedures.AnyAsync(p => p.Name == dto.Name))
         {
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
@@ -56,26 +59,26 @@ public class ProcedureService : IProcedureService
             CreatedOn = createdOn
         };
 
-        _context.Procedures.Add(procedure);
-        _context.SaveChanges();
+        await _context.Procedures.AddAsync(procedure);
+        await _context.SaveChangesAsync();
 
         return procedure.Id;
     }
 
-    public void Update(ProcedureUpdateDto dto)
+    public async Task UpdateAsync(ProcedureUpdateDto dto)
     {
         var updatedOn = DateTime.Now;
 
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
-        if (_context.Procedures.Any(p =>
+        if (await _context.Procedures.AnyAsync(p =>
                 p.Name == dto.Name &&
                 p.Id != dto.Id))
         {
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
 
-        var procedure = Get(dto.Id);
+        var procedure = await GetAsync(dto.Id);
 
         procedure.Name = dto.Name;
         procedure.Price = dto.Price;
@@ -83,18 +86,18 @@ public class ProcedureService : IProcedureService
         procedure.UpdatedOn = updatedOn;
 
         _context.Procedures.Update(procedure);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public void SoftDelete(int id)
+    public async Task SoftDeleteAsync(int id)
     {
         var deletedOn = DateTime.Now;
-        var procedure = Get(id);
+        var procedure = await GetAsync(id);
 
         procedure.IsDeleted = true;
         procedure.DeletedOn = deletedOn;
 
         _context.Procedures.Update(procedure);
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 }
