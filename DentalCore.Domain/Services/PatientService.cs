@@ -228,16 +228,18 @@ public class PatientService : IPatientService
         return result;
     }
 
-    private async Task<List<Allergy>> GetUpdatedAllergiesAsync(IEnumerable<Allergy> oldAllergies, IEnumerable<int> newAllergyIds)
+    private async Task<List<Allergy>> GetUpdatedAllergiesAsync(ICollection<Allergy> oldAllergies,
+        IEnumerable<int> newAllergyIds)
     {
         var result = oldAllergies
             .Where(a => newAllergyIds.Any(id => id == a.Id))
             .ToList();
 
         var allAllergies = await _context.Allergies.ToListAsync();
+        var onlyNewAllergyIds = newAllergyIds
+            .Where(id => oldAllergies.All(a => a.Id != id));
 
-        foreach (var allergyId in newAllergyIds
-                     .Where(id => allAllergies.All(a => a.Id != id)))
+        foreach (var allergyId in onlyNewAllergyIds)
         {
             var allergy = allAllergies.SingleOrDefault(a => a.Id == allergyId)
                           ?? throw new EntityNotFoundException("Allergy not found");
@@ -248,16 +250,18 @@ public class PatientService : IPatientService
         return result;
     }
 
-    private async Task<List<Disease>> GetUpdatedDiseasesAsync(IEnumerable<Disease> oldDiseases, IEnumerable<int> newDiseasesIds)
+    private async Task<List<Disease>> GetUpdatedDiseasesAsync(ICollection<Disease> oldDiseases,
+        IEnumerable<int> newDiseasesIds)
     {
         var result = oldDiseases
             .Where(d => newDiseasesIds.Any(id => id == d.Id))
             .ToList();
 
         var allDiseases = await _context.Diseases.ToListAsync();
+        var onlyNewDiseaseIds = newDiseasesIds
+            .Where(id => oldDiseases.All(d => d.Id != id));
 
-        foreach (var diseaseId in newDiseasesIds
-                     .Where(id => allDiseases.All(d => d.Id != id)))
+        foreach (var diseaseId in onlyNewDiseaseIds)
         {
             var disease = allDiseases.SingleOrDefault(d => d.Id == diseaseId)
                           ?? throw new EntityNotFoundException("Disease not found");

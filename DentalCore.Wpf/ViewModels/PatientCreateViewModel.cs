@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
@@ -209,7 +210,8 @@ public class PatientCreateViewModel : BaseViewModel
 
         SubmitCommand = new AsyncRelayCommand(Add_Execute);
 
-        LoadedCommand = new AsyncRelayCommand(LoadData);
+        LoadedCommand = new AsyncRelayCommand(LoadData, ex => 
+            MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error));
     }
 
     private async Task LoadData()

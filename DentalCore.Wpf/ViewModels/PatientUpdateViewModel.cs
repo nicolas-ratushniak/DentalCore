@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
@@ -20,22 +21,23 @@ namespace DentalCore.Wpf.ViewModels;
 
 public class PatientUpdateViewModel : BaseViewModel
 {
+    private readonly ObservableCollection<CityListItemViewModel> _cities;
     private readonly INavigationService _navigationService;
     private readonly IPatientService _patientService;
     private readonly ICommonService _commonService;
     private readonly int _patientId;
 
-    private string _name;
-    private string _surname;
-    private string _patronymic;
+    private string _name = string.Empty;
+    private string _surname = string.Empty;
+    private string _patronymic = string.Empty;
     private Gender _gender;
-    private string _phone;
+    private string _phone = string.Empty;
+    private string _birthDate = string.Empty;
+    private string? _errorMessage;
+    private CityListItemViewModel? _selectedCity;
     private string _citySearchFilter = string.Empty;
     private bool _isCityListVisible;
-    private CityListItemViewModel? _selectedCity;
-    private string _birthDate;
-    private string? _errorMessage;
-    private readonly ObservableCollection<CityListItemViewModel> _cities;
+
 
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
@@ -204,21 +206,17 @@ public class PatientUpdateViewModel : BaseViewModel
             _navigationService.NavigateTo(ViewType.Patients, null));
 
         SubmitCommand = new AsyncRelayCommand(Update_Execute);
-        LoadedCommand = new AsyncRelayCommand(LoadData);
+        LoadedCommand = new AsyncRelayCommand(LoadData, ex => 
+            MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error));
     }
 
     private async Task LoadData()
     {
-        var patient = await _patientService.GetAsync(_patientId);
-
-        Name = patient.Name;
-        Surname = patient.Surname;
-        Patronymic = patient.Patronymic;
-        BirthDate = patient.BirthDate.ToString("dd.MM.yyyy");
-        Gender = patient.Gender;
-        Phone = (await _patientService.GetPhonesAsync(patient.Id)).First().PhoneNumber;
-        SelectedCity = _cities.Single(c => c.Id == patient.CityId);
-
+        foreach (var city in await GetCitiesAsync())
+        {
+            _cities.Add(city);
+        }
+        
         foreach (var allergy in await GetPatientAllergiesAsync(_patientId))
         {
             AllergySelector.Allergies.Add(allergy);
@@ -228,11 +226,16 @@ public class PatientUpdateViewModel : BaseViewModel
         {
             Diseases.Add(disease);
         }
+        
+        var patient = await _patientService.GetAsync(_patientId);
 
-        foreach (var city in await GetCitiesAsync())
-        {
-            _cities.Add(city);
-        }
+        Name = patient.Name;
+        Surname = patient.Surname;
+        Patronymic = patient.Patronymic;
+        BirthDate = patient.BirthDate.ToString("dd.MM.yyyy");
+        Gender = patient.Gender;
+        Phone = (await _patientService.GetPhonesAsync(patient.Id)).First().PhoneNumber;
+        SelectedCity = _cities.Single(c => c.Id == patient.CityId);
     }
 
     private async Task Update_Execute()
@@ -326,11 +329,13 @@ public class PatientUpdateViewModel : BaseViewModel
 
     private async Task<IEnumerable<DiseaseListItemViewModel>> GetDiseasesAsync()
     {
-        return (await _commonService.GetCitiesAsync())
+        var patientDiseases = await _patientService.GetDiseasesAsync(_patientId);
+        
+        return (await _commonService.GetDiseasesAsync())
             .Select(d => new DiseaseListItemViewModel
             {
                 Id = d.Id,
-                IsSelected = false,
+                IsSelected = patientDiseases.Any(pd => d.Id == pd.Id),
                 Name = d.Name
             });
     }
@@ -343,7 +348,7 @@ public class PatientUpdateViewModel : BaseViewModel
             .Select(a => new AllergyListItemViewModel
             {
                 Id = a.Id,
-                IsSelected = patientAllergies.Any(allergy => a.Id == allergy.Id),
+                IsSelected = patientAllergies.Any(pa => a.Id == pa.Id),
                 Name = a.Name
             });
     }
