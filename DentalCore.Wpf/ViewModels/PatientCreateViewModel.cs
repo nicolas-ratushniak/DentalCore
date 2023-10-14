@@ -194,10 +194,9 @@ public class PatientCreateViewModel : BaseViewModel
         _patientService = patientService;
         _commonService = commonService;
         _cities = new ObservableCollection<CityListItemViewModel>();
-
-        AllergySelector = new AllergySelectorComponent(null, patientService, commonService);
-
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
+
+        AllergySelector = new AllergySelectorComponent();
 
         CityCollectionView = CollectionViewSource.GetDefaultView(_cities);
 
@@ -223,6 +222,11 @@ public class PatientCreateViewModel : BaseViewModel
         foreach (var city in await GetCitiesAsync())
         {
             _cities.Add(city);
+        }
+
+        foreach (var allergy in await GetAllergiesAsync())
+        {
+            AllergySelector.Allergies.Add(allergy);
         }
     }
 
@@ -281,12 +285,6 @@ public class PatientCreateViewModel : BaseViewModel
         }
     }
 
-    // private bool Add_CanExecute()
-    // {
-    //     return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Surname) && !string.IsNullOrEmpty(Patronymic) &&
-    //            !string.IsNullOrEmpty(Phone) && !string.IsNullOrEmpty(BirthDate) && SelectedCity != null;
-    // }
-
     private void OnCityFilterChanged()
     {
         var filter = CitySearchFilter;
@@ -328,6 +326,17 @@ public class PatientCreateViewModel : BaseViewModel
                 Id = d.Id,
                 IsSelected = false,
                 Name = d.Name
+            });
+    }
+    
+    private async Task<IEnumerable<AllergyListItemViewModel>> GetAllergiesAsync()
+    {
+        return (await _commonService.GetAllergiesAsync())
+            .Select(a => new AllergyListItemViewModel
+            {
+                Id = a.Id,
+                IsSelected = false,
+                Name = a.Name
             });
     }
 }

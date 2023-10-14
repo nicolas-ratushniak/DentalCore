@@ -17,11 +17,4 @@ public partial class TreatmentSelector : UserControl
         var viewModel = (TreatmentSelectorComponent)DataContext;
         viewModel.UpdatePriceCommand.Execute(null);
     }
-    
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        var viewModel = (BaseViewModel)DataContext;
-        
-        viewModel.LoadedCommand.Execute(null);
-    }
 }

@@ -9,7 +9,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Dto;
-using DentalCore.Domain.Exceptions;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Services.Navigation;
@@ -23,6 +22,7 @@ public class VisitCreateViewModel : BaseViewModel
     private readonly INavigationService _navigationService;
     private readonly IVisitService _visitService;
     private readonly IUserService _userService;
+    private readonly IProcedureService _procedureService;
     private readonly IPaymentService _paymentService;
     private readonly int _patientId;
 
@@ -138,11 +138,12 @@ public class VisitCreateViewModel : BaseViewModel
         _navigationService = navigationService;
         _visitService = visitService;
         _userService = userService;
+        _procedureService = procedureService;
         _paymentService = paymentService;
         _patientId = id;
         _doctors = new ObservableCollection<DoctorListItemViewModel>();
 
-        TreatmentSelector = new TreatmentSelectorComponent(procedureService);
+        TreatmentSelector = new TreatmentSelectorComponent();
         TreatmentSelector.SelectedTreatmentSetChanged += OnSelectedTreatmentsChanged;
         
         DoctorCollectionView = CollectionViewSource.GetDefaultView(_doctors);
@@ -175,12 +176,12 @@ public class VisitCreateViewModel : BaseViewModel
         {
             _doctors.Add(doctor);
         }
-    }
 
-    // private bool AddVisit_CanExecute()
-    // {
-    //     return SelectedDoctor != null && TreatmentSelector.HasSelectedItems;
-    // }
+        foreach (var item in await GetTreatmentItemsAsync())
+        {
+            TreatmentSelector.TreatmentItems.Add(item);
+        }
+    }
 
     private async Task AddVisit_Execute()
     {
@@ -265,6 +266,18 @@ public class VisitCreateViewModel : BaseViewModel
                 Id = d.Id,
                 Name = d.Name,
                 Surname = d.Surname
+            });
+    }
+    
+    private async Task<IEnumerable<TreatmentItemListItemViewModel>> GetTreatmentItemsAsync()
+    {
+        return (await _procedureService.GetAllAsync())
+            .Select(p => new TreatmentItemListItemViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Quantity = 0,
+                Price = p.Price
             });
     }
 }

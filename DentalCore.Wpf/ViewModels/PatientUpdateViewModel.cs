@@ -193,8 +193,8 @@ public class PatientUpdateViewModel : BaseViewModel
         _commonService = commonService;
         _cities = new ObservableCollection<CityListItemViewModel>();
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
-        
-        AllergySelector = new AllergySelectorComponent(_patientId, patientService, commonService);
+
+        AllergySelector = new AllergySelectorComponent();
 
         CityCollectionView = CollectionViewSource.GetDefaultView(_cities);
         CityCollectionView.Filter = o => o is CityListItemViewModel c &&
@@ -209,16 +209,6 @@ public class PatientUpdateViewModel : BaseViewModel
 
     private async Task LoadData()
     {
-        foreach (var disease in await GetDiseasesAsync())
-        {
-            Diseases.Add(disease);
-        }
-
-        foreach (var city in await GetCitiesAsync())
-        {
-            _cities.Add(city);
-        }
-        
         var patient = await _patientService.GetAsync(_patientId);
 
         Name = patient.Name;
@@ -228,23 +218,32 @@ public class PatientUpdateViewModel : BaseViewModel
         Gender = patient.Gender;
         Phone = (await _patientService.GetPhonesAsync(patient.Id)).First().PhoneNumber;
         SelectedCity = _cities.Single(c => c.Id == patient.CityId);
-    }
 
-    // private bool Update_CanExecute()
-    // {
-    //     return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Surname) && !string.IsNullOrEmpty(Patronymic) &&
-    //            !string.IsNullOrEmpty(Phone) && !string.IsNullOrEmpty(BirthDate) && SelectedCity != null;
-    // }
+        foreach (var allergy in await GetPatientAllergiesAsync(_patientId))
+        {
+            AllergySelector.Allergies.Add(allergy);
+        }
+
+        foreach (var disease in await GetDiseasesAsync())
+        {
+            Diseases.Add(disease);
+        }
+
+        foreach (var city in await GetCitiesAsync())
+        {
+            _cities.Add(city);
+        }
+    }
 
     private async Task Update_Execute()
     {
         if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Surname) || string.IsNullOrEmpty(Patronymic) ||
-                    string.IsNullOrEmpty(Phone) || string.IsNullOrEmpty(BirthDate) || SelectedCity is null)
+            string.IsNullOrEmpty(Phone) || string.IsNullOrEmpty(BirthDate) || SelectedCity is null)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;
         }
-        
+
         var diseaseIds = Diseases
             .Where(d => d.IsSelected)
             .Select(d => d.Id)
@@ -314,12 +313,10 @@ public class PatientUpdateViewModel : BaseViewModel
 
         CityCollectionView.Refresh();
     }
-    
+
     private async Task<IEnumerable<CityListItemViewModel>> GetCitiesAsync()
     {
-        var cities = await _commonService.GetCitiesAsync();
-        
-        return cities
+        return (await _commonService.GetCitiesAsync())
             .Select(c => new CityListItemViewModel
             {
                 Id = c.Id,
@@ -329,14 +326,25 @@ public class PatientUpdateViewModel : BaseViewModel
 
     private async Task<IEnumerable<DiseaseListItemViewModel>> GetDiseasesAsync()
     {
-        var diseases = await _commonService.GetCitiesAsync();
-        
-        return diseases
+        return (await _commonService.GetCitiesAsync())
             .Select(d => new DiseaseListItemViewModel
             {
                 Id = d.Id,
                 IsSelected = false,
                 Name = d.Name
+            });
+    }
+
+    private async Task<IEnumerable<AllergyListItemViewModel>> GetPatientAllergiesAsync(int patientId)
+    {
+        var patientAllergies = await _patientService.GetAllergiesAsync(patientId);
+
+        return (await _commonService.GetAllergiesAsync())
+            .Select(a => new AllergyListItemViewModel
+            {
+                Id = a.Id,
+                IsSelected = patientAllergies.Any(allergy => a.Id == allergy.Id),
+                Name = a.Name
             });
     }
 }

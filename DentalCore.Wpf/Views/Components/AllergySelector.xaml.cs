@@ -12,11 +12,4 @@ public partial class AllergySelector : UserControl
     {
         InitializeComponent();
     }
-
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        var viewModel = (BaseViewModel)DataContext;
-        
-        viewModel.LoadedCommand.Execute(null);
-    }
 }

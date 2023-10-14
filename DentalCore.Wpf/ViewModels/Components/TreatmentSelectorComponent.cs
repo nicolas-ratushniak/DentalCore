@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Dto;
-using DentalCore.Domain.Services;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.ViewModels.Inners;
 
@@ -17,9 +16,6 @@ public class TreatmentSelectorComponent : BaseViewModel
 {
     public delegate Task AsyncEventHandler(object sender, EventArgs e);
     public event AsyncEventHandler SelectedTreatmentSetChanged;
-
-    private readonly IProcedureService _procedureService;
-    private readonly ObservableCollection<TreatmentItemListItemViewModel> _treatmentItems;
 
     private TreatmentItemListItemViewModel? _selectedTreatmentItem;
     private string _treatmentItemSelectionFilter = string.Empty;
@@ -32,7 +28,9 @@ public class TreatmentSelectorComponent : BaseViewModel
     public ICollectionView SelectedTreatmentItemCollectionView { get; }
     public ICollectionView NonSelectedTreatmentItemCollectionView { get; }
 
-    public bool HasSelectedItems => _treatmentItems.Any(t => t.IsSelected && t.Quantity > 0);
+    public ObservableCollection<TreatmentItemListItemViewModel> TreatmentItems { get; }
+
+    public bool HasSelectedItems => TreatmentItems.Any(t => t.IsSelected && t.Quantity > 0);
 
     public string TreatmentItemSelectionFilter
     {
@@ -71,25 +69,24 @@ public class TreatmentSelectorComponent : BaseViewModel
         }
     }
 
-    public TreatmentSelectorComponent(IProcedureService procedureService)
+    public TreatmentSelectorComponent()
     {
-        _procedureService = procedureService;
-        _treatmentItems = new ObservableCollection<TreatmentItemListItemViewModel>();
+        TreatmentItems = new ObservableCollection<TreatmentItemListItemViewModel>();
 
-        NonSelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
+        NonSelectedTreatmentItemCollectionView = new CollectionViewSource { Source = TreatmentItems }.View;
 
         NonSelectedTreatmentItemCollectionView.Filter = o =>
             o is TreatmentItemListItemViewModel t && !t.IsSelected &&
             t.Name.ToLower().Contains(TreatmentItemSelectionFilter.ToLower());
 
-        SelectedTreatmentItemCollectionView = new CollectionViewSource { Source = _treatmentItems }.View;
+        SelectedTreatmentItemCollectionView = new CollectionViewSource { Source = TreatmentItems }.View;
 
         SelectedTreatmentItemCollectionView.Filter = o =>
             o is TreatmentItemListItemViewModel t && t.IsSelected;
 
         RemoveTreatmentItemCommand = new RelayCommand<int>(itemId =>
         {
-            var item = _treatmentItems.Single(t => t.Id == itemId);
+            var item = TreatmentItems.Single(t => t.Id == itemId);
             item.Quantity = 0;
             item.IsSelected = false;
 
@@ -101,27 +98,17 @@ public class TreatmentSelectorComponent : BaseViewModel
 
         UpdatePriceCommand = new RelayCommand<object>(_ =>
             SelectedTreatmentSetChanged?.Invoke(this, EventArgs.Empty));
-
-        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     public IEnumerable<TreatmentItemDto> GetSelectedTreatmentItems()
     {
-        return _treatmentItems
+        return TreatmentItems
             .Where(t => t.IsSelected && t.Quantity > 0)
             .Select(t => new TreatmentItemDto
             {
                 ProcedureId = t.Id,
                 Quantity = t.Quantity
             });
-    }
-
-    private async Task LoadData()
-    {
-        foreach (var item in await GetTreatmentItemsAsync())
-        {
-            _treatmentItems.Add(item);
-        }
     }
 
     private void OnTreatmentItemFilterChanged()
@@ -148,7 +135,7 @@ public class TreatmentSelectorComponent : BaseViewModel
             return;
         }
 
-        var item = _treatmentItems
+        var item = TreatmentItems
             .Single(t => t.Id == _selectedTreatmentItem.Id);
 
         item.Quantity = 1;
@@ -159,19 +146,5 @@ public class TreatmentSelectorComponent : BaseViewModel
         SelectedTreatmentSetChanged?.Invoke(this, EventArgs.Empty);
 
         _selectedTreatmentItem = null;
-    }
-
-    private async Task<IEnumerable<TreatmentItemListItemViewModel>> GetTreatmentItemsAsync()
-    {
-        var procedures = await _procedureService.GetAllAsync();
-        
-        return procedures
-            .Select(p => new TreatmentItemListItemViewModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Quantity = 0,
-                Price = p.Price
-            });
     }
 }
