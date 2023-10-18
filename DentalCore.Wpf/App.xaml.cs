@@ -6,6 +6,7 @@ using DentalCore.Data;
 using DentalCore.Data.Models;
 using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Services;
+using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Services.Authentication;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels;

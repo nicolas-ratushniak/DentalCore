@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels.Inners;
 using Microsoft.Extensions.Logging;

@@ -1,4 +1,4 @@
-﻿namespace DentalCore.Wpf;
+﻿namespace DentalCore.Wpf.Configuration;
 
 public class ExportOptions
 {
