@@ -59,7 +59,7 @@ public class ExcelExportService : IExportService
 
         if (!visits.Any())
         {
-            throw new NoDataToExportException("Жодних візитів за цей період");
+            throw new NoDataToExportException();
         }
 
         using (var package = new ExcelPackage(filePath))

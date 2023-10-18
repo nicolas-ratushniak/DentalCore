@@ -107,12 +107,13 @@ public class VisitsExportViewModel : BaseViewModel
 
             MessageBox.Show($"Успішно створено звіт у папці {dirPath}", "Успіх!", MessageBoxButton.OK);
         }
-        catch (Exception ex)
+        catch (ValidationException ex)
         {
-            if (ex is ValidationException or NoDataToExportException)
-            {
-                ErrorMessage = ex.Message;
-            }
+            ErrorMessage = ex.Message;
+        }
+        catch (NoDataToExportException)
+        {
+            ErrorMessage = "Жодних візитів за цей період";
         }
     }
 }
