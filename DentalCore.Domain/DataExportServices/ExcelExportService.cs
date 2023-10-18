@@ -1,4 +1,6 @@
-﻿using DentalCore.Data.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using DentalCore.Data.Models;
+using DentalCore.Domain.Exceptions;
 using DentalCore.Domain.Services;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -35,6 +37,16 @@ public class ExcelExportService : IExportService
 
     public async Task ExportVisitsAsync(DateOnly from, DateOnly to, string dirPath)
     {
+        if (from > to)
+        {
+            throw new ValidationException("Кінцева дата не має бути передувати початовій");
+        }
+
+        if (to > DateOnly.FromDateTime(DateTime.Now))
+        {
+            throw new ValidationException("Кінцева дата не має випереджати сьогоднішній день");
+        }
+        
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
         var fileName = string.Format("Звіт {0}-{1}.xlsx",
@@ -44,6 +56,11 @@ public class ExcelExportService : IExportService
         var filePath = Path.Combine(dirPath, fileName);
 
         var visits = (await GetVisitsForExportAsync(from, to)).ToList();
+
+        if (!visits.Any())
+        {
+            throw new NoDataToExportException("Жодних візитів за цей період");
+        }
 
         using (var package = new ExcelPackage(filePath))
         {
