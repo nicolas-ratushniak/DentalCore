@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Globalization;
-using System.Threading;
+using System.Linq;
 using System.Windows;
 using DentalCore.Data;
 using DentalCore.Data.Models;
@@ -16,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace DentalCore.Wpf;
@@ -113,7 +111,19 @@ public partial class App : Application
     protected override async void OnStartup(StartupEventArgs e)
     {
         await AppHost.StartAsync();
-        Thread.CurrentThread.CurrentCulture = new CultureInfo("uk-UA");
+
+        var args = Environment.GetCommandLineArgs();
+
+        if (args is [_, "-updateDb"])
+        {
+            await using (var context = AppHost.Services.GetRequiredService<AppDbContext>())
+            {
+                if ((await context.Database.GetPendingMigrationsAsync()).Any())
+                {
+                    await context.Database.MigrateAsync();
+                }
+            }
+        }
         
         MainWindow = AppHost.Services.GetRequiredService<MainWindow>();
         MainWindow.Show();
