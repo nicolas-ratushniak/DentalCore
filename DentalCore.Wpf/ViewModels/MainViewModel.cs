@@ -7,12 +7,12 @@ namespace DentalCore.Wpf.ViewModels;
 public class MainViewModel : BaseViewModel
 {
     private readonly IViewModelFactory _viewModelFactory;
-    private BaseViewModel _currentViewModel;
+    private BaseViewModel? _currentViewModel;
     private ViewType _currentNavBarOption;
 
-    public INavigationService Navigator { get; set; }
+    public INavigationService Navigator { get; }
 
-    public BaseViewModel CurrentViewModel
+    public BaseViewModel? CurrentViewModel
     {
         get => _currentViewModel;
         set

@@ -9,20 +9,18 @@ using DentalCore.Domain.Services;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels.Inners;
-using Microsoft.Extensions.Logging;
 
 namespace DentalCore.Wpf.ViewModels;
 
 public class PatientsViewModel : BaseViewModel
 {
     private readonly IPatientService _patientService;
-    private readonly ILogger<PatientsViewModel> _logger;
     private string _patientSearchFilter = string.Empty;
     private readonly ObservableCollection<PatientListItemViewModel> _patients;
 
-    public ICommand AddPatientCommand { get; }
-    public ICommand EditPatientCommand { get; }
-    public ICommand ShowPatientCommand { get; }
+    public ICommand GoToPatientCreateCommand { get; }
+    public ICommand GoToPatientUpdateCommand { get; }
+    public ICommand GoToPatientInfoCommand { get; }
     public ICommand GoToVisitsExportCommand { get; }
 
     public ICollectionView PatientCollectionView { get; }
@@ -40,13 +38,9 @@ public class PatientsViewModel : BaseViewModel
         }
     }
 
-    public PatientsViewModel(
-        INavigationService navigationService, 
-        IPatientService patientService,
-        ILogger<PatientsViewModel> logger)
+    public PatientsViewModel(INavigationService navigationService, IPatientService patientService)
     {
         _patientService = patientService;
-        _logger = logger;
         _patients = new ObservableCollection<PatientListItemViewModel>();
 
         PatientCollectionView = CollectionViewSource.GetDefaultView(_patients);
@@ -65,13 +59,13 @@ public class PatientsViewModel : BaseViewModel
             return false;
         };
 
-        AddPatientCommand = new RelayCommand<object>(_ =>
+        GoToPatientCreateCommand = new RelayCommand<object>(_ =>
             navigationService.NavigateTo(ViewType.PatientCreate, null));
 
-        EditPatientCommand = new RelayCommand<int>(id =>
+        GoToPatientUpdateCommand = new RelayCommand<int>(id =>
             navigationService.NavigateTo(ViewType.PatientUpdate, id));
 
-        ShowPatientCommand = new RelayCommand<int>(id =>
+        GoToPatientInfoCommand = new RelayCommand<int>(id =>
             navigationService.NavigateTo(ViewType.PatientInfo, id));
 
         GoToVisitsExportCommand = new RelayCommand<object>(_ =>

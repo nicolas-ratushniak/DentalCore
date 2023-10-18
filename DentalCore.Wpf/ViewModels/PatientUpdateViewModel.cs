@@ -240,8 +240,12 @@ public class PatientUpdateViewModel : BaseViewModel
 
     private async Task Update_Execute()
     {
-        if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(Surname) || string.IsNullOrEmpty(Patronymic) ||
-            string.IsNullOrEmpty(Phone) || string.IsNullOrEmpty(BirthDate) || SelectedCity is null)
+        if (string.IsNullOrEmpty(Name) || 
+            string.IsNullOrEmpty(Surname) || 
+            string.IsNullOrEmpty(Patronymic) ||
+            string.IsNullOrEmpty(Phone) || 
+            string.IsNullOrEmpty(BirthDate) || 
+            SelectedCity is null)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;

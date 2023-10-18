@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
              xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
-             xmlns:local="clr-namespace:DentalCore.Wpf.ViewModels"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              Loaded="OnLoaded">
@@ -41,7 +40,7 @@
                                                     Height="24"
                                                     Margin="0 0 15 0"
                                                     BorderThickness="0"
-                                                    Command="{Binding DataContext.ShowPatientCommand,
+                                                    Command="{Binding DataContext.GoToPatientInfoCommand,
                                                     RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                     CommandParameter="{Binding Id}">
                                                 <Button.Background>
@@ -53,7 +52,7 @@
                                                     Width="24"
                                                     Height="24"
                                                     BorderThickness="0"
-                                                    Command="{Binding DataContext.EditPatientCommand,
+                                                    Command="{Binding DataContext.GoToPatientUpdateCommand,
                                                     RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                     CommandParameter="{Binding Id}">
                                                 <Button.Background>
@@ -101,7 +100,7 @@
 
             <Button Grid.Column="3"
                     Style="{StaticResource NiceButton}"
-                    Command="{Binding AddPatientCommand}"
+                    Command="{Binding GoToPatientCreateCommand}"
                     Content="Додати пацієнта" />
         </Grid>
 

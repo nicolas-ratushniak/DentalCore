@@ -55,8 +55,7 @@ public partial class App : Application
                 
                 services.AddSingleton<Func<PatientsViewModel>>(s => () => new PatientsViewModel(
                     s.GetRequiredService<INavigationService>(),
-                    s.GetRequiredService<IPatientService>(),
-                    s.GetRequiredService<ILogger<PatientsViewModel>>()));
+                    s.GetRequiredService<IPatientService>()));
                 
                 services.AddSingleton<Func<int, PatientInfoViewModel>>(s => id => new PatientInfoViewModel(
                     id,

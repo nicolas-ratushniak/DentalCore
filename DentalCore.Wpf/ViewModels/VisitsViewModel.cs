@@ -20,7 +20,7 @@ public class VisitsViewModel : BaseViewModel
     private string _visitSearchFilter = string.Empty;
     private readonly ObservableCollection<TodayVisitListItemViewModel> _todayVisits;
 
-    public ICommand ShowVisitCommand { get; }
+    public ICommand GoToVisitInfoCommand { get; }
 
     public ICollectionView VisitCollectionView { get; }
 
@@ -63,7 +63,7 @@ public class VisitsViewModel : BaseViewModel
             return false;
         };
 
-        ShowVisitCommand = new RelayCommand<int>(id => navigationService.NavigateTo(ViewType.VisitInfo, id));
+        GoToVisitInfoCommand = new RelayCommand<int>(id => navigationService.NavigateTo(ViewType.VisitInfo, id));
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 

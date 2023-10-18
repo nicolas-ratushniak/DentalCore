@@ -26,8 +26,8 @@ public class PatientInfoViewModel : BaseViewModel
     private string _patronymic;
     private string _ageString;
 
-    public ICommand AddVisitCommand { get; }
-    public ICommand ShowVisitCommand { get; }
+    public ICommand GoToVisitCreateCommand { get; }
+    public ICommand GoToVisitInfoCommand { get; }
 
     public ICollectionView VisitCollectionView { get; }
     
@@ -115,10 +115,10 @@ public class PatientInfoViewModel : BaseViewModel
         VisitCollectionView.SortDescriptions.Add(
             new SortDescription(nameof(VisitOfPatientListItemViewModel.Date), ListSortDirection.Descending));
 
-        AddVisitCommand = new RelayCommand<object>(_ =>
+        GoToVisitCreateCommand = new RelayCommand<object>(_ =>
             navigationService.NavigateTo(ViewType.VisitCreate, id));
 
-        ShowVisitCommand = new RelayCommand<int>(visitId =>
+        GoToVisitInfoCommand = new RelayCommand<int>(visitId =>
             navigationService.NavigateTo(ViewType.VisitInfo, visitId));
 
         LoadedCommand = new AsyncRelayCommand(LoadData);

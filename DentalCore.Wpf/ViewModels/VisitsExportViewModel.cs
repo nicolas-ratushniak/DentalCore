@@ -18,9 +18,10 @@ public class VisitsExportViewModel : BaseViewModel
     private readonly IExportService _exportService;
     private readonly INavigationService _navigationService;
     private readonly ExportOptions _exportConfiguration;
-    private string _fromDateInput;
-    private string _toDateInput;
+    private string _fromDateInput = string.Empty;
+    private string _toDateInput = string.Empty;
     private string? _errorMessage;
+    
     public ICommand ExportVisitsCommand { get; }
     public ICommand CancelCommand { get; }
 
