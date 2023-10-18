@@ -54,8 +54,6 @@ public partial class App : Application
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
                 
                 services.AddSingleton<Func<PatientsViewModel>>(s => () => new PatientsViewModel(
-                    s.GetRequiredService<IOptions<ExportOptions>>(),
-                    s.GetRequiredService<IExportService>(),
                     s.GetRequiredService<INavigationService>(),
                     s.GetRequiredService<IPatientService>(),
                     s.GetRequiredService<ILogger<PatientsViewModel>>()));
@@ -98,6 +96,10 @@ public partial class App : Application
                     s.GetRequiredService<IUserService>(),
                     s.GetRequiredService<IProcedureService>(),
                     s.GetRequiredService<IPaymentService>()));
+
+                services.AddSingleton<Func<VisitsExportViewModel>>(s => () => new VisitsExportViewModel(
+                    s.GetRequiredService<IOptions<ExportOptions>>(),
+                    s.GetRequiredService<IExportService>()));
                 
                 services.AddTransient<MainViewModel>();
 

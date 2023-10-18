@@ -221,6 +221,10 @@
         <DataTemplate DataType="{x:Type viewModels:VisitCreateViewModel}">
             <views:VisitCreateView />
         </DataTemplate>
+        
+        <DataTemplate DataType="{x:Type viewModels:VisitsExportViewModel}">
+            <views:VisitsExportView />
+        </DataTemplate>
 
     </Application.Resources>
 </Application>

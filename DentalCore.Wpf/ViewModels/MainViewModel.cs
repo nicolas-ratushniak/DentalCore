@@ -60,7 +60,7 @@ public class MainViewModel : BaseViewModel
             case ViewType.Patients or ViewType.PatientCreate or ViewType.PatientInfo or ViewType.PatientUpdate:
                 CurrentNavBarOption = ViewType.Patients;
                 break;
-            case ViewType.Visits or ViewType.VisitCreate or ViewType.VisitInfo:
+            case ViewType.Visits or ViewType.VisitCreate or ViewType.VisitInfo or ViewType.VisitsExport:
                 CurrentNavBarOption = ViewType.Visits;
                 break;
             default:

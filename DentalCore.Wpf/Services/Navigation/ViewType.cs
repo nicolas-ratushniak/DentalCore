@@ -13,6 +13,7 @@ public enum ViewType
     Visits,
     VisitInfo,
     VisitCreate,
+    VisitsExport
     
     // Procedures,
     // ProcedureCreate,
