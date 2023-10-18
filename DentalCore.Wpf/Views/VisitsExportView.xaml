@@ -23,7 +23,7 @@
         <Border Grid.Row="1" Grid.Column="1"
                 BorderBrush="Black"
                 BorderThickness="1"
-                Height="300"
+                Height="320"
                 Width="400"
                 Padding="35,35,35,24"
                 CornerRadius="10">
@@ -39,7 +39,7 @@
                 <TextBlock Grid.Row="0"
                            Style="{StaticResource Title}"
                            Text="Звіт візитів"
-                           Margin="0,0,0,35" />
+                           Margin="0,0,0,25" />
 
                 <Grid Grid.Row="1">
 
@@ -50,7 +50,7 @@
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
                     </Grid.ColumnDefinitions>
 
 
@@ -60,33 +60,42 @@
 
                     <controls:PlaceholderTextBox Grid.Row="0" Grid.Column="1"
                                                  Placeholder="Дата (2.12.2004)"
-                                                 Text="{Binding FromDate, 
+                                                 Text="{Binding FromDateInput, 
                                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                  Margin="0,0,0,10" />
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="До:"
-                               VerticalAlignment="Center"
-                               Margin="0,0,0,10" />
+                               VerticalAlignment="Center" />
 
                     <controls:PlaceholderTextBox Grid.Row="1" Grid.Column="1"
                                                  Placeholder="Дата (3.12.2004)"
-                                                 Text="{Binding ToDate, 
-                                                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0,0,0,10" />
+                                                 Text="{Binding ToDateInput, 
+                                                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
 
                 <TextBlock Grid.Row="2"
                            Text="{Binding ErrorMessage}"
                            Style="{StaticResource ErrorMessage}"
                            Margin="0,15" />
-
-                <Button Grid.Row="3"
-                        Style="{StaticResource NiceButton}"
-                        Command="{Binding ExportVisitsCommand}"
-                        Content="Звіт у Excel" />
-
+                
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Column="0"
+                            Style="{StaticResource CancelButton}"
+                            Command="{Binding CancelCommand}"
+                            Content="Скасувати" />
+                    
+                    <Button Grid.Column="2"
+                            Style="{StaticResource NiceButton}"
+                            Command="{Binding ExportVisitsCommand}"
+                            Content="Звіт у Excel" />
+                </Grid>
             </Grid>
         </Border>
-
     </Grid>
 </UserControl>

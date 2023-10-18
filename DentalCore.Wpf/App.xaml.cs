@@ -99,7 +99,8 @@ public partial class App : Application
 
                 services.AddSingleton<Func<VisitsExportViewModel>>(s => () => new VisitsExportViewModel(
                     s.GetRequiredService<IOptions<ExportOptions>>(),
-                    s.GetRequiredService<IExportService>()));
+                    s.GetRequiredService<IExportService>(),
+                    s.GetRequiredService<INavigationService>()));
                 
                 services.AddTransient<MainViewModel>();
 
