@@ -92,8 +92,6 @@ public class TreatmentSelectorComponent : BaseViewModel
 
             SelectedTreatmentItemCollectionView.Refresh();
             NonSelectedTreatmentItemCollectionView.Refresh();
-
-            SelectedTreatmentSetChanged?.Invoke(this, EventArgs.Empty);
         });
 
         UpdatePriceCommand = new RelayCommand<object>(_ =>
