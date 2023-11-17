@@ -5,45 +5,84 @@
         <TargetFramework>net7.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
+        <AssemblyName>DentalCore</AssemblyName>
+
+        <AssemblyVersion>0.0.1</AssemblyVersion>
+        <FileVersion>0.0.1</FileVersion>
+        <VersionStampOnBuild>false</VersionStampOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-      <PackageReference Include="squirrel.windows" Version="1.9.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1"/>
+        <PackageReference Include="NuGet.CommandLine" Version="6.7.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="squirrel.windows" Version="1.9.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DentalCore.Data\DentalCore.Data.csproj" />
-      <ProjectReference Include="..\DentalCore.Domain\DentalCore.Domain.csproj" />
+        <ProjectReference Include="..\DentalCore.Data\DentalCore.Data.csproj"/>
+        <ProjectReference Include="..\DentalCore.Domain\DentalCore.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="appsettings.json">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-
+        <Content Include="appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Assets\edit.png" />
-      <Resource Include="Assets\edit.png" />
-      <None Remove="Assets\more.png" />
-      <Resource Include="Assets\more.png" />
-      <None Remove="Assets\quit.png" />
-      <Resource Include="Assets\quit.png" />
+        <None Remove="Assets\edit.png"/>
+        <Resource Include="Assets\edit.png"/>
+        <None Remove="Assets\more.png"/>
+        <Resource Include="Assets\more.png"/>
+        <None Remove="Assets\quit.png"/>
+        <Resource Include="Assets\quit.png"/>
     </ItemGroup>
 
-    <ItemGroup>
-      <Page Update="Views\Components\AllergySelector.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
-    </ItemGroup>
+    <PropertyGroup>
+        <ProjectName>DentalCore.Wpf\</ProjectName>
+        <NugetToolsExe>$(PkgNuGet_CommandLine)\tools\NuGet.exe</NugetToolsExe>
+        <SquirrelToolsExe>$(Pkgsquirrel_windows)\tools\Squirrel.exe</SquirrelToolsExe>
+        <NuspecFile>$(SolutionDir)$(ProjectName)ReleaseSpec.nuspec</NuspecFile>
+        <GenNugetsPath>$(SolutionDir)Deployment\GeneratedNugets\</GenNugetsPath>
+    </PropertyGroup>
+
+    <Target Name="GenerateRelease" AfterTargets="AfterBuild">
+        <Error Condition="$(Configuration) == Debug And $(VersionStampOnBuild) == true"
+               Text="Cannot create a version stamp with Debug configuration."/>
+
+        <Copy Condition="!Exists('$(OutDir)..\Update.exe')"
+              SourceFiles="$(SquirrelToolsExe)"
+              DestinationFiles="$(OutDir)..\Update.exe"/>
+
+        <GetAssemblyIdentity Condition="$(Configuration) == Release And $(VersionStampOnBuild) == true"
+                             AssemblyFiles="$(TargetPath)">
+            <Output TaskParameter="Assemblies" ItemName="assemblyInfo"/>
+        </GetAssemblyIdentity>
+
+        <PropertyGroup Condition="$(Configuration) == Release And $(VersionStampOnBuild) == true">
+            <Version>$([System.Version]::Parse(%(assemblyInfo.Version)).ToString(3))</Version>
+        </PropertyGroup>
+
+        <XmlPeek Condition="$(Configuration) == Release And $(VersionStampOnBuild) == true"
+                 XmlInputPath="$(NuspecFile)"
+                 Query="/package/metadata/id/text()">
+            <Output TaskParameter="Result" ItemName="ID"/>
+        </XmlPeek>
+
+        <Exec Condition="$(Configuration) == Release And $(VersionStampOnBuild) == true"
+              Command="$(NugetToolsExe) pack $(NuspecFile) -Version $(Version) -Properties Configuration=Release -OutputDirectory $(GenNugetsPath)"/>
+
+        <Exec Condition="$(Configuration) == Release And $(VersionStampOnBuild) == true"
+              Command="$(SquirrelToolsExe) --releasify $(GenNugetsPath)@(ID).$(Version).nupkg --releaseDir=$(SolutionDir)Deployment\Releases"/>
+    </Target>
 </Project>
