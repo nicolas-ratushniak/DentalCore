@@ -91,6 +91,21 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <Style x:Key="NiceSquareButton" TargetType="Button" BasedOn="{StaticResource NiceButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}"
+                                Opacity="{TemplateBinding Opacity}"
+                                CornerRadius="0">
+                            <ContentPresenter Margin="17,7"
+                                              HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
         <Style x:Key="CancelButton" TargetType="Button" BasedOn="{StaticResource NiceButton}">
             <Setter Property="Background" Value="{StaticResource BrushLightGrey}" />

@@ -28,7 +28,7 @@ public partial class App : Application
     static App()
     {
         const string configFile = "appsettings.json";
-        UpdateService.RestoreSettingsFromBackup(configFile);
+        GithubUpdateManager.RestoreSettingsFromBackup(configFile);
         
         AppHost = Host.CreateDefaultBuilder()
             .ConfigureAppConfiguration(builder => builder.AddJsonFile(configFile))
@@ -37,12 +37,9 @@ public partial class App : Application
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
                 services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString), 
                     ServiceLifetime.Transient);
-
-                var repoUrl = builder.Configuration.GetValue<string>("Update:GitHubRepo")!;
-                services.AddSingleton<IUpdateService, UpdateService>(_ => new UpdateService(repoUrl, configFile));
-
-                services.Configure<ExportOptions>(
-                    builder.Configuration.GetSection(ExportOptions.Export));
+                
+                services.Configure<UpdateOptions>(builder.Configuration.GetSection(UpdateOptions.Update));
+                services.Configure<ExportOptions>(builder.Configuration.GetSection(ExportOptions.Export));
 
                 services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
                 services.AddSingleton<ICommonService, CommonService>();
@@ -55,6 +52,7 @@ public partial class App : Application
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();
                 services.AddSingleton<IExportService, ExcelExportService>();
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
+                services.AddSingleton<GithubUpdateManager>();
 
                 services.AddScoped<MainWindow>(s =>
                     new MainWindow(s.GetRequiredService<MainViewModel>()));
@@ -87,7 +85,6 @@ public partial class App : Application
     protected override async void OnExit(ExitEventArgs e)
     {
         await AppHost.StopAsync();
-
         base.OnExit(e);
     }
 }
