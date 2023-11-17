@@ -5,8 +5,10 @@ using DentalCore.Data;
 using DentalCore.Data.Models;
 using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Services;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Helpers;
+using DentalCore.Wpf.Services;
 using DentalCore.Wpf.Services.Authentication;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels;
@@ -25,13 +27,19 @@ public partial class App : Application
 
     static App()
     {
+        const string configFile = "appsettings.json";
+        UpdateService.RestoreSettingsFromBackup(configFile);
+        
         AppHost = Host.CreateDefaultBuilder()
-            .ConfigureAppConfiguration(builder => builder.AddJsonFile("appsettings.json"))
+            .ConfigureAppConfiguration(builder => builder.AddJsonFile(configFile))
             .ConfigureServices((builder, services) =>
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
                 services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString), 
                     ServiceLifetime.Transient);
+
+                var repoUrl = builder.Configuration.GetValue<string>("Update:GitHubRepo")!;
+                services.AddSingleton<IUpdateService, UpdateService>(_ => new UpdateService(repoUrl, configFile));
 
                 services.Configure<ExportOptions>(
                     builder.Configuration.GetSection(ExportOptions.Export));
