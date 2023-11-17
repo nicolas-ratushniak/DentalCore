@@ -1,8 +1,8 @@
 ﻿using System;
 using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Services;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;
-using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

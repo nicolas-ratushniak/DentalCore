@@ -1,4 +1,5 @@
 ﻿using System;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels.Factories;
 

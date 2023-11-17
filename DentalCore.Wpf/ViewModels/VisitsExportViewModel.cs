@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Exceptions;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Services.Navigation;
