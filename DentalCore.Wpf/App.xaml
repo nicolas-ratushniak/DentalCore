@@ -12,7 +12,8 @@
 
         <Color x:Key="ColorAccent">#5CBAB8</Color>
         <Color x:Key="ColorMinor">#C1F376</Color>
-        <Color x:Key="ColorMinorFocused">#5FC314</Color>
+        <!-- <Color x:Key="ColorMinorFocused">#5FC314</Color> -->
+        <Color x:Key="ColorMinorFocused">Violet</Color>
         <Color x:Key="GreyColor">#858a8c</Color>
         <Color x:Key="LightGreyColor">#dee0e0</Color>
         <Color x:Key="WarningColor">#f0bf0e</Color>
