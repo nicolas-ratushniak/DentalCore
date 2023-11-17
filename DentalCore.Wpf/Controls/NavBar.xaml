@@ -8,10 +8,11 @@
              xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:navigation="clr-namespace:DentalCore.Wpf.Services.Navigation"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="1000">
 
     <UserControl.Resources>
         <converters:EqualsToBooleanConverter x:Key="EqualsToBoolConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -55,9 +56,12 @@
                          CommandParameter="{x:Static navigation:ViewType.Visits}"
                          Content="Візити" />
 
-            <!-- <TextBlock Grid.Column="4" -->
-            <!--            Padding="20,10" -->
-            <!--            Text="Іван Петренко" /> -->
+            <Button Grid.Column="4"
+                    Style="{StaticResource NiceSquareButton}"
+                    Command="{Binding Path=UpdateApplicationCommand}"
+                    Content="Доступне оновлення"
+                    Visibility="{Binding HasUpdatesToApply, 
+                    Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
     </Grid>
 </UserControl>

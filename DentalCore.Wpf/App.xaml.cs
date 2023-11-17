@@ -5,7 +5,10 @@ using DentalCore.Data;
 using DentalCore.Data.Models;
 using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Services;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;
+using DentalCore.Wpf.Helpers;
+using DentalCore.Wpf.Services;
 using DentalCore.Wpf.Services.Authentication;
 using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels;
@@ -15,7 +18,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace DentalCore.Wpf;
 
@@ -25,16 +27,19 @@ public partial class App : Application
 
     static App()
     {
+        const string configFile = "appsettings.json";
+        GithubUpdateManager.RestoreSettingsFromBackup(configFile);
+        
         AppHost = Host.CreateDefaultBuilder()
-            .ConfigureAppConfiguration(builder => builder.AddJsonFile("appsettings.json"))
+            .ConfigureAppConfiguration(builder => builder.AddJsonFile(configFile))
             .ConfigureServices((builder, services) =>
             {
                 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
                 services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString), 
                     ServiceLifetime.Transient);
-
-                services.Configure<ExportOptions>(
-                    builder.Configuration.GetSection(ExportOptions.Export));
+                
+                services.Configure<UpdateOptions>(builder.Configuration.GetSection(UpdateOptions.Update));
+                services.Configure<ExportOptions>(builder.Configuration.GetSection(ExportOptions.Export));
 
                 services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
                 services.AddSingleton<ICommonService, CommonService>();
@@ -43,68 +48,16 @@ public partial class App : Application
                 services.AddSingleton<IUserService, UserService>();
                 services.AddSingleton<IVisitService, VisitService>();
                 services.AddSingleton<IPaymentService, PaymentService>();
-
-                services.AddSingleton<IExportService, ExcelExportService>();
-
                 services.AddSingleton<INavigationService, NavigationService>();
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();
-
+                services.AddSingleton<IExportService, ExcelExportService>();
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
-                
-                services.AddSingleton<Func<PatientsViewModel>>(s => () => new PatientsViewModel(
-                    s.GetRequiredService<INavigationService>(),
-                    s.GetRequiredService<IPatientService>()));
-                
-                services.AddSingleton<Func<int, PatientInfoViewModel>>(s => id => new PatientInfoViewModel(
-                    id,
-                    s.GetRequiredService<INavigationService>(),
-                    s.GetRequiredService<IPatientService>(),
-                    s.GetRequiredService<IVisitService>(),
-                    s.GetRequiredService<IPaymentService>()));
-
-                services.AddSingleton<Func<PatientCreateViewModel>>(s => () => new PatientCreateViewModel(
-                    s.GetRequiredService<INavigationService>(),
-                    s.GetRequiredService<IPatientService>(),
-                    s.GetRequiredService<ICommonService>()));
-                    
-                services.AddSingleton<Func<int, PatientUpdateViewModel>>(s => id => new PatientUpdateViewModel(
-                    id,
-                    s.GetRequiredService<INavigationService>(),
-                    s.GetRequiredService<IPatientService>(),
-                    s.GetRequiredService<ICommonService>()));
-                
-                services.AddSingleton<Func<VisitsViewModel>>(s => () => new VisitsViewModel(
-                    s.GetRequiredService<INavigationService>(),
-                    s.GetRequiredService<IVisitService>(),
-                    s.GetRequiredService<IPatientService>()));
-                
-                services.AddSingleton<Func<int, VisitInfoViewModel>>(s => id => new VisitInfoViewModel(
-                    id,
-                    s.GetRequiredService<IVisitService>(),
-                    s.GetRequiredService<IPatientService>(),
-                    s.GetRequiredService<IUserService>(),
-                    s.GetRequiredService<IProcedureService>(),
-                    s.GetRequiredService<IPaymentService>()));
-                
-                services.AddSingleton<Func<int, VisitCreateViewModel>>(s => id => new VisitCreateViewModel(
-                    id,
-                    s.GetRequiredService<INavigationService>(),
-                    s.GetRequiredService<IVisitService>(),
-                    s.GetRequiredService<IUserService>(),
-                    s.GetRequiredService<IProcedureService>(),
-                    s.GetRequiredService<IPaymentService>()));
-
-                services.AddSingleton<Func<VisitsExportViewModel>>(s => () => new VisitsExportViewModel(
-                    s.GetRequiredService<IOptions<ExportOptions>>(),
-                    s.GetRequiredService<IExportService>(),
-                    s.GetRequiredService<INavigationService>()));
-                
-                services.AddTransient<MainViewModel>();
+                services.AddSingleton<GithubUpdateManager>();
 
                 services.AddScoped<MainWindow>(s =>
                     new MainWindow(s.GetRequiredService<MainViewModel>()));
-
             })
+            .AddViewModels()
             .Build();
     }
     
@@ -116,12 +69,10 @@ public partial class App : Application
 
         if (args is [_, "-updateDb"])
         {
-            await using (var context = AppHost.Services.GetRequiredService<AppDbContext>())
+            await using var context = AppHost.Services.GetRequiredService<AppDbContext>();
+            if ((await context.Database.GetPendingMigrationsAsync()).Any())
             {
-                if ((await context.Database.GetPendingMigrationsAsync()).Any())
-                {
-                    await context.Database.MigrateAsync();
-                }
+                await context.Database.MigrateAsync();
             }
         }
         
@@ -134,7 +85,6 @@ public partial class App : Application
     protected override async void OnExit(ExitEventArgs e)
     {
         await AppHost.StopAsync();
-
         base.OnExit(e);
     }
 }

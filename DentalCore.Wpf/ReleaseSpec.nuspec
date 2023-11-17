@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>DentalCore</id>
+    <version>0.0.0</version>
+    <title>Dental Core PMS</title>
+    <authors>Mykola Ratushniak</authors>
+    <description>Patient management system</description>
+  </metadata>
+
+  <files>
+    <file src="bin\Release\net7.0-windows\**" target="lib\net45"/>
+  </files>
+</package>
