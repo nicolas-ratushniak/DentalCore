@@ -87,11 +87,16 @@ public class MainViewModel : BaseViewModel
     {
         try
         {
-            using (var updateManager = await GithubUpdateManager.CreateAsync(
-                       _updateConfiguration.GitHubRepo, "appsettings.json"))
+            using var updateManager = await GithubUpdateManager.CreateAsync(
+                _updateConfiguration.GitHubRepo, "appsettings.json");
+            
+            CurrentVersion = updateManager.GetCurrentVersionInstalled(CurrentVersion);
+                
+            if (await updateManager.HasNewerReleaseAsync())
             {
-                CurrentVersion = updateManager.GetCurrentVersionInstalled();
+                _logger.LogInformation("Updates are found! Starting the download...");
                 await updateManager.UpdateAsync();
+                _logger.LogInformation("Updates were installed");
             }
         }
         catch (InvalidOperationException)

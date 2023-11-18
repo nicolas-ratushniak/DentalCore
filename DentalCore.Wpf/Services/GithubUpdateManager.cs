@@ -91,7 +91,7 @@ public class GithubUpdateManager : IMinimalUpdateManager, IDisposable
         await _manager.UpdateApp();
     }
 
-    public string GetCurrentVersionInstalled(string defaultValue = "?.?.?")
+    public string GetCurrentVersionInstalled(string defaultValue)
     {
         var assembly = Assembly.GetExecutingAssembly();
         var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
