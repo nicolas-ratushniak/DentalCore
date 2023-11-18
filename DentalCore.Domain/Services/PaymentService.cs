@@ -25,8 +25,8 @@ public class PaymentService : IPaymentService
     public async Task<IEnumerable<Payment>> GetAllAsync(DateTime from, DateTime to)
     {
         return await _context.Payments
-            .Where(p => 
-                p.CreatedOn >= from && 
+            .Where(p =>
+                p.CreatedOn >= from &&
                 p.CreatedOn <= to)
             .ToListAsync();
     }
@@ -60,38 +60,27 @@ public class PaymentService : IPaymentService
         }
 
         var paymentTime = DateTime.Now;
+        var visits = (await GetPatientVisitsAsync(patientId)).ToList();
 
-        var alreadyPayedPerVisit = await _context.Payments
-            .Include(p => p.Visit)
-            .Where(p => p.Visit.PatientId == patientId)
-            .GroupBy(p => p.VisitId)
-            .Select(g => new
+        if (!visits.Any())
+        {
+            throw new InvalidOperationException("A patient with no visits cannot pay a debt");
+        }
+
+        var paymentPerVisitWithDebt = await _context.Visits
+            .Where(v => v.PatientId == patientId)
+            .Include(v => v.Payments)
+            .Select(v => new Payment
             {
-                VisitId = g.Key,
-                AlreadyPaid = g.Sum(payment => payment.Sum)
+                VisitId = v.Id,
+                CreatedOn = paymentTime,
+                Sum = v.TotalPrice - v.Payments.Sum(p => p.Sum)
             })
+            .Where(o => o.Sum > 0)
             .ToListAsync();
 
-        foreach (var visit in await GetPatientVisitsAsync(patientId))
+        foreach (var payment in paymentPerVisitWithDebt)
         {
-            var alreadyPaid = alreadyPayedPerVisit
-                .Single(t => t.VisitId == visit.Id)
-                .AlreadyPaid;
-
-            var remainsToPay = visit.TotalPrice - alreadyPaid;
-
-            if (remainsToPay <= 0)
-            {
-                continue;
-            }
-
-            var payment = new Payment
-            {
-                VisitId = visit.Id,
-                CreatedOn = paymentTime,
-                Sum = remainsToPay
-            };
-
             await _context.Payments.AddAsync(payment);
         }
 
@@ -133,7 +122,8 @@ public class PaymentService : IPaymentService
     /// <summary>
     /// Returns (total sum, total discount)
     /// </summary>
-    public async Task<(int, int)> CalculateTotalWithDiscountAsync(IEnumerable<TreatmentItemDto> selectedTreatmentItems, int discountPercent)
+    public async Task<(int, int)> CalculateTotalWithDiscountAsync(IEnumerable<TreatmentItemDto> selectedTreatmentItems,
+        int discountPercent)
     {
         if (discountPercent < 0 || discountPercent > 100)
         {
