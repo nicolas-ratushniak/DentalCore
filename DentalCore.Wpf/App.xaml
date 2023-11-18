@@ -12,11 +12,10 @@
 
         <Color x:Key="ColorAccent">#5CBAB8</Color>
         <Color x:Key="ColorMinor">#C1F376</Color>
-        <!-- <Color x:Key="ColorMinorFocused">#5FC314</Color> -->
-        <Color x:Key="ColorMinorFocused">Violet</Color>
+        <Color x:Key="ColorMinorFocused">#5FC314</Color>
         <Color x:Key="GreyColor">#858a8c</Color>
         <Color x:Key="LightGreyColor">#dee0e0</Color>
-        <Color x:Key="WarningColor">#f0bf0e</Color>
+        <Color x:Key="WarningColor">#FFC436</Color>
         <Color x:Key="DangerColor">#F4511E</Color>
 
         <!--Brushes-->
@@ -40,7 +39,7 @@
 
         <Style x:Key="ErrorMessage" TargetType="TextBlock">
             <Setter Property="FontSize" Value="16" />
-            <Setter Property="Foreground" Value="Crimson" />
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}" />
             <Setter Property="TextWrapping" Value="Wrap" />
         </Style>
 
@@ -115,7 +114,12 @@
         </Style>
 
         <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource NiceButton}">
-            <Setter Property="Background" Value="#ed5b51" />
+            <Setter Property="Background" Value="{StaticResource DangerBrush}" />
+            <Setter Property="FontWeight" Value="Regular" />
+        </Style>
+        
+        <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource NiceButton}">
+            <Setter Property="Background" Value="{StaticResource WarningBrush}" />
             <Setter Property="FontWeight" Value="Regular" />
         </Style>
 

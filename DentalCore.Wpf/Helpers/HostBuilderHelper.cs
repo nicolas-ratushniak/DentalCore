@@ -1,4 +1,5 @@
 ﻿using System;
+using DentalCore.Domain.Abstract;
 using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
