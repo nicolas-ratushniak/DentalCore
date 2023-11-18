@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:local="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:navigation="clr-namespace:DentalCore.Wpf.Services.Navigation"
              mc:Ignorable="d"
@@ -12,7 +11,6 @@
 
     <UserControl.Resources>
         <converters:EqualsToBooleanConverter x:Key="EqualsToBoolConverter" />
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
     <Grid>
@@ -29,16 +27,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!-- <RadioButton Grid.Column="0" -->
-            <!--              Style="{StaticResource NiceRadioButton}" -->
-            <!--              IsChecked="{Binding CurrentNavBarOption, Mode=OneWay, -->
-            <!--              Converter={StaticResource EqualsToBoolConverter}, -->
-            <!--              ConverterParameter={x:Static navigation:ViewType.Home}}" -->
-            <!--              Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}" -->
-            <!--              CommandParameter="{x:Static navigation:ViewType.Home}" -->
-            <!--              Content="Головна" /> -->
-
-            <RadioButton Grid.Column="1"
+            <RadioButton Grid.Column="0"
                          Style="{StaticResource NiceRadioButton}"
                          IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
                          Converter={StaticResource EqualsToBoolConverter},
@@ -47,7 +36,7 @@
                          CommandParameter="{x:Static navigation:ViewType.Patients}"
                          Content="Пацієнти" />
 
-            <RadioButton Grid.Column="2"
+            <RadioButton Grid.Column="1"
                          Style="{StaticResource NiceRadioButton}"
                          IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
                          Converter={StaticResource EqualsToBoolConverter},
@@ -55,13 +44,6 @@
                          Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
                          CommandParameter="{x:Static navigation:ViewType.Visits}"
                          Content="Візити" />
-
-            <Button Grid.Column="4"
-                    Style="{StaticResource NiceSquareButton}"
-                    Command="{Binding Path=UpdateApplicationCommand}"
-                    Content="Доступне оновлення"
-                    Visibility="{Binding HasUpdatesToApply, 
-                    Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
     </Grid>
 </UserControl>

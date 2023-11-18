@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Configuration;
@@ -19,14 +18,12 @@ public class MainViewModel : BaseViewModel
     private readonly IViewModelFactory _viewModelFactory;
     private readonly ILogger<MainViewModel> _logger;
     private readonly UpdateOptions _updateConfiguration;
-    private readonly GithubUpdateManager _updateManager;
-    
+
     private BaseViewModel? _currentViewModel;
     private ViewType _currentNavBarOption;
-    private bool _hasUpdatesToApply;
+    private string _currentVersion = "?.?.?";
 
     public INavigationService Navigator { get; }
-    public ICommand UpdateApplicationCommand { get; }
 
     public BaseViewModel? CurrentViewModel
     {
@@ -50,19 +47,19 @@ public class MainViewModel : BaseViewModel
         }
     }
 
-    public bool HasUpdatesToApply
+    public string CurrentVersion
     {
-        get => _hasUpdatesToApply;
+        get => _currentVersion;
         set
         {
-            if (value == _hasUpdatesToApply) return;
-            _hasUpdatesToApply = value;
+            if (value == _currentVersion) return;
+            _currentVersion = value;
             OnPropertyChanged();
         }
     }
 
     public MainViewModel(
-        IViewModelFactory viewModelFactory, 
+        IViewModelFactory viewModelFactory,
         INavigationService navigationService,
         IOptions<UpdateOptions> updateOptions,
         ILogger<MainViewModel> logger)
@@ -71,18 +68,13 @@ public class MainViewModel : BaseViewModel
         _viewModelFactory = viewModelFactory;
         _logger = logger;
         _updateConfiguration = updateOptions.Value;
-        _updateManager = new GithubUpdateManager();
 
         Navigator.CurrentViewTypeChanged += OnCurrentViewTypeChanged;
         Navigator.NavigateTo(ViewType.Patients, null);
 
         LoadedCommand = new AsyncRelayCommand(
-            CheckForUpdates,
-            _ => MessageBox.Show("Під час завантаження контенту виникла помилка"));
-        
-        UpdateApplicationCommand = new AsyncRelayCommand(
-            UpdateApp_Execute,  
-            _ => MessageBox.Show("Під час спроби оновлення виникла помилка"));
+            LoadData,
+            _ => MessageBox.Show("Під час перевірки оновлень виникла помилка"));
     }
 
     public override void Dispose()
@@ -91,12 +83,16 @@ public class MainViewModel : BaseViewModel
         base.Dispose();
     }
 
-    private async Task CheckForUpdates()
+    private async Task LoadData()
     {
         try
         {
-            await _updateManager.InitAsync(_updateConfiguration.GitHubRepo, "appsettings.json");
-            HasUpdatesToApply = await _updateManager.HasNewerReleaseAsync();
+            using (var updateManager = await GithubUpdateManager.CreateAsync(
+                       _updateConfiguration.GitHubRepo, "appsettings.json"))
+            {
+                CurrentVersion = updateManager.GetCurrentVersionInstalled();
+                await updateManager.UpdateAsync();
+            }
         }
         catch (InvalidOperationException)
         {
@@ -106,11 +102,6 @@ public class MainViewModel : BaseViewModel
         {
             _logger.LogWarning("Failed to check for updates. Http request failed");
         }
-    }
-
-    private async Task UpdateApp_Execute()
-    {
-        await _updateManager.UpdateAsync(restart: true);
     }
 
     private void OnCurrentViewTypeChanged(object? sender, ViewTypeChangedEventArgs args)
