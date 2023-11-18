@@ -5,5 +5,6 @@ namespace DentalCore.Wpf.Abstract;
 public interface IMinimalUpdateManager
 {
     public Task<bool> HasNewerReleaseAsync();
-    public Task UpdateAsync(bool restart = true);
+    public Task UpdateAsync();
+    public string GetCurrentVersionInstalled(string defaultValue);
 }

@@ -52,7 +52,6 @@ public partial class App : Application
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();
                 services.AddSingleton<IExportService, ExcelExportService>();
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();
-                services.AddSingleton<GithubUpdateManager>();
 
                 services.AddScoped<MainWindow>(s =>
                     new MainWindow(s.GetRequiredService<MainViewModel>()));

@@ -6,7 +6,7 @@
         
         xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
         mc:Ignorable="d"
-        Title="Dental Core" 
+        Title="{Binding CurrentVersion, StringFormat=Dental Core {0}}" 
         Height="700" MinHeight="620"
         Width="900" MinWidth="800"
         Loaded="OnLoaded">
