@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
+using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Dto;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;

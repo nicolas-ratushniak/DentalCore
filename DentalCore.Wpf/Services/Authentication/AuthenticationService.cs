@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DentalCore.Data.Models;
+using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Exceptions;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;

@@ -1,7 +1,7 @@
-﻿using DentalCore.Domain.Dto;
-using DentalCore.Data.Models;
+﻿using DentalCore.Data.Models;
+using DentalCore.Domain.Dto;
 
-namespace DentalCore.Domain.Services;
+namespace DentalCore.Domain.Abstract;
 
 public interface IPatientService
 {

@@ -1,5 +1,6 @@
 ﻿using DentalCore.Data;
 using DentalCore.Data.Models;
+using DentalCore.Domain.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace DentalCore.Domain.Services;

@@ -1,6 +1,6 @@
 ﻿using DentalCore.Data.Models;
 
-namespace DentalCore.Domain.Services;
+namespace DentalCore.Domain.Abstract;
 
 public interface ICommonService
 {

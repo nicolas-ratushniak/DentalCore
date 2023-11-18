@@ -1,5 +1,6 @@
 ﻿using DentalCore.Data;
 using DentalCore.Data.Models;
+using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Dto;
 using DentalCore.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;

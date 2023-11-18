@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
+using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
