@@ -4,10 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Abstract;
-using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Services.Navigation;
@@ -30,6 +30,7 @@ public class PatientInfoViewModel : BaseViewModel
 
     public ICommand GoToVisitCreateCommand { get; }
     public ICommand GoToVisitInfoCommand { get; }
+    public ICommand PayPatientDebtCommand { get; }
 
     public ICollectionView VisitCollectionView { get; }
     
@@ -123,7 +124,24 @@ public class PatientInfoViewModel : BaseViewModel
         GoToVisitInfoCommand = new RelayCommand<int>(visitId =>
             navigationService.NavigateTo(ViewType.VisitInfo, visitId));
 
+        PayPatientDebtCommand = new AsyncRelayCommand(
+            PayPatientDebt_Execute,
+            _ => MessageBox.Show("Помилка при виконанні операції", "Помилка",
+                MessageBoxButton.OK, MessageBoxImage.Error));
+
         LoadedCommand = new AsyncRelayCommand(LoadData);
+    }
+
+    private async Task PayPatientDebt_Execute()
+    {
+        var result = MessageBox.Show($"Ви справді хочете списати борг на суму {Debt} грн?",
+            "Небезпечна зона!", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+
+        if (result == MessageBoxResult.Yes)
+        {
+            await _paymentService.PayPatientDebtAsync(_patientId);
+            Debt = await _paymentService.GetPatientDebtAsync(_patientId);
+        }
     }
 
     private async Task LoadData()
