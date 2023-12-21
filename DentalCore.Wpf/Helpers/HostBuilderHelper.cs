@@ -1,7 +1,5 @@
 ﻿using System;
 using DentalCore.Domain.Abstract;
-using DentalCore.Domain.DataExportServices;
-using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.ViewModels;
@@ -41,8 +39,7 @@ public static class HostBuilderHelper
 
             services.AddSingleton<Func<VisitsViewModel>>(s => () => new VisitsViewModel(
                 s.GetRequiredService<INavigationService>(),
-                s.GetRequiredService<IVisitService>(),
-                s.GetRequiredService<IPatientService>()));
+                s.GetRequiredService<IVisitService>()));
 
             services.AddSingleton<Func<int, VisitInfoViewModel>>(s => id => new VisitInfoViewModel(
                 id,

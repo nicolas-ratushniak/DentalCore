@@ -1,4 +1,4 @@
-﻿namespace DentalCore.Domain.DataExportServices;
+﻿namespace DentalCore.Domain.Abstract;
 
 public interface IExportService
 {

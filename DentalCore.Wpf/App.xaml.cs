@@ -4,7 +4,6 @@ using System.Windows;
 using DentalCore.Data;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
-using DentalCore.Domain.DataExportServices;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Abstract;
-using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Services.Navigation;
@@ -18,7 +17,6 @@ namespace DentalCore.Wpf.ViewModels;
 public class VisitsViewModel : BaseViewModel
 {
     private readonly IVisitService _visitService;
-    private readonly IPatientService _patientService;
     private string _visitSearchFilter = string.Empty;
     private readonly ObservableCollection<TodayVisitListItemViewModel> _todayVisits;
 
@@ -41,11 +39,9 @@ public class VisitsViewModel : BaseViewModel
 
     public VisitsViewModel(
         INavigationService navigationService,
-        IVisitService visitService,
-        IPatientService patientService)
+        IVisitService visitService)
     {
         _visitService = visitService;
-        _patientService = patientService;
 
         _todayVisits = new ObservableCollection<TodayVisitListItemViewModel>();
 
@@ -79,23 +75,16 @@ public class VisitsViewModel : BaseViewModel
 
     private async Task<List<TodayVisitListItemViewModel>> GetVisitsForTodayAsync()
     {
-        var patients = (await _patientService.GetAllAsync()).ToList();
-
-        return (await _visitService.GetAllAsync())
-            .Where(v => v.CreatedOn.Date == DateTime.Today)
-            .Select(v =>
+        return (await _visitService.GetAllRichAsync())
+            .Where(v => v.VisitDate.Date == DateTime.Today)
+            .Select(v => new TodayVisitListItemViewModel
             {
-                var patient = patients.Single(p => p.Id == v.PatientId);
-
-                return new TodayVisitListItemViewModel
-                {
-                    Id = v.Id,
-                    Time = TimeOnly.FromDateTime(v.CreatedOn),
-                    Diagnosis = v.Diagnosis,
-                    Name = patient.Name,
-                    Surname = patient.Surname,
-                    Patronymic = patient.Patronymic
-                };
+                Id = v.Id,
+                Time = TimeOnly.FromDateTime(v.VisitDate),
+                Diagnosis = v.Diagnosis,
+                Name = v.Patient.Name,
+                Surname = v.Patient.Surname,
+                Patronymic = v.Patient.Patronymic
             })
             .ToList();
     }

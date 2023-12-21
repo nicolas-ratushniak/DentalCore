@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Exceptions;
-using DentalCore.Domain.Services;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
-namespace DentalCore.Domain.DataExportServices;
+namespace DentalCore.Domain.Services;
 
 public class ExcelExportService : IExportService
 {
@@ -128,39 +126,26 @@ public class ExcelExportService : IExportService
     {
         var fromDateTime = from.ToDateTime(TimeOnly.MinValue);
         var toDateTime = to.ToDateTime(TimeOnly.MaxValue);
+
+        var payedPerVisit = new List<(int, int)>();
+        var visits = await _visitService.GetAllRichAsync();
         
-        var visits = (await _visitService.GetAllAsync())
-            .Where(visit =>
-                visit.CreatedOn >= fromDateTime &&
-                visit.CreatedOn <= toDateTime)
-            .OrderBy(v => v.CreatedOn)
-            .ToList();
-
-        List<(int, int)> payedPerVisit = new();
-
         foreach (var visit in visits)
         {
             payedPerVisit.Add((visit.Id, await _paymentService.GetMoneyPayedForVisitAsync(visit.Id)));
         }
 
-        var patientInfos = (await _patientService.GetAllAsync())
-            .Where(patient => visits.Any(v => v.PatientId == patient.Id))
-            .Select(p => (p.Id, $"{p.Surname} {p.Name} {p.Patronymic}"));
-
-        var doctorInfos = (await _userService.GetAllAsync())
-            .Where(user =>
-                user.Role == UserRole.Doctor &&
-                visits.Any(v => v.DoctorId == user.Id))
-            .Select(d => (d.Id, $"{d.Surname} {d.Name}"));
-
-        return visits.Select(visit =>
-            new VisitExportDto
+        return (await _visitService.GetAllRichAsync())
+            .Where(v =>
+                v.VisitDate >= fromDateTime &&
+                v.VisitDate <= toDateTime)
+            .Select(v => new VisitExportDto
             {
-                Date = visit.CreatedOn,
-                PatientInfo = patientInfos.Single(p => p.Id == visit.PatientId).Item2,
-                DoctorInfo = doctorInfos.Single(d => d.Id == visit.DoctorId).Item2,
-                TotalSum = visit.TotalPrice,
-                ActuallyPayed = payedPerVisit.Single(p => p.Item1 == visit.Id).Item2
+                Date = v.VisitDate,
+                PatientInfo = $"{v.Patient.Surname} {v.Patient.Name} {v.Patient.Patronymic}",
+                DoctorInfo = $"{v.Doctor.Surname} {v.Doctor.Name}",
+                TotalSum = v.TotalPrice,
+                ActuallyPayed = payedPerVisit.Single(p => p.Item1 == v.Id).Item2
             });
     }
 }

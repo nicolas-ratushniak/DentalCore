@@ -190,7 +190,7 @@ public class PatientInfoViewModel : BaseViewModel
             .Select(v => new VisitOfPatientListItemViewModel
             {
                 Id = v.Id,
-                Date = v.CreatedOn,
+                Date = v.VisitDate,
                 Diagnosis = v.Diagnosis
             });
     }

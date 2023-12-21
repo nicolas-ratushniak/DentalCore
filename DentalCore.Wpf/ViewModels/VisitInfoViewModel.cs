@@ -115,7 +115,7 @@ public class VisitInfoViewModel : BaseViewModel
         var doctor = await _userService.GetIncludeSoftDeletedAsync(visit.DoctorId);
         var patient = await _patientService.GetAsync(visit.PatientId);
 
-        Date = visit.CreatedOn.ToString("dd.MM.yyyy");
+        Date = visit.VisitDate.ToString("dd.MM.yyyy");
         DoctorShortName = $"{doctor.Surname} {doctor.Name[0]}.";
         PatientShortName = $"{patient.Surname} {patient.Name[0]}.{patient.Patronymic[0]}.";
         Diagnosis = visit.Diagnosis;
