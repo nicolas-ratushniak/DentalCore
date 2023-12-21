@@ -65,7 +65,8 @@ public static class HostBuilderHelper
                 s.GetRequiredService<IExportService>(),
                 s.GetRequiredService<INavigationService>()));
             
-            services.AddSingleton<Func<ProceduresViewModel>>(s => () => new ProceduresViewModel());
+            services.AddSingleton<Func<ProceduresViewModel>>(s => () => new ProceduresViewModel(
+                s.GetRequiredService<IProcedureService>()));
 
             services.AddTransient<MainViewModel>();
         });

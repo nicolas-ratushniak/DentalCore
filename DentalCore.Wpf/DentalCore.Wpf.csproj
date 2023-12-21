@@ -41,12 +41,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Assets\edit.png"/>
         <Resource Include="Assets\edit.png"/>
-        <None Remove="Assets\more.png"/>
         <Resource Include="Assets\more.png"/>
-        <None Remove="Assets\quit.png"/>
         <Resource Include="Assets\quit.png"/>
+        <Resource Include="Assets\delete.png" />
     </ItemGroup>
 
     <ItemGroup>
