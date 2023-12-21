@@ -17,29 +17,54 @@ public class PatientService : IPatientService
         _context = context;
     }
 
-    public async Task<Patient> GetAsync(int id)
+    public async Task<PatientRichDto> GetAsync(int id)
     {
         return await _context.Patients
-            .Where(p => !p.IsDeleted)
-            .SingleOrDefaultAsync(p => p.Id == id) ?? throw new EntityNotFoundException();
-    }
-
-    public async Task<Patient> GetIncludeSoftDeletedAsync(int id)
-    {
-        return await _context.Patients.FindAsync(id)
+                   .Include(p => p.City)
+                   .Where(p => !p.IsDeleted)
+                   .Select(p => new PatientRichDto
+                   {
+                       Id = p.Id,
+                       Gender = p.Gender,
+                       Name = p.Name,
+                       Surname = p.Surname,
+                       Patronymic = p.Patronymic,
+                       BirthDate = p.BirthDate,
+                       City = new CityDto
+                       {
+                           Id = p.CityId,
+                           Name = p.City.Name
+                       }
+                   })
+                   .SingleOrDefaultAsync(p => p.Id == id)
                ?? throw new EntityNotFoundException();
     }
 
-    public async Task<IEnumerable<Patient>> GetAllAsync()
+    public async Task<IEnumerable<PatientDto>> GetAllAsync()
     {
         return await _context.Patients
             .Where(p => !p.IsDeleted)
+            .Select(p => new PatientDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Surname = p.Surname,
+                Patronymic = p.Patronymic
+            })
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Patient>> GetAllIncludeSoftDeletedAsync()
+    public async Task<IEnumerable<PatientDto>> GetAllIncludeSoftDeletedAsync()
     {
-        return await _context.Patients.ToListAsync();
+        return await _context.Patients
+            .Select(p => new PatientDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Surname = p.Surname,
+                Patronymic = p.Patronymic
+            })
+            .ToListAsync();
     }
 
     public async Task<int> AddAsync(PatientCreateDto dto)
@@ -138,7 +163,7 @@ public class PatientService : IPatientService
         var city = await _context.Cities.FindAsync(dto.CityId)
                    ?? throw new EntityNotFoundException("City not found");
 
-        var patient = await GetAsync(dto.Id);
+        var patient = await GetEntityAsync(dto.Id);
 
         patient.CityId = dto.CityId;
         patient.City = city;
@@ -159,7 +184,7 @@ public class PatientService : IPatientService
     public async Task SoftDeleteAsync(int id)
     {
         var deletedOn = DateTime.Now;
-        var patient = await GetAsync(id);
+        var patient = await GetEntityAsync(id);
 
         patient.IsDeleted = true;
         patient.DeletedOn = deletedOn;
@@ -193,6 +218,15 @@ public class PatientService : IPatientService
         return await _context.Phones
             .Where(p => p.PatientId == id)
             .ToListAsync();
+    }
+
+    private async Task<Patient> GetEntityAsync(int id)
+    {
+        return await _context.Patients
+                   .SingleOrDefaultAsync(p =>
+                       p.Id == id &&
+                       !p.IsDeleted)
+               ?? throw new EntityNotFoundException();
     }
 
     private List<Phone> GetUpdatedPhones(Patient patient, ICollection<Phone> oldPhones,

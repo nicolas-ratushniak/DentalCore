@@ -1,9 +1,7 @@
-﻿
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using DentalCore.Domain.Abstract;
-using DentalCore.Domain.Services;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.ViewModels.Inners;
 
@@ -23,7 +21,7 @@ public class VisitInfoViewModel : BaseViewModel
     private string? _diagnosis;
     private int _totalSum;
     private int _hasPayed;
-    
+
     public ObservableCollection<TreatmentItemReadOnlyListItemViewModel> TreatmentItems { get; }
 
     public string Date

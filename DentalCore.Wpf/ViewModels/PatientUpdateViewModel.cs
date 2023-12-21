@@ -237,7 +237,7 @@ public class PatientUpdateViewModel : BaseViewModel
         BirthDate = patient.BirthDate.ToString("dd.MM.yyyy");
         Gender = patient.Gender;
         Phone = (await _patientService.GetPhonesAsync(patient.Id)).First().PhoneNumber;
-        SelectedCity = _cities.Single(c => c.Id == patient.CityId);
+        SelectedCity = _cities.Single(c => c.Id == patient.City.Id);
     }
 
     private async Task Update_Execute()
