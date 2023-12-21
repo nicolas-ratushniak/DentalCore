@@ -13,6 +13,7 @@ public class ViewModelFactory : IViewModelFactory
     private readonly Func<int, VisitInfoViewModel> _createVisitInfoView;
     private readonly Func<int, VisitCreateViewModel> _createVisitCreateVm;
     private readonly Func<VisitsExportViewModel> _createVisitsExportVm;
+    private readonly Func<ProceduresViewModel> _createProceduresVm;
 
     public ViewModelFactory(
         Func<PatientsViewModel> createPatientsVm,
@@ -22,7 +23,8 @@ public class ViewModelFactory : IViewModelFactory
         Func<VisitsViewModel> createVisitsVm,
         Func<int, VisitInfoViewModel> createVisitInfoView,
         Func<int, VisitCreateViewModel> createVisitCreateVm,
-        Func<VisitsExportViewModel> createVisitsExportVm)
+        Func<VisitsExportViewModel> createVisitsExportVm,
+        Func<ProceduresViewModel> createProceduresVm)
     {
         _createPatientsVm = createPatientsVm;
         _createPatientInfoVm = createPatientInfoVm;
@@ -32,6 +34,7 @@ public class ViewModelFactory : IViewModelFactory
         _createVisitInfoView = createVisitInfoView;
         _createVisitCreateVm = createVisitCreateVm;
         _createVisitsExportVm = createVisitsExportVm;
+        _createProceduresVm = createProceduresVm;
     }
 
     public BaseViewModel CreateViewModel(ViewType viewType, object? viewParameter = null)
@@ -46,6 +49,7 @@ public class ViewModelFactory : IViewModelFactory
             ViewType.VisitInfo => _createVisitInfoView((int)viewParameter!),
             ViewType.VisitCreate => _createVisitCreateVm((int)viewParameter!),
             ViewType.VisitsExport => _createVisitsExportVm(),
+            ViewType.Procedures => _createProceduresVm(),
             _ => throw new InvalidOperationException("Cannot create view model with this type")
         };
     }
