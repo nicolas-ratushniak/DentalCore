@@ -9,7 +9,7 @@
         <AssemblyName>DentalCore</AssemblyName>
 
         <!--Set to 'true' to pack release on build-->
-        <VersionStampOnBuild>true</VersionStampOnBuild>
+        <VersionStampOnBuild>false</VersionStampOnBuild>
         <AssemblyVersion>0.0.7</AssemblyVersion>
         <FileVersion>0.0.7</FileVersion>
     </PropertyGroup>
@@ -47,6 +47,14 @@
         <Resource Include="Assets\more.png"/>
         <None Remove="Assets\quit.png"/>
         <Resource Include="Assets\quit.png"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\Components\NavBar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
 
     <PropertyGroup>
