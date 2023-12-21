@@ -32,6 +32,8 @@ public class VisitService : IVisitService
 
     public async Task<int> AddAsync(VisitCreateDto dto)
     {
+        var createdOn = DateTime.Now;
+        
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (!dto.TreatmentItems.Any())
@@ -74,7 +76,8 @@ public class VisitService : IVisitService
             DiscountSum = discountSum,
             Diagnosis = dto.Diagnosis,
             TotalPrice = totalPrice,
-            CreatedOn = dto.Date,
+            VisitDate = dto.Date,
+            CreatedOn = createdOn,
             Payments = new List<Payment>(),
             TreatmentItems = new List<TreatmentItem>(),
         };
