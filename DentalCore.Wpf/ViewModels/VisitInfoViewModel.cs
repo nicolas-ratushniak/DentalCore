@@ -10,10 +10,7 @@ namespace DentalCore.Wpf.ViewModels;
 public class VisitInfoViewModel : BaseViewModel
 {
     private readonly IVisitService _visitService;
-    private readonly IPatientService _patientService;
-    private readonly IUserService _userService;
     private readonly IProcedureService _procedureService;
-    private readonly IPaymentService _paymentService;
     private readonly int _patientId;
     private string _date;
     private string _doctorShortName;
@@ -93,17 +90,11 @@ public class VisitInfoViewModel : BaseViewModel
     public VisitInfoViewModel(
         int id,
         IVisitService visitService,
-        IPatientService patientService,
-        IUserService userService,
-        IProcedureService procedureService,
-        IPaymentService paymentService)
+        IProcedureService procedureService)
     {
         _patientId = id;
         _visitService = visitService;
-        _patientService = patientService;
-        _userService = userService;
         _procedureService = procedureService;
-        _paymentService = paymentService;
         TreatmentItems = new ObservableCollection<TreatmentItemReadOnlyListItemViewModel>();
 
         LoadedCommand = new AsyncRelayCommand(LoadData);
@@ -112,15 +103,13 @@ public class VisitInfoViewModel : BaseViewModel
     private async Task LoadData()
     {
         var visit = await _visitService.GetAsync(_patientId);
-        var doctor = await _userService.GetIncludeSoftDeletedAsync(visit.DoctorId);
-        var patient = await _patientService.GetAsync(visit.PatientId);
 
         Date = visit.VisitDate.ToString("dd.MM.yyyy");
-        DoctorShortName = $"{doctor.Surname} {doctor.Name[0]}.";
-        PatientShortName = $"{patient.Surname} {patient.Name[0]}.{patient.Patronymic[0]}.";
+        DoctorShortName = $"{visit.Doctor.Surname} {visit.Doctor.Name[0]}.";
+        PatientShortName = $"{visit.Patient.Surname} {visit.Patient.Name[0]}.{visit.Patient.Patronymic[0]}.";
         Diagnosis = visit.Diagnosis;
         TotalSum = visit.TotalPrice;
-        HasPayed = await _paymentService.GetMoneyPayedForVisitAsync(_patientId);
+        HasPayed = visit.AlreadyPayed;
 
         var procedures = (await _procedureService.GetAllIncludeSoftDeletedAsync()).ToList();
 

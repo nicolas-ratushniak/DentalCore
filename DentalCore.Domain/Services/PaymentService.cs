@@ -95,14 +95,6 @@ public class PaymentService : IPaymentService
         return shouldHavePayed - actuallyPayed;
     }
 
-    public async Task<int> GetVisitDebtAsync(int visitId)
-    {
-        var visit = await _context.Visits.FindAsync(visitId)
-                    ?? throw new EntityNotFoundException("Visit not found");
-
-        return visit.TotalPrice - await GetMoneyPayedForVisitUnsafeAsync(visitId);
-    }
-
     public async Task PayPatientDebtAsync(int patientId, DateTime paymentDate)
     {
         var createdOn = DateTime.Now;
@@ -131,16 +123,6 @@ public class PaymentService : IPaymentService
 
         await _context.Payments.AddRangeAsync(paymentPerVisitWithDebt);
         await _context.SaveChangesAsync();
-    }
-
-    public async Task<int> GetMoneyPayedForVisitAsync(int visitId)
-    {
-        if (!await _context.Visits.AnyAsync(v => v.Id == visitId))
-        {
-            throw new EntityNotFoundException("Visit not found");
-        }
-
-        return await GetMoneyPayedForVisitUnsafeAsync(visitId);
     }
 
     /// <summary>
@@ -174,7 +156,6 @@ public class PaymentService : IPaymentService
         foreach (var item in items)
         {
             var procedure = procedures.Single(p => p.Id == item.ProcedureId);
-
             var itemPriceNoDiscount = procedure.Price * item.Quantity;
 
             preciseTotalNoDiscount += itemPriceNoDiscount;
@@ -208,11 +189,16 @@ public class PaymentService : IPaymentService
             .Where(v => v.PatientId == patientId)
             .ToListAsync();
     }
-
-    private async Task<int> GetMoneyPayedForVisitUnsafeAsync(int visitId)
+    
+    private async Task<int> GetVisitDebtAsync(int visitId)
     {
-        return await _context.Payments
+        var visit = await _context.Visits.FindAsync(visitId)
+                    ?? throw new EntityNotFoundException("Visit not found");
+
+        var alreadyPayed = await _context.Payments
             .Where(p => p.VisitId == visitId)
             .SumAsync(p => p.Sum);
+
+        return visit.TotalPrice - alreadyPayed;
     }
 }

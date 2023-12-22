@@ -44,10 +44,7 @@ public static class HostBuilderHelper
             services.AddSingleton<Func<int, VisitInfoViewModel>>(s => id => new VisitInfoViewModel(
                 id,
                 s.GetRequiredService<IVisitService>(),
-                s.GetRequiredService<IPatientService>(),
-                s.GetRequiredService<IUserService>(),
-                s.GetRequiredService<IProcedureService>(),
-                s.GetRequiredService<IPaymentService>()));
+                s.GetRequiredService<IProcedureService>()));
 
             services.AddSingleton<Func<int, VisitCreateViewModel>>(s => id => new VisitCreateViewModel(
                 id,

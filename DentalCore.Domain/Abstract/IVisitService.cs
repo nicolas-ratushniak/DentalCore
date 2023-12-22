@@ -5,7 +5,7 @@ namespace DentalCore.Domain.Abstract;
 
 public interface IVisitService
 {
-    public Task<VisitDto> GetAsync(int id);
+    public Task<VisitRichDto> GetAsync(int id);
     public Task<IEnumerable<VisitDto>> GetAllAsync();
     public Task<IEnumerable<VisitRichDto>> GetAllRichAsync(DateTime from, DateTime to);
     public Task<int> AddAsync(VisitCreateDto dto);

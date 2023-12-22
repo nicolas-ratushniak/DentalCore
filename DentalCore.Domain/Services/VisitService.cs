@@ -19,17 +19,35 @@ public class VisitService : IVisitService
         _paymentService = paymentService;
     }
 
-    public async Task<VisitDto> GetAsync(int id)
+    public async Task<VisitRichDto> GetAsync(int id)
     {
         return await _context.Visits
-                   .Select(v => new VisitDto
+                   .Include(v => v.Patient)
+                   .Include(v => v.Doctor)
+                   .Include(v => v.Payments)
+                   .Select(v => new VisitRichDto
                    {
                        Id = v.Id,
-                       PatientId = v.PatientId,
-                       DoctorId = v.DoctorId,
                        VisitDate = v.VisitDate,
                        TotalPrice = v.TotalPrice,
-                       Diagnosis = v.Diagnosis
+                       AlreadyPayed = v.Payments.Sum(p => p.Sum),
+                       Diagnosis = v.Diagnosis,
+                       Patient = new PatientDto
+                       {
+                           Id = v.PatientId,
+                           Name = v.Patient.Name,
+                           Surname = v.Patient.Surname,
+                           Patronymic = v.Patient.Patronymic
+                       },
+                       Doctor = new UserDto
+                       {
+                           Id = v.DoctorId,
+                           Role = v.Doctor.Role,
+                           Login = v.Doctor.Login,
+                           Name = v.Doctor.Name,
+                           Surname = v.Doctor.Surname,
+                           Phone = v.Doctor.Phone
+                       }
                    })
                    .SingleOrDefaultAsync(v => v.Id == id)
                ?? throw new EntityNotFoundException();
@@ -69,7 +87,7 @@ public class VisitService : IVisitService
                 Id = v.Id,
                 VisitDate = v.VisitDate,
                 TotalPrice = v.TotalPrice,
-                ActuallyPayed = v.Payments.Sum(p => p.Sum),
+                AlreadyPayed = v.Payments.Sum(p => p.Sum),
                 Diagnosis = v.Diagnosis,
                 Patient = new PatientDto
                 {

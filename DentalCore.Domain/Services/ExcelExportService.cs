@@ -126,7 +126,7 @@ public class ExcelExportService : IExportService
                 PatientInfo = $"{v.Patient.Surname} {v.Patient.Name} {v.Patient.Patronymic}",
                 DoctorInfo = $"{v.Doctor.Surname} {v.Doctor.Name}",
                 TotalSum = v.TotalPrice,
-                ActuallyPayed = v.ActuallyPayed
+                ActuallyPayed = v.AlreadyPayed
             })
             .ToList();
     }
