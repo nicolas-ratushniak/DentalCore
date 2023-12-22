@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DentalCore.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class SeparateCreatedOnAndOperationDate : Migration
+    public partial class AddOperationDates : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,6 +24,9 @@ namespace DentalCore.Data.Migrations
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+            
+            migrationBuilder.Sql("update DentalCoreDb.dbo.Visits set [VisitDate] = CreatedOn where VisitDate = '0001-01-01 00:00:00.0000000';");
+            migrationBuilder.Sql("update DentalCoreDb.dbo.Payments set [PaymentDate] = CreatedOn where PaymentDate = '0001-01-01 00:00:00.0000000';");
         }
 
         /// <inheritdoc />

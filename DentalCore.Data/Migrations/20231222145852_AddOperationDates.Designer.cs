@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalCore.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231222103301_SeparateCreatedOnAndOperationDate")]
-    partial class SeparateCreatedOnAndOperationDate
+    [Migration("20231222145852_AddOperationDates")]
+    partial class AddOperationDates
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
