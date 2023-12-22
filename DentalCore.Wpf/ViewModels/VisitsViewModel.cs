@@ -75,8 +75,10 @@ public class VisitsViewModel : BaseViewModel
 
     private async Task<List<TodayVisitListItemViewModel>> GetVisitsForTodayAsync()
     {
-        return (await _visitService.GetAllRichAsync())
-            .Where(v => v.VisitDate.Date == DateTime.Today)
+        var todayStart = DateTime.Today;
+        var todayEnd = DateTime.Today.AddDays(1);
+        
+        return (await _visitService.GetAllRichAsync(todayStart, todayEnd))
             .Select(v => new TodayVisitListItemViewModel
             {
                 Id = v.Id,

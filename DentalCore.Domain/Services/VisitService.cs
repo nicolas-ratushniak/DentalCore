@@ -50,16 +50,26 @@ public class VisitService : IVisitService
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<VisitRichDto>> GetAllRichAsync()
+    public async Task<IEnumerable<VisitRichDto>> GetAllRichAsync(DateTime from, DateTime to)
     {
+        if (from > to)
+        {
+            throw new ArgumentException("From should not be greater than To", nameof(from));
+        }        
+        
         return await _context.Visits
             .Include(v => v.Patient)
             .Include(v => v.Doctor)
+            .Include(v => v.Payments)
+            .Where(v =>
+                v.VisitDate >= from &&
+                v.VisitDate <= to)
             .Select(v => new VisitRichDto
             {
                 Id = v.Id,
                 VisitDate = v.VisitDate,
                 TotalPrice = v.TotalPrice,
+                ActuallyPayed = v.Payments.Sum(p => p.Sum),
                 Diagnosis = v.Diagnosis,
                 Patient = new PatientDto
                 {
