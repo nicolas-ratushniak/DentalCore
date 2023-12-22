@@ -1,6 +1,6 @@
 ﻿using DentalCore.Data;
-using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
+using DentalCore.Domain.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace DentalCore.Domain.Services;
@@ -14,18 +14,36 @@ public class CommonService : ICommonService
         _context = context;
     }
 
-    public async Task<IEnumerable<Disease>> GetDiseasesAsync()
+    public async Task<IEnumerable<DiseaseDto>> GetDiseasesAsync()
     {
-        return await _context.Diseases.ToListAsync();
+        return await _context.Diseases
+            .Select(d => new DiseaseDto
+            {
+                Id = d.Id,
+                Name = d.Name
+            })
+            .ToListAsync();
     }
 
-    public async Task<IEnumerable<City>> GetCitiesAsync()
+    public async Task<IEnumerable<CityDto>> GetCitiesAsync()
     {
-        return await _context.Cities.ToListAsync();
+        return await _context.Cities
+            .Select(d => new CityDto
+            {
+                Id = d.Id,
+                Name = d.Name
+            })
+            .ToListAsync();
     }
 
-    public async Task<IEnumerable<Allergy>> GetAllergiesAsync()
+    public async Task<IEnumerable<AllergyDto>> GetAllergiesAsync()
     {
-        return await _context.Allergies.ToListAsync();
+        return await _context.Allergies
+            .Select(d => new AllergyDto
+            {
+                Id = d.Id,
+                Name = d.Name
+            })
+            .ToListAsync();
     }
 }

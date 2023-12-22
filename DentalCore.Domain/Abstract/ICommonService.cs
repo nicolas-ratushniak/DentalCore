@@ -1,10 +1,10 @@
-﻿using DentalCore.Data.Models;
+﻿using DentalCore.Domain.Dto;
 
 namespace DentalCore.Domain.Abstract;
 
 public interface ICommonService
 {
-    public Task<IEnumerable<Disease>> GetDiseasesAsync();
-    public Task<IEnumerable<City>> GetCitiesAsync();
-    public Task<IEnumerable<Allergy>> GetAllergiesAsync();
+    public Task<IEnumerable<DiseaseDto>> GetDiseasesAsync();
+    public Task<IEnumerable<CityDto>> GetCitiesAsync();
+    public Task<IEnumerable<AllergyDto>> GetAllergiesAsync();
 }
