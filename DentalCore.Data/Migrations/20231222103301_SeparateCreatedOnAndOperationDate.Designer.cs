@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalCore.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231221164414_UpdateVisit")]
-    partial class UpdateVisit
+    [Migration("20231222103301_SeparateCreatedOnAndOperationDate")]
+    partial class SeparateCreatedOnAndOperationDate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,6 +183,9 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<int?>("PatientId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Sum")
                         .HasColumnType("int");

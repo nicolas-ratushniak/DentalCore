@@ -139,7 +139,7 @@ public class PatientInfoViewModel : BaseViewModel
 
         if (result == MessageBoxResult.Yes)
         {
-            await _paymentService.PayPatientDebtAsync(_patientId);
+            await _paymentService.PayPatientDebtAsync(_patientId, DateTime.Now);
             Debt = await _paymentService.GetPatientDebtAsync(_patientId);
         }
     }

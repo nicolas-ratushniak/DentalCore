@@ -1,4 +1,5 @@
-﻿using DentalCore.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using DentalCore.Data;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Dto;
@@ -16,19 +17,64 @@ public class PaymentService : IPaymentService
         _context = context;
     }
 
-    public async Task<Payment> GetAsync(int id)
+    public async Task<PaymentDto> GetAsync(int id)
     {
-        return await _context.Payments.FindAsync(id)
+        return await _context.Payments
+                   .Select(p => new PaymentDto
+                   {
+                       Id = p.Id,
+                       VisitId = p.VisitId,
+                       Sum = p.Sum,
+                       PaymentDate = p.PaymentDate
+                   })
+                   .SingleOrDefaultAsync(p => p.Id == id)
                ?? throw new EntityNotFoundException();
     }
 
-    public async Task<IEnumerable<Payment>> GetAllAsync(DateTime from, DateTime to)
+    public async Task<IEnumerable<PaymentDto>> GetAllAsync(DateTime from, DateTime to)
     {
         return await _context.Payments
             .Where(p =>
-                p.CreatedOn >= from &&
-                p.CreatedOn <= to)
+                p.PaymentDate >= from &&
+                p.PaymentDate <= to)
+            .Select(p => new PaymentDto
+            {
+                Id = p.Id,
+                VisitId = p.VisitId,
+                Sum = p.Sum,
+                PaymentDate = p.PaymentDate
+            })
             .ToListAsync();
+    }
+
+    public async Task AddAsync(PaymentCreateDto dto)
+    {
+        var createdOn = DateTime.Now;
+
+        if (dto.PaymentDate > createdOn)
+        {
+            throw new ValidationException("Payment from the future is not acceptable");
+        }
+
+        if (dto.Sum < 0 || dto.Sum > await GetVisitDebtAsync(dto.VisitId))
+        {
+            throw new ArgumentOutOfRangeException(nameof(dto));
+        }
+
+        var visit = await _context.Visits.FindAsync(dto.VisitId)
+                    ?? throw new EntityNotFoundException("Visit not found");
+
+        var payment = new Payment
+        {
+            VisitId = dto.VisitId,
+            PaymentDate = dto.PaymentDate,
+            Sum = dto.Sum,
+            Visit = visit,
+            CreatedOn = createdOn
+        };
+
+        await _context.Payments.AddAsync(payment);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<int> GetPatientDebtAsync(int patientId)
@@ -38,8 +84,13 @@ public class PaymentService : IPaymentService
             throw new EntityNotFoundException("Patient not found");
         }
 
-        var shouldHavePayed = (await GetPatientVisitsAsync(patientId)).Sum(v => v.TotalPrice);
-        var actuallyPayed = (await GetPatientPaymentsAsync(patientId)).Sum(p => p.Sum);
+        var visitsWithPayments = await GetPatientVisitsIncludePaymentsUnsafeAsync(patientId);
+        
+        var shouldHavePayed = visitsWithPayments.Sum(v => v.TotalPrice);
+        
+        var actuallyPayed = visitsWithPayments
+            .SelectMany(v => v.Payments)
+            .Sum(p => p.Sum);
 
         return shouldHavePayed - actuallyPayed;
     }
@@ -52,60 +103,33 @@ public class PaymentService : IPaymentService
         return visit.TotalPrice - await GetMoneyPayedForVisitUnsafeAsync(visitId);
     }
 
-    public async Task PayPatientDebtAsync(int patientId)
+    public async Task PayPatientDebtAsync(int patientId, DateTime paymentDate)
     {
+        var createdOn = DateTime.Now;
+
         if (!await _context.Patients.AnyAsync(p => p.Id == patientId))
         {
             throw new EntityNotFoundException("Patient not found");
         }
 
-        var paymentTime = DateTime.Now;
-        var visits = (await GetPatientVisitsAsync(patientId)).ToList();
-
-        if (!visits.Any())
-        {
-            throw new InvalidOperationException("A patient with no visits cannot pay a debt");
-        }
-
-        var paymentPerVisitWithDebt = await _context.Visits
-            .Where(v => v.PatientId == patientId)
-            .Include(v => v.Payments)
+        var paymentPerVisitWithDebt = (await GetPatientVisitsIncludePaymentsUnsafeAsync(patientId))
             .Select(v => new Payment
             {
                 VisitId = v.Id,
-                CreatedOn = paymentTime,
+                Visit = v,
+                PaymentDate = paymentDate,
+                CreatedOn = createdOn,
                 Sum = v.TotalPrice - v.Payments.Sum(p => p.Sum)
             })
-            .Where(o => o.Sum > 0)
-            .ToListAsync();
+            .Where(p => p.Sum > 0)
+            .ToList();
 
-        foreach (var payment in paymentPerVisitWithDebt)
+        if (!paymentPerVisitWithDebt.Any())
         {
-            await _context.Payments.AddAsync(payment);
+            throw new InvalidOperationException("A patient has no visits or no debt");
         }
 
-        await _context.SaveChangesAsync();
-    }
-
-    public async Task AddVisitPaymentAsync(int visitId, int sum)
-    {
-        var visit = await _context.Visits.FindAsync(visitId)
-                    ?? throw new EntityNotFoundException("Visit not found");
-
-        if (sum < 0 || sum > visit.TotalPrice - await GetMoneyPayedForVisitUnsafeAsync(visitId))
-        {
-            throw new ArgumentOutOfRangeException(nameof(sum));
-        }
-
-        var payment = new Payment
-        {
-            VisitId = visitId,
-            CreatedOn = DateTime.Now,
-            Sum = sum,
-            Visit = visit
-        };
-
-        await _context.Payments.AddAsync(payment);
+        await _context.Payments.AddRangeAsync(paymentPerVisitWithDebt);
         await _context.SaveChangesAsync();
     }
 
@@ -125,7 +149,7 @@ public class PaymentService : IPaymentService
     public async Task<(int, int)> CalculateTotalWithDiscountAsync(IEnumerable<TreatmentItemDto> selectedTreatmentItems,
         int discountPercent)
     {
-        if (discountPercent < 0 || discountPercent > 100)
+        if (discountPercent is < 0 or > 100)
         {
             throw new ArgumentOutOfRangeException(nameof(discountPercent));
         }
@@ -140,7 +164,9 @@ public class PaymentService : IPaymentService
 
         if (hasDuplicates)
         {
-            throw new ArgumentException("The list of items should not have duplicates", nameof(selectedTreatmentItems));
+            throw new ArgumentException(
+                "The list of items should not have duplicates", 
+                nameof(selectedTreatmentItems));
         }
 
         var procedures = await _context.Procedures.ToListAsync();
@@ -157,42 +183,29 @@ public class PaymentService : IPaymentService
                 : itemPriceNoDiscount;
         }
 
-        int roundedTotalNoDiscount;
-        int roundedTotalWithDiscount;
-
-        if (preciseTotalWithDiscount <= 50)
-        {
-            roundedTotalNoDiscount = (int)Math.Round(preciseTotalNoDiscount, MidpointRounding.ToPositiveInfinity);
-            roundedTotalWithDiscount = (int)Math.Round(preciseTotalWithDiscount, MidpointRounding.ToPositiveInfinity);
-        }
-        else
-        {
-            roundedTotalNoDiscount = RoundPrice(preciseTotalNoDiscount);
-            roundedTotalWithDiscount = RoundPrice(preciseTotalWithDiscount);
-        }
+        var roundedTotalNoDiscount = RoundToComfortablePrice(preciseTotalNoDiscount);
+        var roundedTotalWithDiscount = RoundToComfortablePrice(preciseTotalWithDiscount);
 
         var discountSum = roundedTotalNoDiscount - roundedTotalWithDiscount;
         return (roundedTotalWithDiscount, discountSum);
 
-        static int RoundPrice(decimal price)
+        static int RoundToComfortablePrice(decimal price)
         {
+            if (price <= 50)
+            {
+                return (int)Math.Round(price, MidpointRounding.ToPositiveInfinity);
+            }
+            
             var remainder = price % 50;
             return remainder < 25 ? (int)(price - remainder) : (int)(price - remainder) + 50;
         }
     }
 
-    private async Task<IEnumerable<Visit>> GetPatientVisitsAsync(int patientId)
+    private async Task<List<Visit>> GetPatientVisitsIncludePaymentsUnsafeAsync(int patientId)
     {
         return await _context.Visits
+            .Include(v => v.Payments)
             .Where(v => v.PatientId == patientId)
-            .ToListAsync();
-    }
-
-    private async Task<IEnumerable<Payment>> GetPatientPaymentsAsync(int patientId)
-    {
-        return await _context.Payments
-            .Include(p => p.Visit)
-            .Where(p => p.Visit.PatientId == patientId)
             .ToListAsync();
     }
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DentalCore.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdateVisit : Migration
+    public partial class SeparateCreatedOnAndOperationDate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,6 +14,13 @@ namespace DentalCore.Data.Migrations
             migrationBuilder.AddColumn<DateTime>(
                 name: "VisitDate",
                 table: "Visits",
+                type: "datetime2",
+                nullable: false,
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "PaymentDate",
+                table: "Payments",
                 type: "datetime2",
                 nullable: false,
                 defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
@@ -25,6 +32,10 @@ namespace DentalCore.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "VisitDate",
                 table: "Visits");
+
+            migrationBuilder.DropColumn(
+                name: "PaymentDate",
+                table: "Payments");
         }
     }
 }

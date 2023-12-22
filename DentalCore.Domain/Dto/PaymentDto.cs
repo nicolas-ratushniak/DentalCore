@@ -1,11 +1,9 @@
-﻿namespace DentalCore.Data.Models;
+﻿namespace DentalCore.Domain.Dto;
 
-public class Payment
+public class PaymentDto
 {
     public int Id { get; set; }
     public int VisitId { get; set; }
-    public Visit Visit { get; set; }
     public int Sum { get; set; }
     public DateTime PaymentDate { get; set; }
-    public DateTime CreatedOn { get; set; }
 }
