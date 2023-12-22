@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
+using DentalCore.Domain.Dto;
 using DentalCore.Domain.Exceptions;
-using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
 
 namespace DentalCore.Wpf.Services.Authentication;
@@ -14,7 +13,7 @@ public class AuthenticationService : IAuthenticationService
 
     private readonly IUserService _userService;
 
-    public User? CurrentUser { get; set; }
+    public UserDto? CurrentUser { get; set; }
     public bool IsLoggedIn => CurrentUser is not null;
 
     public AuthenticationService(IUserService userService)

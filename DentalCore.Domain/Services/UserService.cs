@@ -21,36 +21,84 @@ public class UserService : IUserService
         _hashAlgorithm = MD5.Create();
     }
 
-    public async Task<User> GetAsync(int id)
+    public async Task<UserDto> GetAsync(int id)
     {
         return await _context.Users
-            .Where(u => !u.IsDeleted)
-            .SingleOrDefaultAsync(u => u.Id == id) ?? throw new EntityNotFoundException();
-    }
-
-    public async Task<User> GetAsync(string login)
-    {
-        return await _context.Users
-            .Where(u => !u.IsDeleted)
-            .SingleOrDefaultAsync(u => u.Login == login) ?? throw new EntityNotFoundException();
-    }
-
-    public async Task<User> GetIncludeSoftDeletedAsync(int id)
-    {
-        return await _context.Users.FindAsync(id)
+                   .Where(u => !u.IsDeleted)
+                   .Select(u => new UserDto
+                   {
+                       Id = u.Id,
+                       Role = u.Role,
+                       Login = u.Login,
+                       Name = u.Name,
+                       Surname = u.Surname,
+                       Phone = u.Phone
+                   })
+                   .SingleOrDefaultAsync(u => u.Id == id)
                ?? throw new EntityNotFoundException();
     }
 
-    public async Task<IEnumerable<User>> GetAllAsync()
+    public async Task<UserDto> GetAsync(string login)
+    {
+        return await _context.Users
+                   .Where(u => !u.IsDeleted)
+                   .Select(u => new UserDto
+                   {
+                       Id = u.Id,
+                       Role = u.Role,
+                       Login = u.Login,
+                       Name = u.Name,
+                       Surname = u.Surname,
+                       Phone = u.Phone
+                   })
+                   .SingleOrDefaultAsync(u => u.Login == login)
+               ?? throw new EntityNotFoundException();
+    }
+
+    public async Task<UserDto> GetIncludeSoftDeletedAsync(int id)
+    {
+        return await _context.Users
+                   .Select(u => new UserDto
+                   {
+                       Id = u.Id,
+                       Role = u.Role,
+                       Login = u.Login,
+                       Name = u.Name,
+                       Surname = u.Surname,
+                       Phone = u.Phone
+                   })
+                   .SingleOrDefaultAsync(u => u.Id == id)
+               ?? throw new EntityNotFoundException();
+    }
+
+    public async Task<IEnumerable<UserDto>> GetAllAsync()
     {
         return await _context.Users
             .Where(u => !u.IsDeleted)
+            .Select(u => new UserDto
+            {
+                Id = u.Id,
+                Role = u.Role,
+                Login = u.Login,
+                Name = u.Name,
+                Surname = u.Surname,
+                Phone = u.Phone
+            })
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<User>> GetAllIncludeSoftDeletedAsync()
+    public async Task<IEnumerable<UserDto>> GetAllIncludeSoftDeletedAsync()
     {
-        return await _context.Users.ToListAsync();
+        return await _context.Users
+            .Select(u => new UserDto
+            {
+                Id = u.Id,
+                Role = u.Role,
+                Login = u.Login,
+                Name = u.Name,
+                Surname = u.Surname,
+                Phone = u.Phone
+            }).ToListAsync();
     }
 
     public async Task<int> AddAsync(UserCreateDto dto)
@@ -110,7 +158,7 @@ public class UserService : IUserService
             throw new ValidationException("У базі вже є користувач з таким ПІБ");
         }
 
-        var user = await GetAsync(dto.Id);
+        var user = await GetEntityAsync(dto.Id);
 
         user.Login = dto.Login;
         user.PasswordHash = GetPasswordHash(dto.Password);
@@ -126,7 +174,7 @@ public class UserService : IUserService
     public async Task SoftDeleteAsync(int id)
     {
         var deletedOn = DateTime.Now;
-        var user = await GetAsync(id);
+        var user = await GetEntityAsync(id);
 
         user.IsDeleted = true;
         user.DeletedOn = deletedOn;
@@ -137,7 +185,7 @@ public class UserService : IUserService
 
     public async Task<bool> CheckPasswordAsync(int id, string password)
     {
-        var user = await GetAsync(id);
+        var user = await GetEntityAsync(id);
         return GetPasswordHash(password) == user.PasswordHash;
     }
 
@@ -152,5 +200,14 @@ public class UserService : IUserService
         }
 
         return sb.ToString();
+    }
+    
+    private async Task<User> GetEntityAsync(int id)
+    {
+        return await _context.Users
+                   .SingleOrDefaultAsync(u => 
+                       u.Id == id &&
+                       !u.IsDeleted)
+               ?? throw new EntityNotFoundException();
     }
 }

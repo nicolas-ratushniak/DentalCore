@@ -1,13 +1,13 @@
 ﻿using System;
-using DentalCore.Data.Models;
+using DentalCore.Domain.Dto;
 
 namespace DentalCore.Wpf.Services.Authentication;
 
 public class UserChangedEventArgs : EventArgs
 {
-    public User? NewUser { get; set; }
+    public UserDto? NewUser { get; set; }
 
-    public UserChangedEventArgs(User? newUser)
+    public UserChangedEventArgs(UserDto? newUser)
     {
         NewUser = newUser;
     }
