@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentalCore.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231222145852_AddOperationDates")]
+    [Migration("20231223075324_AddOperationDates")]
     partial class AddOperationDates
     {
         /// <inheritdoc />
