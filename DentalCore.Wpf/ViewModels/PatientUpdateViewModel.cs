@@ -229,7 +229,7 @@ public class PatientUpdateViewModel : BaseViewModel
             Diseases.Add(disease);
         }
         
-        var patient = await _patientService.GetAsync(_patientId);
+        var patient = await _patientService.GetRichAsync(_patientId);
 
         Name = patient.Name;
         Surname = patient.Surname;

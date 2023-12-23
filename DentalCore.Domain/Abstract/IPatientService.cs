@@ -5,7 +5,8 @@ namespace DentalCore.Domain.Abstract;
 
 public interface IPatientService
 {
-    public Task<PatientRichDto> GetAsync(int id);
+    public Task<PatientDto> GetAsync(int id);
+    public Task<PatientRichDto> GetRichAsync(int id);
     public Task<IEnumerable<PatientDto>> GetAllAsync();
     public Task<IEnumerable<PatientDto>> GetAllIncludeSoftDeletedAsync();
     public Task<int> AddAsync(PatientCreateDto dto);

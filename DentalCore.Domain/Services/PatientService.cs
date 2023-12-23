@@ -17,7 +17,22 @@ public class PatientService : IPatientService
         _context = context;
     }
 
-    public async Task<PatientRichDto> GetAsync(int id)
+    public async Task<PatientDto> GetAsync(int id)
+    {
+        return await _context.Patients
+                   .Where(p => !p.IsDeleted)
+                   .Select(p => new PatientDto
+                   {
+                       Id = p.Id,
+                       Name = p.Name,
+                       Surname = p.Surname,
+                       Patronymic = p.Patronymic
+                   })
+                   .SingleOrDefaultAsync(p => p.Id == id)
+               ?? throw new EntityNotFoundException();
+    }
+
+    public async Task<PatientRichDto> GetRichAsync(int id)
     {
         return await _context.Patients
                    .Include(p => p.City)

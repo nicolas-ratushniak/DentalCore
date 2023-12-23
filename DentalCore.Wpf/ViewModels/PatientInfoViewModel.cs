@@ -146,7 +146,7 @@ public class PatientInfoViewModel : BaseViewModel
 
     private async Task LoadData()
     {
-        var patient = await _patientService.GetAsync(_patientId);
+        var patient = await _patientService.GetRichAsync(_patientId);
 
         Name = patient.Name;
         Surname = patient.Surname;
