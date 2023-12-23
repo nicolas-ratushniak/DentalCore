@@ -10,7 +10,6 @@ using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Dto;
-using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Services.Navigation;
@@ -23,6 +22,7 @@ public class VisitCreateViewModel : BaseViewModel
 {
     private readonly INavigationService _navigationService;
     private readonly IVisitService _visitService;
+    private readonly IPatientService _patientService;
     private readonly IUserService _userService;
     private readonly IProcedureService _procedureService;
     private readonly IPaymentService _paymentService;
@@ -36,6 +36,7 @@ public class VisitCreateViewModel : BaseViewModel
     private string? _errorMessage;
     private bool _isDoctorListVisible;
     private readonly ObservableCollection<DoctorListItemViewModel> _doctors;
+    private string _patientInfo;
 
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
@@ -50,6 +51,17 @@ public class VisitCreateViewModel : BaseViewModel
         {
             if (value == _errorMessage) return;
             _errorMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public string PatientInfo
+    {
+        get => _patientInfo;
+        set
+        {
+            if (value == _patientInfo) return;
+            _patientInfo = value;
             OnPropertyChanged();
         }
     }
@@ -133,12 +145,14 @@ public class VisitCreateViewModel : BaseViewModel
         int id,
         INavigationService navigationService,
         IVisitService visitService,
+        IPatientService patientService,
         IUserService userService,
         IProcedureService procedureService,
         IPaymentService paymentService)
     {
         _navigationService = navigationService;
         _visitService = visitService;
+        _patientService = patientService;
         _userService = userService;
         _procedureService = procedureService;
         _paymentService = paymentService;
@@ -174,6 +188,9 @@ public class VisitCreateViewModel : BaseViewModel
 
     private async Task LoadData()
     {
+        var patient = await _patientService.GetAsync(_patientId);
+        PatientInfo = $"{patient.Surname} {patient.Name} {patient.Patronymic}";
+        
         foreach (var doctor in await GetDoctorsAsync())
         {
             _doctors.Add(doctor);

@@ -50,6 +50,7 @@ public static class HostBuilderHelper
                 id,
                 s.GetRequiredService<INavigationService>(),
                 s.GetRequiredService<IVisitService>(),
+                s.GetRequiredService<IPatientService>(),
                 s.GetRequiredService<IUserService>(),
                 s.GetRequiredService<IProcedureService>(),
                 s.GetRequiredService<IPaymentService>()));

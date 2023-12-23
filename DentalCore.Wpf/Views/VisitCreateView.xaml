@@ -54,6 +54,7 @@
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -63,9 +64,17 @@
                     <ColumnDefinition Width="24" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                
+                <!-- Patient Info -->
+                <Border Grid.Row="0" Grid.Column="0"
+                        Style="{StaticResource NiceBorder}"
+                        Margin="0 0 0 10">
+                    
+                    <TextBlock Text="{Binding PatientInfo}"/>
+                </Border>
 
                 <!-- Select Doctor -->
-                <Grid Grid.Row="0" Grid.Column="0"
+                <Grid Grid.Row="1" Grid.Column="0"
                       Margin="0 0 0 10">
 
                     <Grid.RowDefinitions>
@@ -110,7 +119,7 @@
                 </Grid>
 
                 <!-- Diagnosis -->
-                <Grid Grid.Row="1" Column="0">
+                <Grid Grid.Row="2" Column="0">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -136,11 +145,11 @@
                 </Grid>
 
                 <!-- Treatment Items -->
-                <components:TreatmentSelector Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                <components:TreatmentSelector Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
                                               DataContext="{Binding TreatmentSelector}"/>
 
                 <!-- Total Sum and First Payment -->
-                <Grid Grid.Row="2" Grid.Column="2"
+                <Grid Grid.Row="3" Grid.Column="2"
                       Margin="0 24 0 0">
 
                     <Grid.RowDefinitions>
