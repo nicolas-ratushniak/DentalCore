@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
              xmlns:models="clr-namespace:DentalCore.Data.Models;assembly=DentalCore.Data"
-             xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
              xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
@@ -15,8 +14,6 @@
              Loaded="OnLoaded">
 
     <UserControl.Resources>
-        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-        <converters:EqualsToBooleanConverter x:Key="EqualsToBoolConverter" />
 
         <Style x:Key="NiceCityList" TargetType="ListBox">
             <Setter Property="BorderThickness" Value="0" />

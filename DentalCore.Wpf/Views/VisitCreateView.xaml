@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
              xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
@@ -13,7 +12,6 @@
              Loaded="OnLoaded">
 
     <UserControl.Resources>
-        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
 
         <Style x:Key="NiceDoctorList" TargetType="ListBox">
             <Setter Property="BorderThickness" Value="0" />

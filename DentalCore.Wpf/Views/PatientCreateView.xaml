@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:models="clr-namespace:DentalCore.Data.Models;assembly=DentalCore.Data"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
@@ -14,8 +13,6 @@
              Loaded="OnLoaded">
 
     <UserControl.Resources>
-        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-        <converters:EqualsToBooleanConverter x:Key="EqualsToBoolConverter" />
 
         <Style x:Key="NiceCityList" TargetType="ListBox">
             <Setter Property="BorderThickness" Value="0" />
@@ -106,25 +103,25 @@
                     </Grid.RowDefinitions>
 
                     <custom:PlaceholderTextBox Grid.Row="0"
-                                                 Placeholder="Прізвище"
-                                                 Text="{Binding Surname,
+                                               Placeholder="Прізвище"
+                                               Text="{Binding Surname,
                                                  Mode=TwoWay,
                                                  UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0 0 0 15" />
+                                               Margin="0 0 0 15" />
 
                     <custom:PlaceholderTextBox Grid.Row="1"
-                                                 Placeholder="Ім'я"
-                                                 Text="{Binding Name,
+                                               Placeholder="Ім'я"
+                                               Text="{Binding Name,
                                              Mode=TwoWay,
                                              UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0 0 0 15" />
+                                               Margin="0 0 0 15" />
 
                     <custom:PlaceholderTextBox Grid.Row="2"
-                                                 Placeholder="По батькові"
-                                                 Text="{Binding Patronymic,
+                                               Placeholder="По батькові"
+                                               Text="{Binding Patronymic,
                                              Mode=TwoWay,
                                              UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0 0 0 15" />
+                                               Margin="0 0 0 15" />
 
                     <StackPanel Grid.Row="3"
                                 Orientation="Horizontal"
@@ -154,8 +151,8 @@
                         </Grid.RowDefinitions>
 
                         <custom:PlaceholderTextBox Grid.Row="0"
-                                                     Text="{Binding CitySearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                     Placeholder="Оберіть місто" />
+                                                   Text="{Binding CitySearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                   Placeholder="Оберіть місто" />
 
                         <Popup Grid.Row="1"
                                IsOpen="{Binding IsCityListVisible}"
@@ -190,18 +187,18 @@
                     </Grid>
 
                     <custom:PlaceholderTextBox Grid.Row="5"
-                                                 Placeholder="Дата народження (2.03.2000)"
-                                                 Text="{Binding BirthDate,
+                                               Placeholder="Дата народження (2.03.2000)"
+                                               Text="{Binding BirthDate,
                                              Mode=TwoWay,
                                              UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0 0 0 15" />
+                                               Margin="0 0 0 15" />
 
                     <custom:PlaceholderTextBox Grid.Row="6"
-                                                 Placeholder="Телефон (0975553412)"
-                                                 Text="{Binding Phone,
+                                               Placeholder="Телефон (0975553412)"
+                                               Text="{Binding Phone,
                                              Mode=TwoWay,
                                              UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0 0 0 15" />
+                                               Margin="0 0 0 15" />
                 </Grid>
 
                 <!-- Select Allergies -->

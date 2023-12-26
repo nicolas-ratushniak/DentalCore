@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls">
+
+    <Style TargetType="custom:PlaceholderTextBox">
+        <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="BorderBrush" Value="{StaticResource BrushGrey}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="Padding" Value="5" />
+        <Style.Triggers>
+            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                <Setter Property="BorderBrush" Value="Black" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="custom:IntegerTextBox"
+           BasedOn="{StaticResource {x:Type custom:PlaceholderTextBox}}" />
+</ResourceDictionary>
