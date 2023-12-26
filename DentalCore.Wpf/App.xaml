@@ -4,12 +4,14 @@
 
              xmlns:views="clr-namespace:DentalCore.Wpf.Views"
              xmlns:viewModels="clr-namespace:DentalCore.Wpf.ViewModels"
-             xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
-             xmlns:converters="clr-namespace:DentalCore.Wpf.Converters">
+             xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
+             xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls">
 
     <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
-
+        
+        <!-- Colors -->
         <Color x:Key="ColorAccent">#5CBAB8</Color>
         <Color x:Key="ColorMinor">#C1F376</Color>
         <Color x:Key="ColorMinorFocused">#5FC314</Color>
@@ -91,7 +93,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
         <Style x:Key="NiceSquareButton" TargetType="Button" BasedOn="{StaticResource NiceButton}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -117,12 +119,11 @@
             <Setter Property="Background" Value="{StaticResource DangerBrush}" />
             <Setter Property="FontWeight" Value="Regular" />
         </Style>
-        
+
         <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource NiceButton}">
             <Setter Property="Background" Value="{StaticResource WarningBrush}" />
             <Setter Property="FontWeight" Value="Regular" />
         </Style>
-
 
         <!-- RadioButtons -->
         <Style x:Key="NiceRadioButton" TargetType="RadioButton">
@@ -168,50 +169,24 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
-        <!-- PlaceholderTextBox -->
-        <Style TargetType="{x:Type controls:PlaceholderTextBox}">
+        
+        <!-- Custom Controls -->
+        <Style TargetType="custom:PlaceholderTextBox">
+            <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="BorderBrush" Value="{StaticResource BrushGrey}" />
+            <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="FontSize" Value="18" />
             <Setter Property="Foreground" Value="Black" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type controls:PlaceholderTextBox}">
-                        <Border BorderBrush="{TemplateBinding BorderBrush}"
-                                Background="{TemplateBinding Background}"
-                                BorderThickness="1"
-                                CornerRadius="5"
-                                Padding="5">
-                            <Grid>
-                                <TextBlock
-                                    Text="{Binding Placeholder, RelativeSource={RelativeSource TemplatedParent}}"
-                                    VerticalAlignment="Center"
-                                    Margin="3,0,0,0"
-                                    FontSize="{TemplateBinding FontSize}"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    Opacity="0.5"
-                                    Panel.ZIndex="1"
-                                    IsHitTestVisible="False"
-                                    Visibility="{Binding IsTyping, RelativeSource={RelativeSource TemplatedParent},
-                                    Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-                                <TextBox
-                                    Text="{Binding Text, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
-                                    VerticalAlignment="Center"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    FontSize="{TemplateBinding FontSize}" />
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Padding" Value="5"/>
             <Style.Triggers>
                 <Trigger Property="IsKeyboardFocusWithin" Value="True">
                     <Setter Property="BorderBrush" Value="Black" />
                 </Trigger>
             </Style.Triggers>
         </Style>
+        
+        <Style TargetType="custom:IntegerTextBox"
+               BasedOn="{StaticResource {x:Type custom:PlaceholderTextBox}}"/>
 
         <!-- Binding views to related view models -->
         <DataTemplate DataType="{x:Type viewModels:PatientsViewModel}">
@@ -241,11 +216,11 @@
         <DataTemplate DataType="{x:Type viewModels:VisitCreateViewModel}">
             <views:VisitCreateView />
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type viewModels:VisitsExportViewModel}">
             <views:VisitsExportView />
         </DataTemplate>
-        
+
         <DataTemplate DataType="{x:Type viewModels:ProceduresViewModel}">
             <views:ProceduresView />
         </DataTemplate>

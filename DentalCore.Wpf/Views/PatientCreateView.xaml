@@ -4,12 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:local="clr-namespace:DentalCore.Wpf.Views"
-             xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:models="clr-namespace:DentalCore.Data.Models;assembly=DentalCore.Data"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
+             xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000"
              Loaded="OnLoaded">
@@ -106,21 +105,21 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <controls:PlaceholderTextBox Grid.Row="0"
+                    <custom:PlaceholderTextBox Grid.Row="0"
                                                  Placeholder="Прізвище"
                                                  Text="{Binding Surname,
-                                             Mode=TwoWay,
-                                             UpdateSourceTrigger=PropertyChanged}"
+                                                 Mode=TwoWay,
+                                                 UpdateSourceTrigger=PropertyChanged}"
                                                  Margin="0 0 0 15" />
 
-                    <controls:PlaceholderTextBox Grid.Row="1"
+                    <custom:PlaceholderTextBox Grid.Row="1"
                                                  Placeholder="Ім'я"
                                                  Text="{Binding Name,
                                              Mode=TwoWay,
                                              UpdateSourceTrigger=PropertyChanged}"
                                                  Margin="0 0 0 15" />
 
-                    <controls:PlaceholderTextBox Grid.Row="2"
+                    <custom:PlaceholderTextBox Grid.Row="2"
                                                  Placeholder="По батькові"
                                                  Text="{Binding Patronymic,
                                              Mode=TwoWay,
@@ -154,7 +153,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <controls:PlaceholderTextBox Grid.Row="0"
+                        <custom:PlaceholderTextBox Grid.Row="0"
                                                      Text="{Binding CitySearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                      Placeholder="Оберіть місто" />
 
@@ -190,14 +189,14 @@
                         </Popup>
                     </Grid>
 
-                    <controls:PlaceholderTextBox Grid.Row="5"
+                    <custom:PlaceholderTextBox Grid.Row="5"
                                                  Placeholder="Дата народження (2.03.2000)"
                                                  Text="{Binding BirthDate,
                                              Mode=TwoWay,
                                              UpdateSourceTrigger=PropertyChanged}"
                                                  Margin="0 0 0 15" />
 
-                    <controls:PlaceholderTextBox Grid.Row="6"
+                    <custom:PlaceholderTextBox Grid.Row="6"
                                                  Placeholder="Телефон (0975553412)"
                                                  Text="{Binding Phone,
                                              Mode=TwoWay,
@@ -207,8 +206,8 @@
 
                 <!-- Select Allergies -->
                 <components:AllergySelector Grid.Column="1"
-                                                Margin="12 0 12 0"
-                                                DataContext="{Binding AllergySelector}"/>
+                                            Margin="12 0 12 0"
+                                            DataContext="{Binding AllergySelector}" />
 
                 <!-- Select Diseases -->
                 <Grid Grid.Column="2">

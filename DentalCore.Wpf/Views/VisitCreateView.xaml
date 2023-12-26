@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
+             xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000"
              Loaded="OnLoaded">
@@ -82,9 +82,9 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <controls:PlaceholderTextBox Grid.Row="0"
-                                                 Text="{Binding DoctorSearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 Placeholder="Оберіть лікаря" />
+                    <custom:PlaceholderTextBox Grid.Row="0"
+                                               Text="{Binding DoctorSearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               Placeholder="Оберіть лікаря" />
 
                     <Popup Grid.Row="1"
                            IsOpen="{Binding IsDoctorListVisible}"
@@ -192,10 +192,9 @@
                                    Text="Внесено коштів: "
                                    Margin="0 0 12 0" />
 
-                        <controls:IntegerTextBox Grid.Column="2"
-                                                 Width="80"
-                                                 AcceptZero="True"
-                                                 Value="{Binding FirstPayment,
+                        <custom:IntegerTextBox Grid.Column="2"
+                                               Width="80"
+                                               Value="{Binding FirstPayment,
                                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </Grid>
                 </Grid>

@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             
-             xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
+             xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
+
              mc:Ignorable="d"
              d:DesignHeight="400" d:DesignWidth="400">
     <Grid>
@@ -58,18 +58,18 @@
                                VerticalAlignment="Center"
                                Margin="0,0,0,10" />
 
-                    <controls:PlaceholderTextBox Grid.Row="0" Grid.Column="1"
-                                                 Placeholder="Дата (2.12.2004)"
-                                                 Text="{Binding FromDateInput, 
+                    <custom:PlaceholderTextBox Grid.Row="0" Grid.Column="1"
+                                               Placeholder="Дата (2.12.2004)"
+                                               Text="{Binding FromDateInput, 
                                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                 Margin="0,0,0,10" />
+                                               Margin="0,0,0,10" />
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Text="До:"
                                VerticalAlignment="Center" />
 
-                    <controls:PlaceholderTextBox Grid.Row="1" Grid.Column="1"
-                                                 Placeholder="Дата (3.12.2004)"
-                                                 Text="{Binding ToDateInput, 
+                    <custom:PlaceholderTextBox Grid.Row="1" Grid.Column="1"
+                                               Placeholder="Дата (3.12.2004)"
+                                               Text="{Binding ToDateInput, 
                                                  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
 

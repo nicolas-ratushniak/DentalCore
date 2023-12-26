@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
+             xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -85,9 +85,9 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <controls:PlaceholderTextBox Grid.Row="0"
-                                         Text="{Binding AllergySelectionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Placeholder="Оберіть алергію" />
+            <custom:PlaceholderTextBox Grid.Row="0"
+                                       Text="{Binding AllergySelectionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       Placeholder="Оберіть алергію" />
 
             <Popup Grid.Row="1"
                    IsOpen="{Binding IsAllergyListVisible}"

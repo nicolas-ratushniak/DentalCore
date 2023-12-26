@@ -32,6 +32,7 @@
     <ItemGroup>
         <ProjectReference Include="..\DentalCore.Data\DentalCore.Data.csproj"/>
         <ProjectReference Include="..\DentalCore.Domain\DentalCore.Domain.csproj"/>
+        <ProjectReference Include="..\DentalCore.Wpf.Controls\DentalCore.Wpf.Controls.csproj" />
     </ItemGroup>
 
     <ItemGroup>

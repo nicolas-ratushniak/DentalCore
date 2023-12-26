@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:local="clr-namespace:DentalCore.Wpf.Views.Components"
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
-             xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
+             xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -58,13 +57,14 @@
                                                        Text="{Binding Price}"
                                                        Margin="0 0 12 0" />
 
-                                            <controls:IntegerTextBox Grid.Column="2"
-                                                                     ValueChanged="TreatmentItem_OnQuantityChanged"
-                                                                     AcceptZero="False"
-                                                                     MaxDigits="2"
-                                                                     Value="{Binding Quantity, Mode=TwoWay,
+                                            <custom:IntegerTextBox Grid.Column="2"
+                                                                   ValueChanged="TreatmentItem_OnQuantityChanged"
+                                                                   Min="1"
+                                                                   Max="99"
+                                                                   Placeholder="К-ть"
+                                                                   Value="{Binding Quantity, Mode=TwoWay,
                                                                      UpdateSourceTrigger=PropertyChanged}"
-                                                                     Margin="0 0 12 0" />
+                                                                   Margin="0 0 12 0" />
 
                                             <Button Grid.Column="3"
                                                     Width="16"
@@ -93,18 +93,18 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <Grid Grid.Row="0"
               Margin="0 0 0 10">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <controls:PlaceholderTextBox Grid.Row="0"
-                                         Text="{Binding TreatmentItemSelectionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         Placeholder="Оберіть процедуру" />
+            <custom:PlaceholderTextBox Grid.Row="0"
+                                       Text="{Binding TreatmentItemSelectionFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       Placeholder="Оберіть процедуру" />
 
             <Popup Grid.Row="1"
                    IsOpen="{Binding IsTreatmentItemListVisible}"
