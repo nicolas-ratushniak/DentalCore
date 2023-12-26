@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DentalCore.Wpf.Controls">
+    
+    <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="/DentalCore.Wpf.Controls;component/Themes/Modal.xaml"/>
+            <ResourceDictionary Source="/DentalCore.Wpf.Controls;component/Themes/PlaceholderTextBox.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    <Style TargetType="local:IntegerTextBox"
+           BasedOn="{StaticResource {x:Type local:PlaceholderTextBox}}" />
+
+</ResourceDictionary>
