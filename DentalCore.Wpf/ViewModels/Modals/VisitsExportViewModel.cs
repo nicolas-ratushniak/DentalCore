@@ -11,12 +11,12 @@ using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace DentalCore.Wpf.ViewModels.Pages;
+namespace DentalCore.Wpf.ViewModels.Modals;
 
 public class VisitsExportViewModel : BaseViewModel
 {
     private readonly IExportService _exportService;
-    private readonly INavigationService _navigationService;
+    private readonly IModalService _modalService;
     private readonly ExportOptions _exportConfiguration;
     private string _fromDateInput = string.Empty;
     private string _toDateInput = string.Empty;
@@ -61,11 +61,11 @@ public class VisitsExportViewModel : BaseViewModel
     public VisitsExportViewModel(
         IOptions<ExportOptions> exportOptions,
         IExportService exportService,
-        INavigationService navigationService)
+        IModalService modalService)
     {
         _exportConfiguration = exportOptions.Value;
         _exportService = exportService;
-        _navigationService = navigationService;
+        _modalService = modalService;
 
         var today = DateTime.Today;
 
@@ -74,7 +74,7 @@ public class VisitsExportViewModel : BaseViewModel
 
         ExportVisitsCommand = new AsyncRelayCommand(ExportVisits);
         CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(PageType.Patients, null));
+            _modalService.CloseModal());
     }
 
     private async Task ExportVisits()
@@ -104,7 +104,7 @@ public class VisitsExportViewModel : BaseViewModel
             }
 
             await _exportService.ExportVisitsAsync(fromDate, toDate, dirPath);
-            _navigationService.NavigateTo(PageType.Patients, null);
+            _modalService.CloseModal();
 
             MessageBox.Show($"Успішно створено звіт у папці {dirPath}", "Успіх!", MessageBoxButton.OK);
         }

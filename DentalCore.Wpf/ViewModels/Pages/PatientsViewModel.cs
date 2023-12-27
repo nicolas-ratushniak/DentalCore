@@ -38,13 +38,16 @@ public class PatientsViewModel : BaseViewModel
         }
     }
 
-    public PatientsViewModel(INavigationService navigationService, IPatientService patientService)
+    public PatientsViewModel(
+        INavigationService navigationService,
+        IModalService modalService,
+        IPatientService patientService)
     {
         _patientService = patientService;
         _patients = new ObservableCollection<PatientListItemViewModel>();
 
         PatientCollectionView = CollectionViewSource.GetDefaultView(_patients);
-        
+
         PatientCollectionView.SortDescriptions.Add(
             new SortDescription(nameof(PatientListItemViewModel.FullName), ListSortDirection.Ascending));
 
@@ -60,7 +63,7 @@ public class PatientsViewModel : BaseViewModel
         };
 
         GoToPatientCreateCommand = new RelayCommand<object>(_ =>
-            navigationService.NavigateTo(PageType.PatientCreate, null));
+            navigationService.NavigateTo(PageType.PatientCreate));
 
         GoToPatientUpdateCommand = new RelayCommand<int>(id =>
             navigationService.NavigateTo(PageType.PatientUpdate, id));
@@ -69,7 +72,7 @@ public class PatientsViewModel : BaseViewModel
             navigationService.NavigateTo(PageType.PatientInfo, id));
 
         GoToVisitsExportCommand = new RelayCommand<object>(_ =>
-            navigationService.NavigateTo(PageType.VisitsExport, null));
+            modalService.OpenModal(ModalType.VisitReport));
 
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }

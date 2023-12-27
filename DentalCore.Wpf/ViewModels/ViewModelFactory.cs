@@ -1,5 +1,6 @@
 ﻿using System;
 using DentalCore.Wpf.Abstract;
+using DentalCore.Wpf.ViewModels.Modals;
 using DentalCore.Wpf.ViewModels.Pages;
 
 namespace DentalCore.Wpf.ViewModels;
@@ -24,8 +25,8 @@ public class ViewModelFactory : IViewModelFactory
         Func<VisitsViewModel> createVisitsVm,
         Func<int, VisitInfoViewModel> createVisitInfoView,
         Func<int, VisitCreateViewModel> createVisitCreateVm,
-        Func<VisitsExportViewModel> createVisitsExportVm,
-        Func<ProceduresViewModel> createProceduresVm)
+        Func<ProceduresViewModel> createProceduresVm,
+        Func<VisitsExportViewModel> createVisitsExportVm)
     {
         _createPatientsVm = createPatientsVm;
         _createPatientInfoVm = createPatientInfoVm;
@@ -34,8 +35,9 @@ public class ViewModelFactory : IViewModelFactory
         _createVisitsVm = createVisitsVm;
         _createVisitInfoView = createVisitInfoView;
         _createVisitCreateVm = createVisitCreateVm;
-        _createVisitsExportVm = createVisitsExportVm;
         _createProceduresVm = createProceduresVm;
+        
+        _createVisitsExportVm = createVisitsExportVm;
     }
 
     public BaseViewModel CreatePageViewModel(PageType pageType)
@@ -45,7 +47,6 @@ public class ViewModelFactory : IViewModelFactory
             PageType.Patients => _createPatientsVm(),
             PageType.PatientCreate => _createPatientCreateVm(),
             PageType.Visits => _createVisitsVm(),
-            PageType.VisitsExport => _createVisitsExportVm(),
             PageType.Procedures => _createProceduresVm(),
             _ => throw new InvalidOperationException("Cannot create view model with this type")
         };
@@ -65,7 +66,11 @@ public class ViewModelFactory : IViewModelFactory
 
     public BaseViewModel CreateModalViewModel(ModalType modalType)
     {
-        throw new NotImplementedException();
+        return modalType switch
+        {
+            ModalType.VisitReport => _createVisitsExportVm(),
+            _ => throw new InvalidOperationException("Cannot create view model with this type")
+        };
     }
 
     public BaseViewModel CreateModalViewModel(ModalType modalType, object modalParameter)

@@ -3,6 +3,7 @@ using DentalCore.Domain.Abstract;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.ViewModels;
+using DentalCore.Wpf.ViewModels.Modals;
 using DentalCore.Wpf.ViewModels.Pages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,6 +19,7 @@ public static class HostBuilderHelper
         {
             services.AddSingleton<Func<PatientsViewModel>>(s => () => new PatientsViewModel(
                 s.GetRequiredService<INavigationService>(),
+                s.GetRequiredService<IModalService>(),
                 s.GetRequiredService<IPatientService>()));
 
             services.AddSingleton<Func<int, PatientInfoViewModel>>(s => id => new PatientInfoViewModel(
@@ -59,7 +61,7 @@ public static class HostBuilderHelper
             services.AddSingleton<Func<VisitsExportViewModel>>(s => () => new VisitsExportViewModel(
                 s.GetRequiredService<IOptions<ExportOptions>>(),
                 s.GetRequiredService<IExportService>(),
-                s.GetRequiredService<INavigationService>()));
+                s.GetRequiredService<IModalService>()));
             
             services.AddSingleton<Func<ProceduresViewModel>>(s => () => new ProceduresViewModel(
                 s.GetRequiredService<IProcedureService>()));

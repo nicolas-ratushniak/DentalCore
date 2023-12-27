@@ -13,7 +13,6 @@ public enum PageType
     Visits,
     VisitInfo,
     VisitCreate,
-    VisitsExport,
     
     Procedures,
     // ProcedureCreate,

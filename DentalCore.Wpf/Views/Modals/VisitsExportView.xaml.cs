@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace DentalCore.Wpf.Views.Pages;
+namespace DentalCore.Wpf.Views.Modals;
 
 public partial class VisitsExportView : UserControl
 {
