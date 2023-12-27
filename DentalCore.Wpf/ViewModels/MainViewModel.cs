@@ -17,24 +17,37 @@ public class MainViewModel : BaseViewModel
     private readonly ILogger<MainViewModel> _logger;
     private readonly UpdateOptions _updateConfiguration;
 
-    private BaseViewModel? _currentViewModel;
-    private ViewType _currentNavBarOption;
+    private BaseViewModel? _currentPage;
+    private BaseViewModel? _currentModal;
+    private PageType _currentNavBarOption;
     private string _currentVersion = "?.?.?";
 
-    public INavigationService Navigator { get; }
+    public INavigationService NavigationService { get; }
+    public IModalService ModalService { get; set; }
 
-    public BaseViewModel? CurrentViewModel
+    public BaseViewModel? CurrentPage
     {
-        get => _currentViewModel;
+        get => _currentPage;
         set
         {
-            if (Equals(value, _currentViewModel)) return;
-            _currentViewModel = value;
+            if (Equals(value, _currentPage)) return;
+            _currentPage = value;
             OnPropertyChanged();
         }
     }
 
-    public ViewType CurrentNavBarOption
+    public BaseViewModel? CurrentModal
+    {
+        get => _currentModal;
+        set
+        {
+            if (Equals(value, _currentModal)) return;
+            _currentModal = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public PageType CurrentNavBarOption
     {
         get => _currentNavBarOption;
         set
@@ -59,16 +72,21 @@ public class MainViewModel : BaseViewModel
     public MainViewModel(
         IViewModelFactory viewModelFactory,
         INavigationService navigationService,
+        IModalService modalService,
         IOptions<UpdateOptions> updateOptions,
         ILogger<MainViewModel> logger)
     {
-        Navigator = navigationService;
+        NavigationService = navigationService;
+        ModalService = modalService;
+        
         _viewModelFactory = viewModelFactory;
         _logger = logger;
         _updateConfiguration = updateOptions.Value;
 
-        Navigator.CurrentViewTypeChanged += OnCurrentViewTypeChanged;
-        Navigator.NavigateTo(ViewType.Patients, null);
+        NavigationService.CurrentPageTypeChanged += OnCurrentPageTypeChanged;
+        NavigationService.NavigateTo(PageType.Patients);
+        
+        ModalService.CurrentModalTypeChanged += OnCurrentModalChanged;
 
         LoadedCommand = new AsyncRelayCommand(
             LoadData,
@@ -77,7 +95,7 @@ public class MainViewModel : BaseViewModel
 
     public override void Dispose()
     {
-        Navigator.CurrentViewTypeChanged -= OnCurrentViewTypeChanged;
+        NavigationService.CurrentPageTypeChanged -= OnCurrentPageTypeChanged;
         base.Dispose();
     }
 
@@ -87,9 +105,9 @@ public class MainViewModel : BaseViewModel
         {
             using var updateManager = await GithubUpdateManager.CreateAsync(
                 _updateConfiguration.GitHubRepo, "appsettings.json");
-            
+
             CurrentVersion = updateManager.GetCurrentVersionInstalled(CurrentVersion);
-                
+
             if (await updateManager.HasNewerReleaseAsync())
             {
                 _logger.LogInformation("Updates are found! Starting the download...");
@@ -107,18 +125,38 @@ public class MainViewModel : BaseViewModel
         }
     }
 
-    private void OnCurrentViewTypeChanged(object? sender, ViewTypeChangedEventArgs args)
+    private void OnCurrentPageTypeChanged(object? sender, PageTypeChangedEventArgs args)
     {
-        var newViewType = args.NewViewType;
+        var newViewType = args.NewPageType;
 
-        CurrentViewModel = _viewModelFactory.CreateViewModel(newViewType, args.ViewParameter);
+        CurrentPage = args.PageParameter is null
+            ? _viewModelFactory.CreatePageViewModel(newViewType)
+            : _viewModelFactory.CreatePageViewModel(newViewType, args.PageParameter);
 
         CurrentNavBarOption = newViewType switch
         {
-            ViewType.Patients or ViewType.PatientCreate or ViewType.PatientInfo or ViewType.PatientUpdate => ViewType.Patients,
-            ViewType.Visits or ViewType.VisitCreate or ViewType.VisitInfo or ViewType.VisitsExport => ViewType.Visits,
-            ViewType.Procedures => ViewType.Procedures,
+            PageType.Patients or
+                PageType.PatientCreate or
+                PageType.PatientInfo or
+                PageType.PatientUpdate => PageType.Patients,
+            PageType.Visits or
+                PageType.VisitCreate or
+                PageType.VisitInfo or
+                PageType.VisitsExport => PageType.Visits,
+            PageType.Procedures => PageType.Procedures,
             _ => throw new InvalidOperationException("Unknown view type passed")
         };
+    }
+
+    private void OnCurrentModalChanged(object? sender, ModalTypeChangedEventArgs args)
+    {
+        if (args.NewModalType is { } newModalType)
+        {
+            CurrentModal = args.ModalParameter is null
+                ? _viewModelFactory.CreateModalViewModel(newModalType)
+                : _viewModelFactory.CreateModalViewModel(newModalType, args.ModalParameter);
+        }
+        
+        CurrentModal = null;
     }
 }

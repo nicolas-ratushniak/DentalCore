@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows;
 using DentalCore.Data;
-using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Services;
 using DentalCore.Wpf.Abstract;
@@ -10,8 +9,6 @@ using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Helpers;
 using DentalCore.Wpf.Services;
 using DentalCore.Wpf.ViewModels;
-using DentalCore.Wpf.ViewModels.Pages;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,7 +36,6 @@ public partial class App : Application
                 services.Configure<UpdateOptions>(builder.Configuration.GetSection(UpdateOptions.Update));
                 services.Configure<ExportOptions>(builder.Configuration.GetSection(ExportOptions.Export));
 
-                services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
                 services.AddSingleton<ICommonService, CommonService>();
                 services.AddSingleton<IPatientService, PatientService>();
                 services.AddSingleton<IProcedureService, ProcedureService>();
@@ -47,6 +43,7 @@ public partial class App : Application
                 services.AddSingleton<IVisitService, VisitService>();
                 services.AddSingleton<IPaymentService, PaymentService>();
                 services.AddSingleton<INavigationService, NavigationService>();
+                services.AddSingleton<IModalService, ModalService>();
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();
                 services.AddSingleton<IExportService, ExcelExportService>();
                 services.AddSingleton<IViewModelFactory, ViewModelFactory>();

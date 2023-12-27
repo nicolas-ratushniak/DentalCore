@@ -60,7 +60,7 @@ public class VisitsViewModel : BaseViewModel
             return false;
         };
 
-        GoToVisitInfoCommand = new RelayCommand<int>(id => navigationService.NavigateTo(ViewType.VisitInfo, id));
+        GoToVisitInfoCommand = new RelayCommand<int>(id => navigationService.NavigateTo(PageType.VisitInfo, id));
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 

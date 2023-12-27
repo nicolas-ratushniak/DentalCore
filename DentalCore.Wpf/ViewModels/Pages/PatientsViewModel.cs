@@ -60,16 +60,16 @@ public class PatientsViewModel : BaseViewModel
         };
 
         GoToPatientCreateCommand = new RelayCommand<object>(_ =>
-            navigationService.NavigateTo(ViewType.PatientCreate, null));
+            navigationService.NavigateTo(PageType.PatientCreate, null));
 
         GoToPatientUpdateCommand = new RelayCommand<int>(id =>
-            navigationService.NavigateTo(ViewType.PatientUpdate, id));
+            navigationService.NavigateTo(PageType.PatientUpdate, id));
 
         GoToPatientInfoCommand = new RelayCommand<int>(id =>
-            navigationService.NavigateTo(ViewType.PatientInfo, id));
+            navigationService.NavigateTo(PageType.PatientInfo, id));
 
         GoToVisitsExportCommand = new RelayCommand<object>(_ =>
-            navigationService.NavigateTo(ViewType.VisitsExport, null));
+            navigationService.NavigateTo(PageType.VisitsExport, null));
 
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }

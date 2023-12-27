@@ -174,7 +174,7 @@ public class VisitCreateViewModel : BaseViewModel
             return false;
         };
 
-        CancelCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(ViewType.PatientInfo, id));
+        CancelCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(PageType.PatientInfo, id));
         SubmitCommand = new AsyncRelayCommand(AddVisit_Execute);
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }
@@ -225,7 +225,7 @@ public class VisitCreateViewModel : BaseViewModel
         try
         {
             await _visitService.AddAsync(dto);
-            _navigationService.NavigateTo(ViewType.PatientInfo, _patientId);
+            _navigationService.NavigateTo(PageType.PatientInfo, _patientId);
         }
         catch (ValidationException ex)
         {

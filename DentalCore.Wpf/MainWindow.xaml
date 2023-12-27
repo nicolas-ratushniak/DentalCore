@@ -19,6 +19,6 @@
         
         <components:NavBar Grid.Row="0"/> 
         
-        <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+        <ContentControl Grid.Row="1" Content="{Binding CurrentPage}"/>
     </Grid>
 </Window>

@@ -49,7 +49,7 @@
                                                     CommandParameter="{Binding Id}"
                                                     Margin="0 0 15 0">
                                                 <Button.Background>
-                                                    <ImageBrush ImageSource="../Assets/edit.png" Stretch="Fill" />
+                                                    <ImageBrush ImageSource="../../Assets/edit.png" Stretch="Fill" />
                                                 </Button.Background>
                                             </Button>
                                             
@@ -61,7 +61,7 @@
                                                     RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                     CommandParameter="{Binding Id}">
                                                 <Button.Background>
-                                                    <ImageBrush ImageSource="../Assets/delete.png" Stretch="Fill" />
+                                                    <ImageBrush ImageSource="../../Assets/delete.png" Stretch="Fill" />
                                                 </Button.Background>
                                             </Button>
                                         </Grid>

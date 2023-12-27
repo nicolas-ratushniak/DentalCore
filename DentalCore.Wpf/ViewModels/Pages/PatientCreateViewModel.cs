@@ -206,7 +206,7 @@ public class PatientCreateViewModel : BaseViewModel
             c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
 
         CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(ViewType.Patients, null));
+            _navigationService.NavigateTo(PageType.Patients, null));
 
         SubmitCommand = new AsyncRelayCommand(Add_Execute);
 
@@ -283,7 +283,7 @@ public class PatientCreateViewModel : BaseViewModel
         try
         {
             var id = await _patientService.AddAsync(dto);
-            _navigationService.NavigateTo(ViewType.PatientInfo, id);
+            _navigationService.NavigateTo(PageType.PatientInfo, id);
         }
         catch (ValidationException ex)
         {

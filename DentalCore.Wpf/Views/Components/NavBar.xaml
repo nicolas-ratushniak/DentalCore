@@ -26,27 +26,27 @@
                          Style="{StaticResource NiceRadioButton}"
                          IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
                          Converter={StaticResource EqualsToBoolConverter},
-                         ConverterParameter={x:Static abstract:ViewType.Patients}}"
-                         Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
-                         CommandParameter="{x:Static abstract:ViewType.Patients}"
+                         ConverterParameter={x:Static abstract:PageType.Patients}}"
+                         Command="{Binding Path=NavigationService.UpdateCurrentPageTypeCommand}"
+                         CommandParameter="{x:Static abstract:PageType.Patients}"
                          Content="Пацієнти" />
 
             <RadioButton Grid.Column="1"
                          Style="{StaticResource NiceRadioButton}"
                          IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
                          Converter={StaticResource EqualsToBoolConverter},
-                         ConverterParameter={x:Static abstract:ViewType.Visits}}"
-                         Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
-                         CommandParameter="{x:Static abstract:ViewType.Visits}"
+                         ConverterParameter={x:Static abstract:PageType.Visits}}"
+                         Command="{Binding Path=NavigationService.UpdateCurrentPageTypeCommand}"
+                         CommandParameter="{x:Static abstract:PageType.Visits}"
                          Content="Візити" />
             
             <RadioButton Grid.Column="2"
                          Style="{StaticResource NiceRadioButton}"
                          IsChecked="{Binding CurrentNavBarOption, Mode=OneWay,
                          Converter={StaticResource EqualsToBoolConverter},
-                         ConverterParameter={x:Static abstract:ViewType.Procedures}}"
-                         Command="{Binding Path=Navigator.UpdateCurrentViewTypeCommand}"
-                         CommandParameter="{x:Static abstract:ViewType.Procedures}"
+                         ConverterParameter={x:Static abstract:PageType.Procedures}}"
+                         Command="{Binding Path=NavigationService.UpdateCurrentPageTypeCommand}"
+                         CommandParameter="{x:Static abstract:PageType.Procedures}"
                          Content="Процедури" />
         </Grid>
     </Grid>

@@ -2,5 +2,8 @@
 
 public interface IViewModelFactory
 {
-    public BaseViewModel CreateViewModel(ViewType viewType, object? viewParameter = null);
+    public BaseViewModel CreatePageViewModel(PageType pageType);
+    public BaseViewModel CreatePageViewModel(PageType pageType, object viewParameter);
+    public BaseViewModel CreateModalViewModel(ModalType modalType);
+    public BaseViewModel CreateModalViewModel(ModalType modalType, object modalParameter);
 }

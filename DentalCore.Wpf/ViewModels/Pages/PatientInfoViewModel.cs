@@ -118,10 +118,10 @@ public class PatientInfoViewModel : BaseViewModel
             new SortDescription(nameof(VisitOfPatientListItemViewModel.Date), ListSortDirection.Descending));
 
         GoToVisitCreateCommand = new RelayCommand<object>(_ =>
-            navigationService.NavigateTo(ViewType.VisitCreate, id));
+            navigationService.NavigateTo(PageType.VisitCreate, id));
 
         GoToVisitInfoCommand = new RelayCommand<int>(visitId =>
-            navigationService.NavigateTo(ViewType.VisitInfo, visitId));
+            navigationService.NavigateTo(PageType.VisitInfo, visitId));
 
         PayPatientDebtCommand = new AsyncRelayCommand(
             PayPatientDebt_Execute,

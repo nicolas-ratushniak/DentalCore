@@ -7,27 +7,39 @@ namespace DentalCore.Wpf.Services;
 
 public class NavigationService : INavigationService
 {
-    public event EventHandler<ViewTypeChangedEventArgs>? CurrentViewTypeChanged;
+    public event EventHandler<PageTypeChangedEventArgs>? CurrentPageTypeChanged;
 
-    public ViewType? CurrentViewType { get; private set; }
-    public ICommand UpdateCurrentViewTypeCommand { get; }
+    public PageType? CurrentPageType { get; private set; }
+    public ICommand UpdateCurrentPageTypeCommand { get; }
 
     public NavigationService()
     {
-        UpdateCurrentViewTypeCommand = new RelayCommand<ViewType>(
-            v => NavigateTo(v, null));
+        UpdateCurrentPageTypeCommand = new RelayCommand<PageType>(NavigateTo);
     }
 
-    public void NavigateTo(ViewType newViewType, object? viewParameter)
+    public void NavigateTo(PageType newPageType)
     {
-        var oldViewType = CurrentViewType;
+        var oldViewType = CurrentPageType;
 
-        if (oldViewType == newViewType)
+        if (oldViewType == newPageType)
         {
             return;
         }
         
-        CurrentViewType = newViewType;
-        CurrentViewTypeChanged?.Invoke(this, new ViewTypeChangedEventArgs(oldViewType, newViewType, viewParameter));
+        CurrentPageType = newPageType;
+        CurrentPageTypeChanged?.Invoke(this, new PageTypeChangedEventArgs(oldViewType, newPageType));
+    }
+
+    public void NavigateTo(PageType newPageType, object pageParameter)
+    {
+        var oldViewType = CurrentPageType;
+
+        if (oldViewType == newPageType)
+        {
+            return;
+        }
+        
+        CurrentPageType = newPageType;
+        CurrentPageTypeChanged?.Invoke(this, new PageTypeChangedEventArgs(oldViewType, newPageType, pageParameter));
     }
 }

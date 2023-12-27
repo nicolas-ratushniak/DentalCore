@@ -5,8 +5,9 @@ namespace DentalCore.Wpf.Abstract;
 
 public interface INavigationService
 {
-    public event EventHandler<ViewTypeChangedEventArgs> CurrentViewTypeChanged;
-    public ViewType? CurrentViewType { get; }
-    public ICommand UpdateCurrentViewTypeCommand { get; }
-    public void NavigateTo(ViewType newViewType, object? viewParameter);
+    public event EventHandler<PageTypeChangedEventArgs> CurrentPageTypeChanged;
+    public PageType? CurrentPageType { get; }
+    public ICommand UpdateCurrentPageTypeCommand { get; }
+    public void NavigateTo(PageType newPageType);
+    public void NavigateTo(PageType newPageType, object pageParameter);
 }

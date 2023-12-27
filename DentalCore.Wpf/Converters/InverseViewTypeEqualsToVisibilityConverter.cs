@@ -10,7 +10,7 @@ public class InverseViewTypeEqualsToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        return (ViewType)value == (ViewType)parameter ? Visibility.Hidden : Visibility.Visible;
+        return (PageType)value == (PageType)parameter ? Visibility.Hidden : Visibility.Visible;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

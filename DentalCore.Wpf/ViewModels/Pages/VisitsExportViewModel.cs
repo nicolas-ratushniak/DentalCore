@@ -74,7 +74,7 @@ public class VisitsExportViewModel : BaseViewModel
 
         ExportVisitsCommand = new AsyncRelayCommand(ExportVisits);
         CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(ViewType.Patients, null));
+            _navigationService.NavigateTo(PageType.Patients, null));
     }
 
     private async Task ExportVisits()
@@ -104,7 +104,7 @@ public class VisitsExportViewModel : BaseViewModel
             }
 
             await _exportService.ExportVisitsAsync(fromDate, toDate, dirPath);
-            _navigationService.NavigateTo(ViewType.Patients, null);
+            _navigationService.NavigateTo(PageType.Patients, null);
 
             MessageBox.Show($"Успішно створено звіт у папці {dirPath}", "Успіх!", MessageBoxButton.OK);
         }

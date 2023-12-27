@@ -203,7 +203,7 @@ public class PatientUpdateViewModel : BaseViewModel
                                          c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
 
         CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(ViewType.Patients, null));
+            _navigationService.NavigateTo(PageType.Patients, null));
 
         SubmitCommand = new AsyncRelayCommand(Update_Execute);
         LoadedCommand = new AsyncRelayCommand(LoadData, ex => 
@@ -290,7 +290,7 @@ public class PatientUpdateViewModel : BaseViewModel
         try
         {
             await _patientService.UpdateAsync(dto);
-            _navigationService.NavigateTo(ViewType.Patients, null);
+            _navigationService.NavigateTo(PageType.Patients, null);
         }
         catch (ValidationException ex)
         {

@@ -38,20 +38,38 @@ public class ViewModelFactory : IViewModelFactory
         _createProceduresVm = createProceduresVm;
     }
 
-    public BaseViewModel CreateViewModel(ViewType viewType, object? viewParameter = null)
+    public BaseViewModel CreatePageViewModel(PageType pageType)
     {
-        return viewType switch
+        return pageType switch
         {
-            ViewType.Patients => _createPatientsVm(),
-            ViewType.PatientInfo => _createPatientInfoVm((int)viewParameter!),
-            ViewType.PatientCreate => _createPatientCreateVm(),
-            ViewType.PatientUpdate => _createPatientUpdateVm((int)viewParameter!),
-            ViewType.Visits => _createVisitsVm(),
-            ViewType.VisitInfo => _createVisitInfoView((int)viewParameter!),
-            ViewType.VisitCreate => _createVisitCreateVm((int)viewParameter!),
-            ViewType.VisitsExport => _createVisitsExportVm(),
-            ViewType.Procedures => _createProceduresVm(),
+            PageType.Patients => _createPatientsVm(),
+            PageType.PatientCreate => _createPatientCreateVm(),
+            PageType.Visits => _createVisitsVm(),
+            PageType.VisitsExport => _createVisitsExportVm(),
+            PageType.Procedures => _createProceduresVm(),
             _ => throw new InvalidOperationException("Cannot create view model with this type")
         };
+    }
+    
+    public BaseViewModel CreatePageViewModel(PageType pageType, object viewParameter)
+    {
+        return pageType switch
+        {
+            PageType.PatientInfo => _createPatientInfoVm((int)viewParameter),
+            PageType.PatientUpdate => _createPatientUpdateVm((int)viewParameter),
+            PageType.VisitInfo => _createVisitInfoView((int)viewParameter),
+            PageType.VisitCreate => _createVisitCreateVm((int)viewParameter),
+            _ => throw new InvalidOperationException("Cannot create view model with this type")
+        };
+    }
+
+    public BaseViewModel CreateModalViewModel(ModalType modalType)
+    {
+        throw new NotImplementedException();
+    }
+
+    public BaseViewModel CreateModalViewModel(ModalType modalType, object modalParameter)
+    {
+        throw new NotImplementedException();
     }
 }

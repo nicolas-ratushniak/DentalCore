@@ -1,6 +1,6 @@
 ﻿namespace DentalCore.Wpf.Abstract;
 
-public enum ViewType
+public enum PageType
 {
     // Home,
     // Login,
