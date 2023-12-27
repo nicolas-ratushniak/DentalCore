@@ -7,7 +7,7 @@
              xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:models="clr-namespace:DentalCore.Data.Models;assembly=DentalCore.Data"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
-             xmlns:custom="clr-namespace:DentalCore.Wpf.Controls;assembly=DentalCore.Wpf.Controls"
+             xmlns:custom="clr-namespace:SimpleWpfToolkit;assembly=SimpleWpfToolkit"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000"
              Loaded="OnLoaded">

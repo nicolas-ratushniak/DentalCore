@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace DentalCore.Wpf.Controls;
+namespace SimpleWpfToolkit;
 
 public class PlaceholderTextBox : TextBox
 {

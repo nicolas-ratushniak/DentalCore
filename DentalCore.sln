@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalCore.Data", "DentalCo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalCore.Wpf", "DentalCore.Wpf\DentalCore.Wpf.csproj", "{5FBCADA8-DC55-4655-AFF8-0D4A97B86D83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentalCore.Wpf.Controls", "DentalCore.Wpf.Controls\DentalCore.Wpf.Controls.csproj", "{C0D54AE9-72DB-4D69-A79E-3FB127737445}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWpfToolkit", "SimpleWpfToolkit\SimpleWpfToolkit.csproj", "{3C6296B7-6C46-4CE4-8DC1-BC6967DA9DB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +26,9 @@ Global
 		{5FBCADA8-DC55-4655-AFF8-0D4A97B86D83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FBCADA8-DC55-4655-AFF8-0D4A97B86D83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FBCADA8-DC55-4655-AFF8-0D4A97B86D83}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C0D54AE9-72DB-4D69-A79E-3FB127737445}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C0D54AE9-72DB-4D69-A79E-3FB127737445}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C0D54AE9-72DB-4D69-A79E-3FB127737445}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C0D54AE9-72DB-4D69-A79E-3FB127737445}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C6296B7-6C46-4CE4-8DC1-BC6967DA9DB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C6296B7-6C46-4CE4-8DC1-BC6967DA9DB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C6296B7-6C46-4CE4-8DC1-BC6967DA9DB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C6296B7-6C46-4CE4-8DC1-BC6967DA9DB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

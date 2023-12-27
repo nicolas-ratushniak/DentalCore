@@ -1,11 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:controls="clr-namespace:DentalCore.Wpf.Controls">
+                    xmlns:simpleWpfToolkit="clr-namespace:SimpleWpfToolkit">
     
-    <Style TargetType="controls:Modal">
+    <Style TargetType="simpleWpfToolkit:Modal">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="controls:Modal">
+                <ControlTemplate TargetType="simpleWpfToolkit:Modal">
                     <Grid Background="{TemplateBinding OuterBackground}"
                           Visibility="{Binding Path=IsOpen,
                           RelativeSource={RelativeSource TemplatedParent},

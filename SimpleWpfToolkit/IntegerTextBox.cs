@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace DentalCore.Wpf.Controls;
+namespace SimpleWpfToolkit;
 
 public class IntegerTextBox : PlaceholderTextBox
 {

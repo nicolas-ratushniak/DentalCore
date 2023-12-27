@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace DentalCore.Wpf.Controls.Converters;
+namespace SimpleWpfToolkit.Converters;
 
 public class SolidBrushToColorConverter : IValueConverter
 {
