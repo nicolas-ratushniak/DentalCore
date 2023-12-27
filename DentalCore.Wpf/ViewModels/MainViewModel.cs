@@ -25,6 +25,8 @@ public class MainViewModel : BaseViewModel
     public INavigationService NavigationService { get; }
     public IModalService ModalService { get; set; }
 
+    public bool IsModalOpen => CurrentModal is not null;
+
     public BaseViewModel? CurrentPage
     {
         get => _currentPage;
@@ -141,8 +143,7 @@ public class MainViewModel : BaseViewModel
                 PageType.PatientUpdate => PageType.Patients,
             PageType.Visits or
                 PageType.VisitCreate or
-                PageType.VisitInfo or
-                PageType.VisitsExport => PageType.Visits,
+                PageType.VisitInfo => PageType.Visits,
             PageType.Procedures => PageType.Procedures,
             _ => throw new InvalidOperationException("Unknown view type passed")
         };
@@ -155,8 +156,12 @@ public class MainViewModel : BaseViewModel
             CurrentModal = args.ModalParameter is null
                 ? _viewModelFactory.CreateModalViewModel(newModalType)
                 : _viewModelFactory.CreateModalViewModel(newModalType, args.ModalParameter);
+            
+            OnPropertyChanged(nameof(IsModalOpen));
+            return;
         }
         
         CurrentModal = null;
+        OnPropertyChanged(nameof(IsModalOpen));
     }
 }
