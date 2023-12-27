@@ -9,7 +9,7 @@ using DentalCore.Wpf.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace DentalCore.Wpf.ViewModels.Pages;
+namespace DentalCore.Wpf.ViewModels;
 
 public class MainViewModel : BaseViewModel
 {
