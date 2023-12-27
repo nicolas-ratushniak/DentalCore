@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using DentalCore.Domain.Dto;
-using DentalCore.Wpf.Services.Authentication;
+using DentalCore.Wpf.Services;
 
 namespace DentalCore.Wpf.Abstract;
 

@@ -5,7 +5,7 @@ using DentalCore.Domain.Dto;
 using DentalCore.Domain.Exceptions;
 using DentalCore.Wpf.Abstract;
 
-namespace DentalCore.Wpf.Services.Authentication;
+namespace DentalCore.Wpf.Services;
 
 public class AuthenticationService : IAuthenticationService
 {

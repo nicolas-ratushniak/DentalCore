@@ -9,7 +9,6 @@ using DentalCore.Domain.Exceptions;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Configuration;
-using DentalCore.Wpf.Services.Navigation;
 using Microsoft.Extensions.Options;
 
 namespace DentalCore.Wpf.ViewModels;

@@ -1,4 +1,4 @@
-﻿namespace DentalCore.Wpf.Services.Navigation;
+﻿namespace DentalCore.Wpf.Abstract;
 
 public enum ViewType
 {

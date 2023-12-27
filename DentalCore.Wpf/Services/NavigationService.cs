@@ -3,7 +3,7 @@ using System.Windows.Input;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 
-namespace DentalCore.Wpf.Services.Navigation;
+namespace DentalCore.Wpf.Services;
 
 public class NavigationService : INavigationService
 {

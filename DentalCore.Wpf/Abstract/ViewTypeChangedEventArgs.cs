@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DentalCore.Wpf.Services.Navigation;
+namespace DentalCore.Wpf.Abstract;
 
 public class ViewTypeChangedEventArgs : EventArgs
 {

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using DentalCore.Wpf.Services.Navigation;
+using DentalCore.Wpf.Abstract;
 
 namespace DentalCore.Wpf.Converters;
 

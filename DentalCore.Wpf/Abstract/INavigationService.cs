@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using DentalCore.Wpf.Services.Navigation;
 
 namespace DentalCore.Wpf.Abstract;
 

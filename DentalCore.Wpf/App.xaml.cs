@@ -9,8 +9,6 @@ using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Helpers;
 using DentalCore.Wpf.Services;
-using DentalCore.Wpf.Services.Authentication;
-using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels;
 using DentalCore.Wpf.ViewModels.Factories;
 using Microsoft.AspNetCore.Identity;

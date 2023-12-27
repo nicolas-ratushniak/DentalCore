@@ -6,7 +6,6 @@ using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Services;
-using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels.Factories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

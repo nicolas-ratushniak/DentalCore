@@ -12,7 +12,6 @@ using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Dto;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
-using DentalCore.Wpf.Services.Navigation;
 using DentalCore.Wpf.ViewModels.Components;
 using DentalCore.Wpf.ViewModels.Inners;
 

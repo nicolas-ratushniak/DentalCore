@@ -1,5 +1,5 @@
 ﻿using System;
-using DentalCore.Wpf.Services.Navigation;
+using DentalCore.Wpf.Abstract;
 
 namespace DentalCore.Wpf.ViewModels.Factories;
 

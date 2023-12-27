@@ -1,7 +1,7 @@
 ﻿using System;
 using DentalCore.Domain.Dto;
 
-namespace DentalCore.Wpf.Services.Authentication;
+namespace DentalCore.Wpf.Abstract;
 
 public class UserChangedEventArgs : EventArgs
 {
