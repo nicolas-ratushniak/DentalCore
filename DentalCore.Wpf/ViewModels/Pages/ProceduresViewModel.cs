@@ -37,7 +37,9 @@ public class ProceduresViewModel : BaseViewModel
         }
     }
 
-    public ProceduresViewModel(IProcedureService procedureService)
+    public ProceduresViewModel(
+        IProcedureService procedureService,
+        IModalService modalService)
     {
         _procedureService = procedureService;
         _procedures = new ObservableCollection<ProcedureListItemViewModel>();
@@ -51,7 +53,7 @@ public class ProceduresViewModel : BaseViewModel
             o is ProcedureListItemViewModel p &&
             p.Name.ToLower().Contains(ProcedureSearchFilter.ToLower());
 
-        GoToProcedureCreateCommand = new RelayCommand<object>(_ => { });
+        GoToProcedureCreateCommand = new RelayCommand<object>(_ => modalService.OpenModal(ModalType.ProcedureCreate));
         ProcedureEditCommand = new RelayCommand<object>(_ => { });
         ProcedureDeleteCommand = new RelayCommand<object>(_ => { });
 

@@ -57,7 +57,7 @@ public class IntegerTextBox : PlaceholderTextBox
             nameof(Max),
             typeof(int),
             typeof(PlaceholderTextBox),
-            new FrameworkPropertyMetadata(int.MaxValue, OnMaxChanged));
+            new FrameworkPropertyMetadata(100, OnMaxChanged));
 
         ValueChangedEvent = EventManager.RegisterRoutedEvent(
             nameof(ValueChanged),
@@ -69,6 +69,7 @@ public class IntegerTextBox : PlaceholderTextBox
     public IntegerTextBox()
     {
         DataObject.AddPastingHandler(this, OnPasting);
+        MaxLength = 100;
     }
 
     protected override void OnTextChanged(TextChangedEventArgs args)
@@ -129,10 +130,10 @@ public class IntegerTextBox : PlaceholderTextBox
             control.Min = 0;
         }
 
-        if (control.Value < control.Min)
-        {
-            control.Value = control.Min;
-        }
+        // if (control.Value < control.Min)
+        // {
+        //     control.Value = control.Min;
+        // }
     }
 
     private static object CoerceMin(DependencyObject d, object baseValue)
@@ -148,10 +149,10 @@ public class IntegerTextBox : PlaceholderTextBox
         var control = (IntegerTextBox)d;
         var newValue = (int)e.NewValue;
 
-        if (control.Value > newValue)
-        {
-            control.Value = control.Max;
-        }
+        // if (control.Value > newValue)
+        // {
+        //     control.Value = control.Max;
+        // }
         
         control.MaxLength = (int)Math.Floor(Math.Log10(control.Max) + 1);
     }

@@ -15,6 +15,7 @@ public class ViewModelFactory : IViewModelFactory
     private readonly Func<int, VisitInfoViewModel> _createVisitInfoView;
     private readonly Func<int, VisitCreateViewModel> _createVisitCreateVm;
     private readonly Func<VisitsExportViewModel> _createVisitsExportVm;
+    private readonly Func<ProcedureCreateViewModel> _createProcedureCreateVm;
     private readonly Func<ProceduresViewModel> _createProceduresVm;
 
     public ViewModelFactory(
@@ -26,7 +27,8 @@ public class ViewModelFactory : IViewModelFactory
         Func<int, VisitInfoViewModel> createVisitInfoView,
         Func<int, VisitCreateViewModel> createVisitCreateVm,
         Func<ProceduresViewModel> createProceduresVm,
-        Func<VisitsExportViewModel> createVisitsExportVm)
+        Func<VisitsExportViewModel> createVisitsExportVm,
+        Func<ProcedureCreateViewModel> createProcedureCreateVm)
     {
         _createPatientsVm = createPatientsVm;
         _createPatientInfoVm = createPatientInfoVm;
@@ -38,6 +40,7 @@ public class ViewModelFactory : IViewModelFactory
         _createProceduresVm = createProceduresVm;
         
         _createVisitsExportVm = createVisitsExportVm;
+        _createProcedureCreateVm = createProcedureCreateVm;
     }
 
     public BaseViewModel CreatePageViewModel(PageType pageType)
@@ -69,6 +72,7 @@ public class ViewModelFactory : IViewModelFactory
         return modalType switch
         {
             ModalType.VisitReport => _createVisitsExportVm(),
+            ModalType.ProcedureCreate => _createProcedureCreateVm(),
             _ => throw new InvalidOperationException("Cannot create view model with this type")
         };
     }

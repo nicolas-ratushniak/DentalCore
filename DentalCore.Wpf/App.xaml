@@ -62,6 +62,10 @@
                 <modalViews:VisitsExportView />
             </DataTemplate>
             
+            <DataTemplate DataType="{x:Type modalViewModals:ProcedureCreateViewModel}">
+                <modalViews:ProcedureCreateView />
+            </DataTemplate>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

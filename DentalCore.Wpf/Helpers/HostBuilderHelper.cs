@@ -58,14 +58,19 @@ public static class HostBuilderHelper
                 s.GetRequiredService<IProcedureService>(),
                 s.GetRequiredService<IPaymentService>()));
 
+            services.AddSingleton<Func<ProceduresViewModel>>(s => () => new ProceduresViewModel(
+                s.GetRequiredService<IProcedureService>(),
+                s.GetRequiredService<IModalService>()));
+
             services.AddSingleton<Func<VisitsExportViewModel>>(s => () => new VisitsExportViewModel(
                 s.GetRequiredService<IOptions<ExportOptions>>(),
                 s.GetRequiredService<IExportService>(),
                 s.GetRequiredService<IModalService>()));
-            
-            services.AddSingleton<Func<ProceduresViewModel>>(s => () => new ProceduresViewModel(
-                s.GetRequiredService<IProcedureService>()));
 
+            services.AddSingleton<Func<ProcedureCreateViewModel>>(s => () => new ProcedureCreateViewModel(
+                s.GetRequiredService<IProcedureService>(),
+                s.GetRequiredService<IModalService>()));
+            
             services.AddTransient<MainViewModel>();
         });
 
