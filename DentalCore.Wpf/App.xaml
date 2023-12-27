@@ -4,7 +4,9 @@
 
              xmlns:views="clr-namespace:DentalCore.Wpf.Views"
              xmlns:viewModels="clr-namespace:DentalCore.Wpf.ViewModels"
-             xmlns:converters="clr-namespace:DentalCore.Wpf.Converters">
+             xmlns:converters="clr-namespace:DentalCore.Wpf.Converters"
+             xmlns:pages="clr-namespace:DentalCore.Wpf.ViewModels.Pages"
+             xmlns:pages1="clr-namespace:DentalCore.Wpf.Views.Pages">
 
     <Application.Resources>
         <ResourceDictionary>
@@ -23,40 +25,40 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
             <!-- Binding views to related view models -->
-            <DataTemplate DataType="{x:Type viewModels:PatientsViewModel}">
-                <views:PatientsView />
+            <DataTemplate DataType="{x:Type pages:PatientsViewModel}">
+                <pages1:PatientsView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:PatientInfoViewModel}">
-                <views:PatientInfoView />
+            <DataTemplate DataType="{x:Type pages:PatientInfoViewModel}">
+                <pages1:PatientInfoView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:PatientCreateViewModel}">
-                <views:PatientCreateView />
+            <DataTemplate DataType="{x:Type pages:PatientCreateViewModel}">
+                <pages1:PatientCreateView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:PatientUpdateViewModel}">
-                <views:PatientUpdateView />
+            <DataTemplate DataType="{x:Type pages:PatientUpdateViewModel}">
+                <pages1:PatientUpdateView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:VisitsViewModel}">
-                <views:VisitsView />
+            <DataTemplate DataType="{x:Type pages:VisitsViewModel}">
+                <pages1:VisitsView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:VisitInfoViewModel}">
-                <views:VisitInfoView />
+            <DataTemplate DataType="{x:Type pages:VisitInfoViewModel}">
+                <pages1:VisitInfoView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:VisitCreateViewModel}">
-                <views:VisitCreateView />
+            <DataTemplate DataType="{x:Type pages:VisitCreateViewModel}">
+                <pages1:VisitCreateView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:VisitsExportViewModel}">
-                <views:VisitsExportView />
+            <DataTemplate DataType="{x:Type pages:VisitsExportViewModel}">
+                <pages1:VisitsExportView />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewModels:ProceduresViewModel}">
-                <views:ProceduresView />
+            <DataTemplate DataType="{x:Type pages:ProceduresViewModel}">
+                <pages1:ProceduresView />
             </DataTemplate>
             
         </ResourceDictionary>

@@ -1,0 +1,202 @@
+﻿<UserControl x:Class="DentalCore.Wpf.Views.Pages.VisitInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="1000"
+             Loaded="OnLoaded">
+
+    <UserControl.Resources>
+        <Style x:Key="ReadOnlyTreatmentItemList" TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0" />
+
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Grid Margin="0 10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="50" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0"
+                                                   FontSize="18"
+                                                   VerticalAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   Text="{Binding Name}" />
+
+                                        <TextBlock Grid.Column="1"
+                                                   FontSize="18"
+                                                   VerticalAlignment="Center"
+                                                   TextAlignment="Right"
+                                                   Text="{Binding Quantity}" />
+
+                                        <TextBlock Grid.Column="2"
+                                                   FontSize="18"
+                                                   VerticalAlignment="Center"
+                                                   Text="{Binding Price, StringFormat=x{0}}" />
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="90*" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="1"
+              Margin="0 24">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Title -->
+            <TextBlock Grid.Row="0"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Text="Візит"
+                       Margin="0 0 0 24" />
+
+            <!-- Content -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="24" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="12" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0"
+                               FontSize="18"
+                               Text="Дата: " />
+
+                    <TextBlock Grid.Row="0" Grid.Column="1"
+                               FontSize="18"
+                               Text="{Binding Date}" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0"
+                               FontSize="18"
+                               Text="Лікар: " />
+
+                    <TextBlock Grid.Row="2" Grid.Column="1"
+                               FontSize="18"
+                               Text="{Binding DoctorShortName}" />
+
+                    <TextBlock Grid.Row="4" Grid.Column="0"
+                               FontSize="18"
+                               Text="Пацієнт: " />
+
+                    <TextBlock Grid.Row="4" Grid.Column="1"
+                               FontSize="18"
+                               Text="{Binding PatientShortName}" />
+
+                    <TextBlock Grid.Row="6" Grid.Column="0"
+                               FontSize="16"
+                               Text="Діагноз" />
+
+                    <Border Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
+                            Style="{StaticResource NiceBorder}">
+
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding Diagnosis}"
+                                   FontSize="18"
+                                   TextWrapping="Wrap" />
+                    </Border>
+                </Grid>
+
+                <Grid Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" MaxHeight="400" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               FontSize="16"
+                               Foreground="{StaticResource BrushGrey}"
+                               Text="Процедури: "
+                               Margin="0 0 0 12" />
+
+                    <Border Grid.Row="1"
+                            BorderThickness="0 0 0 1"
+                            BorderBrush="Black">
+
+                        <ListBox Style="{StaticResource ReadOnlyTreatmentItemList}"
+                                 ItemsSource="{Binding TreatmentItems}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+                    </Border>
+
+                    <Grid Grid.Row="2"
+                          Margin="0 24 0 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="12" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Text="Всього: " />
+
+                        <TextBlock Grid.Row="0" Grid.Column="2"
+                                   FontWeight="Bold"
+                                   FontSize="18"
+                                   Text="{Binding TotalSum, StringFormat={}{0} грн}" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0"
+                                   FontSize="18"
+                                   Text="Внесено коштів: " />
+
+                        <TextBlock Grid.Row="2" Grid.Column="2"
+                                   FontSize="18"
+                                   Text="{Binding HasPayed, StringFormat={}{0} грн}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+
+</UserControl>

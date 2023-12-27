@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using DentalCore.Wpf.ViewModels;
 using DentalCore.Wpf.ViewModels.Components;
 
 namespace DentalCore.Wpf.Views.Components;

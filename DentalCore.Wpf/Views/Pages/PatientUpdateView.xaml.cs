@@ -1,20 +1,20 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using DentalCore.Wpf.Abstract;
-using DentalCore.Wpf.ViewModels;
 
-namespace DentalCore.Wpf;
+namespace DentalCore.Wpf.Views.Pages;
 
-public partial class MainWindow : Window
+public partial class PatientUpdateView : UserControl
 {
-    public MainWindow(BaseViewModel contextViewModel)
+    public PatientUpdateView()
     {
         InitializeComponent();
-        DataContext = contextViewModel;
     }
     
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         var viewModel = (BaseViewModel)DataContext;
+        
         viewModel.LoadedCommand.Execute(null);
     }
 }

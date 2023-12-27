@@ -3,6 +3,7 @@ using DentalCore.Domain.Abstract;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.ViewModels;
+using DentalCore.Wpf.ViewModels.Pages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;

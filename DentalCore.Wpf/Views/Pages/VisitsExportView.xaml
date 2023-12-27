@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="DentalCore.Wpf.Views.Pages.VisitsExportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:custom="clr-namespace:SimpleWpfToolkit;assembly=SimpleWpfToolkit"
+
+             mc:Ignorable="d"
+             d:DesignHeight="400" d:DesignWidth="400">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Row="1" Grid.Column="1"
+                BorderBrush="Black"
+                BorderThickness="1"
+                Height="320"
+                Width="400"
+                Padding="35,35,35,24"
+                CornerRadius="10">
+            
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Style="{StaticResource Title}"
+                           Text="Звіт візитів"
+                           Margin="0,0,0,25" />
+
+                <Grid Grid.Row="1">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Від:"
+                               VerticalAlignment="Center"
+                               Margin="0,0,0,10" />
+
+                    <custom:PlaceholderTextBox Grid.Row="0" Grid.Column="1"
+                                               Placeholder="Дата (2.12.2004)"
+                                               Text="{Binding FromDateInput, 
+                                                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                               Margin="0,0,0,10" />
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="До:"
+                               VerticalAlignment="Center" />
+
+                    <custom:PlaceholderTextBox Grid.Row="1" Grid.Column="1"
+                                               Placeholder="Дата (3.12.2004)"
+                                               Text="{Binding ToDateInput, 
+                                                 Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+
+                <TextBlock Grid.Row="2"
+                           Text="{Binding ErrorMessage}"
+                           Style="{StaticResource ErrorMessage}"
+                           Margin="0,15" />
+                
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button Grid.Column="0"
+                            Style="{StaticResource CancelButton}"
+                            Command="{Binding CancelCommand}"
+                            Content="Скасувати" />
+                    
+                    <Button Grid.Column="2"
+                            Style="{StaticResource NiceButton}"
+                            Command="{Binding ExportVisitsCommand}"
+                            Content="Звіт у Excel" />
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

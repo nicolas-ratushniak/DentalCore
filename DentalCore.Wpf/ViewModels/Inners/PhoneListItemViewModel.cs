@@ -1,4 +1,6 @@
-﻿namespace DentalCore.Wpf.ViewModels.Inners;
+﻿using DentalCore.Wpf.Abstract;
+
+namespace DentalCore.Wpf.ViewModels.Inners;
 
 public class PhoneListItemViewModel : BaseViewModel
 {

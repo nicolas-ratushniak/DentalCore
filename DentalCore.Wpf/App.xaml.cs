@@ -10,7 +10,7 @@ using DentalCore.Wpf.Configuration;
 using DentalCore.Wpf.Helpers;
 using DentalCore.Wpf.Services;
 using DentalCore.Wpf.ViewModels;
-using DentalCore.Wpf.ViewModels.Factories;
+using DentalCore.Wpf.ViewModels.Pages;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

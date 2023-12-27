@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.ViewModels.Inners;
 

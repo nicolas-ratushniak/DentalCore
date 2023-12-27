@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Dto;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.ViewModels.Inners;
 
