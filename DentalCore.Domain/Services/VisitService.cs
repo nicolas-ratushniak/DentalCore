@@ -123,7 +123,7 @@ public class VisitService : IVisitService
         var itemsNoDuplicates = dto.TreatmentItems
             .Where(t => t.Quantity > 0)
             .GroupBy(t => t.ProcedureId)
-            .Select(g => new TreatmentItemDto
+            .Select(g => new TreatmentItemCreateDto
             {
                 ProcedureId = g.Key,
                 Quantity = g.Sum(item => item.Quantity)
@@ -196,12 +196,5 @@ public class VisitService : IVisitService
         await _context.SaveChangesAsync();
 
         return visit.Id;
-    }
-
-    public async Task<IEnumerable<TreatmentItem>> GetTreatmentItemsAsync(int id)
-    {
-        return await _context.TreatmentItems
-            .Where(t => t.VisitId == id)
-            .ToListAsync();
     }
 }

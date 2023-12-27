@@ -77,8 +77,10 @@ public class PatientsViewModel : BaseViewModel
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
+        _patients.Clear();
+        
         foreach (var patient in await GetPatientsAsync())
         {
             _patients.Add(patient);

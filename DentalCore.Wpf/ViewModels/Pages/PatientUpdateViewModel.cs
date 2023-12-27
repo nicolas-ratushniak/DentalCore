@@ -203,24 +203,30 @@ public class PatientUpdateViewModel : BaseViewModel
                                          c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
 
         CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(PageType.Patients, null));
+            _navigationService.NavigateTo(PageType.Patients));
 
         SubmitCommand = new AsyncRelayCommand(Update_Execute);
         LoadedCommand = new AsyncRelayCommand(LoadData, ex => 
             MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error));
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
+        _cities.Clear();
+        
         foreach (var city in await GetCitiesAsync())
         {
             _cities.Add(city);
         }
         
+        AllergySelector.Allergies.Clear();
+        
         foreach (var allergy in await GetPatientAllergiesAsync(_patientId))
         {
             AllergySelector.Allergies.Add(allergy);
         }
+        
+        Diseases.Clear();
 
         foreach (var disease in await GetDiseasesAsync())
         {

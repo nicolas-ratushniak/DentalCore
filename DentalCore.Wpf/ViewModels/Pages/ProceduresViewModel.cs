@@ -60,8 +60,10 @@ public class ProceduresViewModel : BaseViewModel
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
+        _procedures.Clear();
+        
         foreach (var procedure in await GetProceduresAsync())
         {
             _procedures.Add(procedure);

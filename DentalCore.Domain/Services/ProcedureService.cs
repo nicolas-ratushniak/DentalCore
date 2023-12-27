@@ -45,6 +45,21 @@ public class ProcedureService : IProcedureService
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<TreatmentItemDto>> GetVisitTreatmentItemsAsync(int visitId)
+    {
+        return await _context.TreatmentItems
+            .Include(t => t.Procedure)
+            .Where(t => t.VisitId == visitId)
+            .Select(t => new TreatmentItemDto
+            {
+                Id = t.ProcedureId,
+                Name = t.Procedure.Name,
+                Quantity = t.Quantity,
+                Price = t.Price
+            })
+            .ToListAsync();
+    }
+
     public async Task<IEnumerable<ProcedureDto>> GetAllIncludeSoftDeletedAsync()
     {
         return await _context.Procedures

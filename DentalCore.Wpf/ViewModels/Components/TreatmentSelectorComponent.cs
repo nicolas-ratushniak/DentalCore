@@ -99,11 +99,11 @@ public class TreatmentSelectorComponent : BaseViewModel
             SelectedTreatmentSetChanged?.Invoke(this, EventArgs.Empty));
     }
 
-    public IEnumerable<TreatmentItemDto> GetSelectedTreatmentItems()
+    public IEnumerable<TreatmentItemCreateDto> GetSelectedTreatmentItems()
     {
         return TreatmentItems
             .Where(t => t.IsSelected && t.Quantity > 0)
-            .Select(t => new TreatmentItemDto
+            .Select(t => new TreatmentItemCreateDto
             {
                 ProcedureId = t.Id,
                 Quantity = t.Quantity

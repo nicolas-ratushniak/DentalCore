@@ -143,7 +143,7 @@ public class PatientInfoViewModel : BaseViewModel
         }
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
         var patient = await _patientService.GetRichAsync(_patientId);
 
@@ -154,18 +154,25 @@ public class PatientInfoViewModel : BaseViewModel
 
         var age = CalculateAge(patient.BirthDate);
         AgeString = age == 1 ? "1 рік" : $"{age} років";
+        
+        AllergyNames.Clear();
 
         foreach (var allergy in await _patientService.GetAllergiesAsync(_patientId))
         {
             AllergyNames.Add(allergy.Name);
         }
+        
+        DiseasesNames.Clear();
 
         foreach (var disease in await _patientService.GetDiseasesAsync(_patientId))
         {
             DiseasesNames.Add(disease.Name);
         }
+        
         OnPropertyChanged(nameof(HasAllergiesOrDiseases));
 
+        _visits.Clear();
+        
         foreach (var visit in await GetVisitsAsync())
         {
             _visits.Add(visit);

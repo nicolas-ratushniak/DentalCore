@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using DentalCore.Domain.Abstract;
@@ -101,7 +102,7 @@ public class VisitInfoViewModel : BaseViewModel
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
         var visit = await _visitService.GetAsync(_patientId);
 
@@ -112,16 +113,20 @@ public class VisitInfoViewModel : BaseViewModel
         TotalSum = visit.TotalPrice;
         HasPayed = visit.AlreadyPayed;
 
-        var procedures = (await _procedureService.GetAllIncludeSoftDeletedAsync()).ToList();
-
-        foreach (var item in await _visitService.GetTreatmentItemsAsync(visit.Id))
+        foreach (var item in await GetTreatmentItemsAsync(visit.Id))
         {
-            TreatmentItems.Add(new TreatmentItemReadOnlyListItemViewModel
-            {
-                Name = procedures.Single(p => p.Id == item.ProcedureId).Name,
-                Quantity = item.Quantity,
-                Price = item.Price
-            });
+            TreatmentItems.Add(item);
         }
+    }
+    
+    private async Task<IEnumerable<TreatmentItemReadOnlyListItemViewModel>> GetTreatmentItemsAsync(int visitId)
+    {
+        return (await _procedureService.GetVisitTreatmentItemsAsync(visitId))
+            .Select(p => new TreatmentItemReadOnlyListItemViewModel
+            {
+                Name = p.Name,
+                Quantity = p.Quantity,
+                Price = p.Price
+            });
     }
 }

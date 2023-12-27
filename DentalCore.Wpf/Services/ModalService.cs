@@ -28,7 +28,7 @@ public class ModalService : IModalService
         CurrentModalType = newModalType;
         CurrentModalTypeChanged?.Invoke(
             this, 
-            new ModalTypeChangedEventArgs(oldModalType, newModalType));
+            new ModalTypeChangedEventArgs(oldModalType, newModalType, false));
     }
 
     public void OpenModal(ModalType newModalType, object modalParameter)
@@ -43,7 +43,7 @@ public class ModalService : IModalService
         CurrentModalType = newModalType;
         CurrentModalTypeChanged?.Invoke(
             this, 
-            new ModalTypeChangedEventArgs(oldModalType, newModalType, modalParameter));
+            new ModalTypeChangedEventArgs(oldModalType, newModalType, false, modalParameter));
     }
 
     public void CloseModal()
@@ -56,6 +56,19 @@ public class ModalService : IModalService
         CurrentModalType = null;
         CurrentModalTypeChanged?.Invoke(
             this, 
-            new ModalTypeChangedEventArgs(CurrentModalType, null));
+            new ModalTypeChangedEventArgs(CurrentModalType, null, false));
+    }
+
+    public void CloseModalWithPageReload()
+    {
+        if (CurrentModalType is null)
+        {
+            return;
+        }
+        
+        CurrentModalType = null;
+        CurrentModalTypeChanged?.Invoke(
+            this, 
+            new ModalTypeChangedEventArgs(CurrentModalType, null, true));
     }
 }

@@ -11,4 +11,5 @@ public interface IModalService
     public void OpenModal(ModalType newModalType);
     public void OpenModal(ModalType newModalType, object modalParameter);
     public void CloseModal();
+    public void CloseModalWithPageReload();
 }

@@ -11,6 +11,6 @@ public interface IPaymentService
     public Task<int> GetPatientDebtAsync(int patientId);
 
     public Task<(int, int)> CalculateTotalWithDiscountAsync(
-        IEnumerable<TreatmentItemDto> selectedTreatmentItems,
+        IEnumerable<TreatmentItemCreateDto> selectedTreatmentItems,
         int discountPercent);
 }

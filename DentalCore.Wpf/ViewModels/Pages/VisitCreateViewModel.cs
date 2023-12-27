@@ -185,15 +185,19 @@ public class VisitCreateViewModel : BaseViewModel
         base.Dispose();
     }   
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
         var patient = await _patientService.GetAsync(_patientId);
         PatientInfo = $"{patient.Surname} {patient.Name} {patient.Patronymic}";
+        
+        _doctors.Clear();
         
         foreach (var doctor in await GetDoctorsAsync())
         {
             _doctors.Add(doctor);
         }
+        
+        TreatmentSelector.TreatmentItems.Clear();
 
         foreach (var item in await GetTreatmentItemsAsync())
         {

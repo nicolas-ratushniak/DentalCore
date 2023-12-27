@@ -64,8 +64,10 @@ public class VisitsViewModel : BaseViewModel
         LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
+        _todayVisits.Clear();
+        
         foreach (var visit in await GetVisitsForTodayAsync())
         {
             _todayVisits.Add(visit);

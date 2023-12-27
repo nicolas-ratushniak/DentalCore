@@ -101,7 +101,7 @@ public class MainViewModel : BaseViewModel
         base.Dispose();
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
         try
         {
@@ -162,6 +162,12 @@ public class MainViewModel : BaseViewModel
         }
         
         CurrentModal = null;
+
+        if (args.NeedsPageReload)
+        {
+            CurrentPage?.LoadData();
+        }
+        
         OnPropertyChanged(nameof(IsModalOpen));
     }
 }

@@ -128,7 +128,7 @@ public class PaymentService : IPaymentService
     /// <summary>
     /// Returns (total sum, total discount)
     /// </summary>
-    public async Task<(int, int)> CalculateTotalWithDiscountAsync(IEnumerable<TreatmentItemDto> selectedTreatmentItems,
+    public async Task<(int, int)> CalculateTotalWithDiscountAsync(IEnumerable<TreatmentItemCreateDto> selectedTreatmentItems,
         int discountPercent)
     {
         if (discountPercent is < 0 or > 100)

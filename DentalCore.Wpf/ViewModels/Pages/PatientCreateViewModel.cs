@@ -206,7 +206,7 @@ public class PatientCreateViewModel : BaseViewModel
             c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
 
         CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(PageType.Patients, null));
+            _navigationService.NavigateTo(PageType.Patients));
 
         SubmitCommand = new AsyncRelayCommand(Add_Execute);
 
@@ -214,17 +214,23 @@ public class PatientCreateViewModel : BaseViewModel
             MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error));
     }
 
-    private async Task LoadData()
+    public override async Task LoadData()
     {
+        Diseases.Clear();
+        
         foreach (var disease in await GetDiseasesAsync())
         {
             Diseases.Add(disease);
         }
+        
+        _cities.Clear();
 
         foreach (var city in await GetCitiesAsync())
         {
             _cities.Add(city);
         }
+        
+        AllergySelector.Allergies.Clear();
 
         foreach (var allergy in await GetAllergiesAsync())
         {

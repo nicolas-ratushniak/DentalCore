@@ -76,7 +76,7 @@ public class ProcedureCreateViewModel : BaseViewModel
         try
         {
             await _procedureService.AddAsync(dto);
-            _modalService.CloseModal();
+            _modalService.CloseModalWithPageReload();
         }
         catch (ValidationException ex)
         {
