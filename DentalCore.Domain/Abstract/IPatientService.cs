@@ -12,7 +12,7 @@ public interface IPatientService
     public Task<int> AddAsync(PatientCreateDto dto);
     public Task UpdateAsync(PatientUpdateDto dto);
     public Task SoftDeleteAsync(int id);
-    public Task<IEnumerable<Allergy>> GetAllergiesAsync(int id);
-    public Task<IEnumerable<Disease>> GetDiseasesAsync(int id);
-    public Task<IEnumerable<Phone>> GetPhonesAsync(int id);
+    public Task<IEnumerable<AllergyDto>> GetAllergiesAsync(int id);
+    public Task<IEnumerable<DiseaseDto>> GetDiseasesAsync(int id);
+    public Task<IEnumerable<PhoneDto>> GetPhonesAsync(int id);
 }

@@ -197,4 +197,19 @@ public class VisitService : IVisitService
 
         return visit.Id;
     }
+    
+    public async Task<IEnumerable<TreatmentItemDto>> GetTreatmentItemsAsync(int visitId)
+    {
+        return await _context.TreatmentItems
+            .Include(t => t.Procedure)
+            .Where(t => t.VisitId == visitId)
+            .Select(t => new TreatmentItemDto
+            {
+                Id = t.ProcedureId,
+                Name = t.Procedure.Name,
+                Quantity = t.Quantity,
+                Price = t.Price
+            })
+            .ToListAsync();
+    }
 }

@@ -208,30 +208,48 @@ public class PatientService : IPatientService
         await _context.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Allergy>> GetAllergiesAsync(int id)
+    public async Task<IEnumerable<AllergyDto>> GetAllergiesAsync(int id)
     {
         var patient = await _context.Patients
                           .Include(p => p.Allergies)
                           .SingleOrDefaultAsync(p => p.Id == id)
                       ?? throw new EntityNotFoundException();
 
-        return patient.Allergies;
+        return patient.Allergies
+            .Select(d => new AllergyDto
+            {
+                Id = d.Id,
+                Name = d.Name
+            });
     }
 
-    public async Task<IEnumerable<Disease>> GetDiseasesAsync(int id)
+    public async Task<IEnumerable<DiseaseDto>> GetDiseasesAsync(int id)
     {
         var patient = await _context.Patients
                           .Include(p => p.Diseases)
                           .SingleOrDefaultAsync(p => p.Id == id)
                       ?? throw new EntityNotFoundException();
 
-        return patient.Diseases;
+        return patient.Diseases
+            .Select(d => new DiseaseDto
+            {
+                Id = d.Id,
+                Name = d.Name
+            });
     }
 
-    public async Task<IEnumerable<Phone>> GetPhonesAsync(int id)
+    public async Task<IEnumerable<PhoneDto>> GetPhonesAsync(int id)
     {
         return await _context.Phones
             .Where(p => p.PatientId == id)
+            .Select(p => new PhoneDto
+            {
+                Id = p.Id,
+                PatientId = p.PatientId,
+                PhoneNumber = p.PhoneNumber,
+                IsMain = p.IsMain,
+                Tag = p.Tag
+            })
             .ToListAsync();
     }
 

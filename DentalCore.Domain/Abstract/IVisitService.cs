@@ -1,5 +1,4 @@
-﻿using DentalCore.Data.Models;
-using DentalCore.Domain.Dto;
+﻿using DentalCore.Domain.Dto;
 
 namespace DentalCore.Domain.Abstract;
 
@@ -9,4 +8,5 @@ public interface IVisitService
     public Task<IEnumerable<VisitDto>> GetAllAsync();
     public Task<IEnumerable<VisitRichDto>> GetAllRichAsync(DateTime from, DateTime to);
     public Task<int> AddAsync(VisitCreateDto dto);
+    public Task<IEnumerable<TreatmentItemDto>> GetTreatmentItemsAsync(int visitId);
 }

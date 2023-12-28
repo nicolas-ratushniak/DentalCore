@@ -12,7 +12,6 @@ namespace DentalCore.Wpf.ViewModels.Pages;
 public class VisitInfoViewModel : BaseViewModel
 {
     private readonly IVisitService _visitService;
-    private readonly IProcedureService _procedureService;
     private readonly int _patientId;
     private string _date;
     private string _doctorShortName;
@@ -89,14 +88,10 @@ public class VisitInfoViewModel : BaseViewModel
         }
     }
 
-    public VisitInfoViewModel(
-        int id,
-        IVisitService visitService,
-        IProcedureService procedureService)
+    public VisitInfoViewModel(int id, IVisitService visitService)
     {
         _patientId = id;
         _visitService = visitService;
-        _procedureService = procedureService;
         TreatmentItems = new ObservableCollection<TreatmentItemReadOnlyListItemViewModel>();
 
         LoadedCommand = new AsyncRelayCommand(LoadData);
@@ -112,6 +107,8 @@ public class VisitInfoViewModel : BaseViewModel
         Diagnosis = visit.Diagnosis;
         TotalSum = visit.TotalPrice;
         HasPayed = visit.AlreadyPayed;
+        
+        TreatmentItems.Clear();
 
         foreach (var item in await GetTreatmentItemsAsync(visit.Id))
         {
@@ -121,7 +118,7 @@ public class VisitInfoViewModel : BaseViewModel
     
     private async Task<IEnumerable<TreatmentItemReadOnlyListItemViewModel>> GetTreatmentItemsAsync(int visitId)
     {
-        return (await _procedureService.GetVisitTreatmentItemsAsync(visitId))
+        return (await _visitService.GetTreatmentItemsAsync(visitId))
             .Select(p => new TreatmentItemReadOnlyListItemViewModel
             {
                 Name = p.Name,
