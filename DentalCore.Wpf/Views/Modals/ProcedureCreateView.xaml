@@ -29,7 +29,7 @@
 
         <custom:IntegerTextBox Grid.Row="2"
                                Placeholder="Ціна, грн"
-                               Max="100000"
+                               Min="1"
                                Value="{Binding Price, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                Margin="0,0,0,10" />
 

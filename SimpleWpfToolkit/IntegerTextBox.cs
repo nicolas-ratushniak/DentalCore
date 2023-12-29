@@ -44,20 +44,20 @@ public class IntegerTextBox : PlaceholderTextBox
         ValueProperty = DependencyProperty.Register(
             nameof(Value),
             typeof(int),
-            typeof(PlaceholderTextBox),
-            new FrameworkPropertyMetadata(OnValueChanged, CoerceValue));
+            typeof(IntegerTextBox),
+            new FrameworkPropertyMetadata(OnValueChanged));
 
         MinProperty = DependencyProperty.Register(
             nameof(Min),
             typeof(int),
-            typeof(PlaceholderTextBox),
-            new FrameworkPropertyMetadata(0, OnMinChanged, CoerceMin));
+            typeof(IntegerTextBox),
+            new FrameworkPropertyMetadata(0));
 
         MaxProperty = DependencyProperty.Register(
             nameof(Max),
             typeof(int),
-            typeof(PlaceholderTextBox),
-            new FrameworkPropertyMetadata(100, OnMaxChanged));
+            typeof(IntegerTextBox),
+            new FrameworkPropertyMetadata(1_000_000_000, OnMaxChanged, CoerceMax));
 
         ValueChangedEvent = EventManager.RegisterRoutedEvent(
             nameof(ValueChanged),
@@ -69,12 +69,14 @@ public class IntegerTextBox : PlaceholderTextBox
     public IntegerTextBox()
     {
         DataObject.AddPastingHandler(this, OnPasting);
-        MaxLength = 100;
+        MaxLength = 10;
     }
 
     protected override void OnTextChanged(TextChangedEventArgs args)
     {
-        Value = int.TryParse(Text, out var num) ? num : default;
+        Value = int.TryParse(Text, out var num)
+            ? CoerceValue(num)
+            : default;
 
         base.OnTextChanged(args);
     }
@@ -83,14 +85,21 @@ public class IntegerTextBox : PlaceholderTextBox
     {
         var oldText = Text;
 
-        if (!int.TryParse(e.Text, out var digit) ||
-            (Min > 0 && string.IsNullOrEmpty(oldText) && digit == 0) ||
-            oldText.Length >= MaxLength)
+        if (oldText.Length >= MaxLength ||
+            !int.TryParse(e.Text, out var digit) ||
+            IsInvalidZero(digit))
         {
             e.Handled = true;
         }
 
-        base.OnPreviewTextInput(e);
+        return;
+
+        bool IsInvalidZero(int num)
+        {
+            return num == 0 &&
+                   Min > 0 &&
+                   string.IsNullOrEmpty(oldText);
+        }
     }
 
     protected override void OnPreviewKeyDown(KeyEventArgs e)
@@ -99,14 +108,14 @@ public class IntegerTextBox : PlaceholderTextBox
         {
             e.Handled = true;
         }
-        
+
         base.OnPreviewKeyDown(e);
     }
 
     protected override void OnLostFocus(RoutedEventArgs e)
     {
         Text = Value.ToString();
-        
+
         base.OnLostFocus(e);
     }
 
@@ -120,41 +129,30 @@ public class IntegerTextBox : PlaceholderTextBox
         }
     }
 
-    private static void OnMinChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    private static object CoerceMax(DependencyObject d, object baseValue)
     {
         var control = (IntegerTextBox)d;
-        var newValue = (int)e.NewValue;
+        var max = (int)baseValue;
 
-        if (newValue < 0)
+        if (max < 0)
         {
-            control.Min = 0;
+            max = 0;
         }
 
-        // if (control.Value < control.Min)
-        // {
-        //     control.Value = control.Min;
-        // }
-    }
+        if (control.Min > max)
+        {
+            control.Min = max;
+        }
 
-    private static object CoerceMin(DependencyObject d, object baseValue)
-    {
-        var control = (IntegerTextBox)d;
-        var baseMin = (int)baseValue;
-
-        return baseMin > control.Max ? control.Max : baseMin;
+        return max;
     }
 
     private static void OnMaxChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (IntegerTextBox)d;
-        var newValue = (int)e.NewValue;
+        var max = (int)e.NewValue;
 
-        // if (control.Value > newValue)
-        // {
-        //     control.Value = control.Max;
-        // }
-        
-        control.MaxLength = (int)Math.Floor(Math.Log10(control.Max) + 1);
+        control.MaxLength = (int)Math.Floor(Math.Log10(max) + 1);
     }
 
     private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -171,21 +169,13 @@ public class IntegerTextBox : PlaceholderTextBox
         control.RaiseEvent(args);
     }
 
-    private static object CoerceValue(DependencyObject d, object baseValue)
+    private int CoerceValue(int oldValue)
     {
-        var control = (IntegerTextBox)d;
-        var value = (int)baseValue;
-
-        if (value < control.Min)
+        if (oldValue < Min)
         {
-            return control.Min;
+            return Min;
         }
 
-        if (value > control.Max)
-        {
-            return control.Max;
-        }
-
-        return value;
+        return oldValue > Max ? Max : oldValue;
     }
 }
