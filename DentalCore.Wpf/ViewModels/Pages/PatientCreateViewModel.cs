@@ -209,9 +209,6 @@ public class PatientCreateViewModel : BaseViewModel
             _navigationService.NavigateTo(PageType.Patients));
 
         SubmitCommand = new AsyncRelayCommand(Add_Execute);
-
-        LoadedCommand = new AsyncRelayCommand(LoadData, ex => 
-            MessageBox.Show(ex.Message, "Помилка", MessageBoxButton.OK, MessageBoxImage.Error));
     }
 
     public override async Task LoadData()

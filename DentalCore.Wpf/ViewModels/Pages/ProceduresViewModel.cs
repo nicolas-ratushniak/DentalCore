@@ -56,8 +56,6 @@ public class ProceduresViewModel : BaseViewModel
         ProcedureCreateCommand = new RelayCommand<object>(_ => modalService.OpenModal(ModalType.ProcedureCreate));
         ProcedureEditCommand = new RelayCommand<int>(id => modalService.OpenModal(ModalType.ProcedureUpdate, id));
         ProcedureDeleteCommand = new RelayCommand<object>(_ => { });
-
-        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     public override async Task LoadData()

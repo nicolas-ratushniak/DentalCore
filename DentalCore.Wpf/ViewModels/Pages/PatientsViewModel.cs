@@ -73,8 +73,6 @@ public class PatientsViewModel : BaseViewModel
 
         GoToVisitsExportCommand = new RelayCommand<object>(_ =>
             modalService.OpenModal(ModalType.VisitReport));
-
-        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     public override async Task LoadData()

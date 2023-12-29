@@ -127,8 +127,6 @@ public class PatientInfoViewModel : BaseViewModel
             PayPatientDebt_Execute,
             _ => MessageBox.Show("Помилка при виконанні операції", "Помилка",
                 MessageBoxButton.OK, MessageBoxImage.Error));
-
-        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     private async Task PayPatientDebt_Execute()

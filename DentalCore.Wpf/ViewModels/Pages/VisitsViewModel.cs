@@ -61,7 +61,6 @@ public class VisitsViewModel : BaseViewModel
         };
 
         GoToVisitInfoCommand = new RelayCommand<int>(id => navigationService.NavigateTo(PageType.VisitInfo, id));
-        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     public override async Task LoadData()

@@ -93,8 +93,6 @@ public class VisitInfoViewModel : BaseViewModel
         _patientId = id;
         _visitService = visitService;
         TreatmentItems = new ObservableCollection<TreatmentItemReadOnlyListItemViewModel>();
-
-        LoadedCommand = new AsyncRelayCommand(LoadData);
     }
 
     public override async Task LoadData()
