@@ -13,7 +13,9 @@ public partial class ProceduresView : UserControl
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        var viewModel = (BaseViewModel)DataContext;
-        viewModel.LoadedCommand.Execute(null);
+        if (DataContext is BaseViewModel viewModel)
+        {
+            viewModel.LoadedCommand.Execute(null);
+        }
     }
 }
