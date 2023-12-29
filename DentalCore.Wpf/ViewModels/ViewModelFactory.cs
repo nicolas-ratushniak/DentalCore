@@ -16,6 +16,7 @@ public class ViewModelFactory : IViewModelFactory
     private readonly Func<int, VisitCreateViewModel> _createVisitCreateVm;
     private readonly Func<VisitsExportViewModel> _createVisitsExportVm;
     private readonly Func<ProcedureCreateViewModel> _createProcedureCreateVm;
+    private readonly Func<int, ProcedureUpdateViewModel> _createProcedureUpdateVm;
     private readonly Func<ProceduresViewModel> _createProceduresVm;
 
     public ViewModelFactory(
@@ -28,7 +29,8 @@ public class ViewModelFactory : IViewModelFactory
         Func<int, VisitCreateViewModel> createVisitCreateVm,
         Func<ProceduresViewModel> createProceduresVm,
         Func<VisitsExportViewModel> createVisitsExportVm,
-        Func<ProcedureCreateViewModel> createProcedureCreateVm)
+        Func<ProcedureCreateViewModel> createProcedureCreateVm,
+        Func<int, ProcedureUpdateViewModel> createProcedureUpdateVm)
     {
         _createPatientsVm = createPatientsVm;
         _createPatientInfoVm = createPatientInfoVm;
@@ -41,6 +43,7 @@ public class ViewModelFactory : IViewModelFactory
         
         _createVisitsExportVm = createVisitsExportVm;
         _createProcedureCreateVm = createProcedureCreateVm;
+        _createProcedureUpdateVm = createProcedureUpdateVm;
     }
 
     public BaseViewModel CreatePageViewModel(PageType pageType)
@@ -57,12 +60,14 @@ public class ViewModelFactory : IViewModelFactory
     
     public BaseViewModel CreatePageViewModel(PageType pageType, object viewParameter)
     {
+        var id = (int)viewParameter;
+        
         return pageType switch
         {
-            PageType.PatientInfo => _createPatientInfoVm((int)viewParameter),
-            PageType.PatientUpdate => _createPatientUpdateVm((int)viewParameter),
-            PageType.VisitInfo => _createVisitInfoView((int)viewParameter),
-            PageType.VisitCreate => _createVisitCreateVm((int)viewParameter),
+            PageType.PatientInfo => _createPatientInfoVm(id),
+            PageType.PatientUpdate => _createPatientUpdateVm(id),
+            PageType.VisitInfo => _createVisitInfoView(id),
+            PageType.VisitCreate => _createVisitCreateVm(id),
             _ => throw new InvalidOperationException("Cannot create view model with this type")
         };
     }
@@ -79,6 +84,12 @@ public class ViewModelFactory : IViewModelFactory
 
     public BaseViewModel CreateModalViewModel(ModalType modalType, object modalParameter)
     {
-        throw new NotImplementedException();
+        var id = (int)modalParameter;
+
+        return modalType switch
+        {
+            ModalType.ProcedureUpdate => _createProcedureUpdateVm(id),
+            _ => throw new InvalidOperationException("Cannot create view model with this type")
+        };
     }
 }

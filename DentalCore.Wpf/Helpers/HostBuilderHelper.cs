@@ -70,6 +70,11 @@ public static class HostBuilderHelper
                 s.GetRequiredService<IProcedureService>(),
                 s.GetRequiredService<IModalService>()));
             
+            services.AddSingleton<Func<int, ProcedureUpdateViewModel>>(s => id => new ProcedureUpdateViewModel(
+                id,
+                s.GetRequiredService<IProcedureService>(),
+                s.GetRequiredService<IModalService>()));
+            
             services.AddTransient<MainViewModel>();
         });
 

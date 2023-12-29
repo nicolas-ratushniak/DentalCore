@@ -66,6 +66,10 @@
                 <modalViews:ProcedureCreateView />
             </DataTemplate>
             
+            <DataTemplate DataType="{x:Type modalViewModals:ProcedureUpdateViewModel}">
+                <modalViews:ProcedureUpdateView />
+            </DataTemplate>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -25,7 +25,8 @@ public class ProcedureService : IProcedureService
             {
                 Id = p.Id,
                 Name = p.Name,
-                Price = p.Price
+                Price = p.Price,
+                IsDiscountAllowed = p.IsDiscountAllowed
             })
             .SingleOrDefaultAsync(p => p.Id == id) 
                ?? throw new EntityNotFoundException();
@@ -40,7 +41,8 @@ public class ProcedureService : IProcedureService
             {
                 Id = p.Id,
                 Name = p.Name,
-                Price = p.Price
+                Price = p.Price,
+                IsDiscountAllowed = p.IsDiscountAllowed
             })
             .ToListAsync();
     }
@@ -52,7 +54,8 @@ public class ProcedureService : IProcedureService
             {
                 Id = p.Id,
                 Name = p.Name,
-                Price = p.Price
+                Price = p.Price,
+                IsDiscountAllowed = p.IsDiscountAllowed
             })
             .ToListAsync();
     }

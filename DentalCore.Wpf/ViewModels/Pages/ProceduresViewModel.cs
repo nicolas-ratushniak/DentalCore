@@ -20,7 +20,7 @@ public class ProceduresViewModel : BaseViewModel
 
     public ICollectionView ProcedureCollectionView { get; }
 
-    public ICommand GoToProcedureCreateCommand { get; }
+    public ICommand ProcedureCreateCommand { get; }
     public ICommand ProcedureEditCommand { get; }
     public ICommand ProcedureDeleteCommand { get; }
 
@@ -53,8 +53,8 @@ public class ProceduresViewModel : BaseViewModel
             o is ProcedureListItemViewModel p &&
             p.Name.ToLower().Contains(ProcedureSearchFilter.ToLower());
 
-        GoToProcedureCreateCommand = new RelayCommand<object>(_ => modalService.OpenModal(ModalType.ProcedureCreate));
-        ProcedureEditCommand = new RelayCommand<object>(_ => { });
+        ProcedureCreateCommand = new RelayCommand<object>(_ => modalService.OpenModal(ModalType.ProcedureCreate));
+        ProcedureEditCommand = new RelayCommand<int>(id => modalService.OpenModal(ModalType.ProcedureUpdate, id));
         ProcedureDeleteCommand = new RelayCommand<object>(_ => { });
 
         LoadedCommand = new AsyncRelayCommand(LoadData);
