@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace DentalCore.Wpf.Commands;
+namespace DentalCore.Wpf.Abstract;
 
 public abstract class BaseAsyncCommand : ICommand
 {
