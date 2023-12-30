@@ -41,7 +41,7 @@ public class VisitCreateViewModel : BaseViewModel
     public ICommand SubmitCommand { get; }
 
     public ICollectionView DoctorCollectionView { get; }
-    public TreatmentSelectorComponent TreatmentSelector { get; }
+    public TreatmentSelectorViewModel TreatmentSelector { get; }
 
     public string? ErrorMessage
     {
@@ -158,7 +158,7 @@ public class VisitCreateViewModel : BaseViewModel
         _patientId = id;
         _doctors = new ObservableCollection<DoctorListItemViewModel>();
 
-        TreatmentSelector = new TreatmentSelectorComponent();
+        TreatmentSelector = new TreatmentSelectorViewModel();
         TreatmentSelector.SelectedTreatmentSetChanged += OnSelectedTreatmentsChanged;
         
         DoctorCollectionView = CollectionViewSource.GetDefaultView(_doctors);

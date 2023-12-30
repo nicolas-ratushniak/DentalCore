@@ -36,8 +36,8 @@ public class PatientCreateViewModel : BaseViewModel
 
     public ObservableCollection<DiseaseListItemViewModel> Diseases { get; }
 
-    public AllergySelectorComponent AllergySelector { get; }
-    public CitySelector CitySelector { get; }
+    public AllergySelectorViewModel AllergySelector { get; }
+    public CitySelectorViewModel CitySelector { get; }
 
     public string? ErrorMessage
     {
@@ -138,8 +138,8 @@ public class PatientCreateViewModel : BaseViewModel
         _commonService = commonService;
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
-        AllergySelector = new AllergySelectorComponent();
-        CitySelector = new CitySelector(new RelayCommand(() => MessageBox.Show("Yes!")));
+        AllergySelector = new AllergySelectorViewModel();
+        CitySelector = new CitySelectorViewModel(new RelayCommand(() => MessageBox.Show("Yes!")));
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
         SubmitCommand = new AsyncRelayCommand(Add_Execute);

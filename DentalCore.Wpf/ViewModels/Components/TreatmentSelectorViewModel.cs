@@ -14,7 +14,7 @@ using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Components;
 
-public class TreatmentSelectorComponent : BaseViewModel
+public class TreatmentSelectorViewModel : BaseViewModel
 {
     public delegate Task AsyncEventHandler(object sender, EventArgs e);
     public event AsyncEventHandler SelectedTreatmentSetChanged;
@@ -71,7 +71,7 @@ public class TreatmentSelectorComponent : BaseViewModel
         }
     }
 
-    public TreatmentSelectorComponent()
+    public TreatmentSelectorViewModel()
     {
         TreatmentItems = new ObservableCollection<TreatmentItemListItemViewModel>();
 

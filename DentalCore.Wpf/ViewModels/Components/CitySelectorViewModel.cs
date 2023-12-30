@@ -7,7 +7,7 @@ using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Components;
 
-public class CitySelector : BaseViewModel
+public class CitySelectorViewModel : BaseViewModel
 {
     private string _citySearchFilter = string.Empty;
     private bool _isCityListVisible;
@@ -60,7 +60,7 @@ public class CitySelector : BaseViewModel
         }
     }
 
-    public CitySelector(ICommand addCityCommand)
+    public CitySelectorViewModel(ICommand addCityCommand)
     {
         AddCityCommand = addCityCommand;
         

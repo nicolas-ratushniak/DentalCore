@@ -13,7 +13,7 @@ public partial class TreatmentSelector : UserControl
     
     private void TreatmentItem_OnQuantityChanged(object sender, RoutedPropertyChangedEventArgs<int> e)
     {
-        var viewModel = (TreatmentSelectorComponent)DataContext;
+        var viewModel = (TreatmentSelectorViewModel)DataContext;
         viewModel.UpdatePriceCommand.Execute(null);
     }
 }
