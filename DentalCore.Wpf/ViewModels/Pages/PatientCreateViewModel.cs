@@ -211,7 +211,7 @@ public class PatientCreateViewModel : BaseViewModel
         SubmitCommand = new AsyncCommand(Add_Execute);
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         Diseases.Clear();
         

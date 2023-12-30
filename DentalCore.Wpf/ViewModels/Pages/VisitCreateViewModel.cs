@@ -184,7 +184,7 @@ public class VisitCreateViewModel : BaseViewModel
         base.Dispose();
     }   
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         var patient = await _patientService.GetAsync(_patientId);
         PatientInfo = $"{patient.Surname} {patient.Name} {patient.Patronymic}";

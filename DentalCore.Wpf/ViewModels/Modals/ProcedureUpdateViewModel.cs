@@ -68,7 +68,7 @@ public class ProcedureUpdateViewModel : BaseViewModel
         UpdateProcedureCommand = new AsyncCommand(UpdateProcedure_Execute);
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         try
         {

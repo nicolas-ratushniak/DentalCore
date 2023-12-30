@@ -141,7 +141,7 @@ public class PatientInfoViewModel : BaseViewModel
         }
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         var patient = await _patientService.GetRichAsync(_patientId);
 

@@ -95,7 +95,7 @@ public class VisitInfoViewModel : BaseViewModel
         TreatmentItems = new ObservableCollection<TreatmentItemReadOnlyListItemViewModel>();
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         var visit = await _visitService.GetAsync(_patientId);
 

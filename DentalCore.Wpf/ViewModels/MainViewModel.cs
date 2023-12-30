@@ -91,7 +91,7 @@ public class MainViewModel : BaseViewModel
         ModalService.CurrentModalTypeChanged += OnCurrentModalChanged;
 
         LoadedCommand = new AsyncCommand(
-            LoadData,
+            LoadDataAsync,
             _ => MessageBox.Show("Під час перевірки оновлень виникла помилка"));
     }
 
@@ -101,7 +101,7 @@ public class MainViewModel : BaseViewModel
         base.Dispose();
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         try
         {
@@ -165,7 +165,7 @@ public class MainViewModel : BaseViewModel
 
         if (args.NeedsPageReload)
         {
-            CurrentPage?.LoadData();
+            CurrentPage?.LoadDataAsync();
         }
         
         OnPropertyChanged(nameof(IsModalOpen));

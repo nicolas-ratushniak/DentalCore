@@ -33,7 +33,7 @@ public class ProceduresViewModel : BaseViewModel
         {
             if (value == _procedureSearchFilter) return;
             _procedureSearchFilter = value;
-            
+
             OnPropertyChanged();
             ProcedureCollectionView.Refresh();
         }
@@ -47,11 +47,11 @@ public class ProceduresViewModel : BaseViewModel
         _procedures = new ObservableCollection<ProcedureListItemViewModel>();
 
         ProcedureCollectionView = CollectionViewSource.GetDefaultView(_procedures);
-        
+
         ProcedureCollectionView.SortDescriptions.Add(
             new SortDescription(nameof(ProcedureListItemViewModel.Name), ListSortDirection.Ascending));
 
-        ProcedureCollectionView.Filter = o => 
+        ProcedureCollectionView.Filter = o =>
             o is ProcedureListItemViewModel p &&
             p.Name.ToLower().Contains(ProcedureSearchFilter.ToLower());
 
@@ -88,16 +88,16 @@ public class ProceduresViewModel : BaseViewModel
         }
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         _procedures.Clear();
-        
+
         foreach (var procedure in await GetProceduresAsync())
         {
             _procedures.Add(procedure);
         }
     }
-    
+
     private async Task<List<ProcedureListItemViewModel>> GetProceduresAsync()
     {
         return (await _procedureService.GetAllAsync())

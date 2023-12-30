@@ -208,7 +208,7 @@ public class PatientUpdateViewModel : BaseViewModel
         SubmitCommand = new AsyncCommand(Update_Execute);
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         _cities.Clear();
         

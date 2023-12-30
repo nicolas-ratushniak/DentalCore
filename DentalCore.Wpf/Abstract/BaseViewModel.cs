@@ -15,7 +15,7 @@ public abstract class BaseViewModel : INotifyPropertyChanged, IDisposable
 
     protected BaseViewModel()
     {
-        LoadedCommand = new AsyncCommand(LoadData, ex => 
+        LoadedCommand = new AsyncCommand(LoadDataAsync, ex => 
             MessageBox.Show(
                 $"Зверніться по допомогу до розробника \n{ex.Message}", 
                 "Упс, помилка", 
@@ -28,7 +28,7 @@ public abstract class BaseViewModel : INotifyPropertyChanged, IDisposable
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public virtual Task LoadData()
+    public virtual Task LoadDataAsync()
     {
         return Task.CompletedTask;
     }

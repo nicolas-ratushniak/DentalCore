@@ -63,7 +63,7 @@ public class VisitsViewModel : BaseViewModel
         GoToVisitInfoCommand = new RelayCommand<int>(id => navigationService.NavigateTo(PageType.VisitInfo, id));
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         _todayVisits.Clear();
         

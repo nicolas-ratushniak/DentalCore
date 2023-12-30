@@ -75,7 +75,7 @@ public class PatientsViewModel : BaseViewModel
             modalService.OpenModal(ModalType.VisitReport));
     }
 
-    public override async Task LoadData()
+    public override async Task LoadDataAsync()
     {
         _patients.Clear();
         
