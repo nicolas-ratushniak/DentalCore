@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
@@ -20,6 +19,7 @@ namespace DentalCore.Wpf.ViewModels.Pages;
 public class PatientUpdateViewModel : BaseViewModel
 {
     private readonly INavigationService _navigationService;
+    private readonly IModalService _modalService;
     private readonly IPatientService _patientService;
     private readonly ICommonService _commonService;
     private readonly int _patientId;
@@ -130,20 +130,28 @@ public class PatientUpdateViewModel : BaseViewModel
     public PatientUpdateViewModel(
         int id,
         INavigationService navigationService,
+        IModalService modalService,
         IPatientService patientService,
         ICommonService commonService)
     {
         _patientId = id;
         _navigationService = navigationService;
+        _modalService = modalService;
         _patientService = patientService;
         _commonService = commonService;
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
         AllergySelector = new AllergySelectorViewModel();
-        CitySelector = new CitySelectorViewModel(new RelayCommand(() => MessageBox.Show("Yes!")));
+        CitySelector = new CitySelectorViewModel(
+            new RelayCommand(CreateCity_Execute));
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
         SubmitCommand = new AsyncRelayCommand(Update_Execute);
+    }
+
+    private void CreateCity_Execute()
+    {
+        _modalService.OpenModal(ModalType.CityCreate);
     }
 
     public override async Task LoadDataAsync()

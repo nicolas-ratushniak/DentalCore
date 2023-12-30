@@ -31,12 +31,14 @@ public static class HostBuilderHelper
 
             services.AddSingleton<Func<PatientCreateViewModel>>(s => () => new PatientCreateViewModel(
                 s.GetRequiredService<INavigationService>(),
+                s.GetRequiredService<IModalService>(),
                 s.GetRequiredService<IPatientService>(),
                 s.GetRequiredService<ICommonService>()));
 
             services.AddSingleton<Func<int, PatientUpdateViewModel>>(s => id => new PatientUpdateViewModel(
                 id,
                 s.GetRequiredService<INavigationService>(),
+                s.GetRequiredService<IModalService>(),
                 s.GetRequiredService<IPatientService>(),
                 s.GetRequiredService<ICommonService>()));
 
@@ -73,6 +75,10 @@ public static class HostBuilderHelper
             services.AddSingleton<Func<int, ProcedureUpdateViewModel>>(s => id => new ProcedureUpdateViewModel(
                 id,
                 s.GetRequiredService<IProcedureService>(),
+                s.GetRequiredService<IModalService>()));
+            
+            services.AddSingleton<Func<CityCreateViewModel>>(s => () => new CityCreateViewModel(
+                s.GetRequiredService<ICommonService>(),
                 s.GetRequiredService<IModalService>()));
             
             services.AddTransient<MainViewModel>();

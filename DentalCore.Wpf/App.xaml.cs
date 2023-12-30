@@ -42,6 +42,7 @@ public partial class App : Application
                 services.AddSingleton<IUserService, UserService>();
                 services.AddSingleton<IVisitService, VisitService>();
                 services.AddSingleton<IPaymentService, PaymentService>();
+                
                 services.AddSingleton<INavigationService, NavigationService>();
                 services.AddSingleton<IModalService, ModalService>();
                 services.AddSingleton<IAuthenticationService, AuthenticationService>();

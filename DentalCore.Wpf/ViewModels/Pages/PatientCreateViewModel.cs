@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
@@ -130,6 +129,7 @@ public class PatientCreateViewModel : BaseViewModel
 
     public PatientCreateViewModel(
         INavigationService navigationService,
+        IModalService modalService,
         IPatientService patientService,
         ICommonService commonService)
     {
@@ -139,7 +139,8 @@ public class PatientCreateViewModel : BaseViewModel
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
         AllergySelector = new AllergySelectorViewModel();
-        CitySelector = new CitySelectorViewModel(new RelayCommand(() => MessageBox.Show("Yes!")));
+        CitySelector = new CitySelectorViewModel(
+            new RelayCommand(() => modalService.OpenModal(ModalType.CityCreate)));
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
         SubmitCommand = new AsyncRelayCommand(Add_Execute);
@@ -147,20 +148,20 @@ public class PatientCreateViewModel : BaseViewModel
 
     public override async Task LoadDataAsync()
     {
-        Diseases.Clear();
-        
-        foreach (var disease in await GetDiseasesAsync())
-        {
-            Diseases.Add(disease);
-        }
-        
         CitySelector.Cities.Clear();
-        
+
         foreach (var city in await GetCitiesAsync())
         {
             CitySelector.Cities.Add(city);
         }
-        
+
+        Diseases.Clear();
+
+        foreach (var disease in await GetDiseasesAsync())
+        {
+            Diseases.Add(disease);
+        }
+
         AllergySelector.Allergies.Clear();
 
         foreach (var allergy in await GetAllergiesAsync())
@@ -171,17 +172,17 @@ public class PatientCreateViewModel : BaseViewModel
 
     private async Task Add_Execute()
     {
-        if (string.IsNullOrEmpty(Name) || 
-            string.IsNullOrEmpty(Surname) || 
+        if (string.IsNullOrEmpty(Name) ||
+            string.IsNullOrEmpty(Surname) ||
             string.IsNullOrEmpty(Patronymic) ||
-            string.IsNullOrEmpty(Phone) || 
-            string.IsNullOrEmpty(BirthDate) || 
+            string.IsNullOrEmpty(Phone) ||
+            string.IsNullOrEmpty(BirthDate) ||
             CitySelector.SelectedCity is null)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;
         }
-        
+
         var diseaseIds = Diseases
             .Where(d => d.IsSelected)
             .Select(d => d.Id)
@@ -248,7 +249,7 @@ public class PatientCreateViewModel : BaseViewModel
                 Name = d.Name
             });
     }
-    
+
     private async Task<IEnumerable<AllergyListItemViewModel>> GetAllergiesAsync()
     {
         return (await _commonService.GetAllergiesAsync())

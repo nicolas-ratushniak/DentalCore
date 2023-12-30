@@ -17,6 +17,7 @@ public class ViewModelFactory : IViewModelFactory
     private readonly Func<VisitsExportViewModel> _createVisitsExportVm;
     private readonly Func<ProcedureCreateViewModel> _createProcedureCreateVm;
     private readonly Func<int, ProcedureUpdateViewModel> _createProcedureUpdateVm;
+    private readonly Func<CityCreateViewModel> _createCityCreateVm;
     private readonly Func<ProceduresViewModel> _createProceduresVm;
 
     public ViewModelFactory(
@@ -30,7 +31,8 @@ public class ViewModelFactory : IViewModelFactory
         Func<ProceduresViewModel> createProceduresVm,
         Func<VisitsExportViewModel> createVisitsExportVm,
         Func<ProcedureCreateViewModel> createProcedureCreateVm,
-        Func<int, ProcedureUpdateViewModel> createProcedureUpdateVm)
+        Func<int, ProcedureUpdateViewModel> createProcedureUpdateVm,
+        Func<CityCreateViewModel> createCityCreateVm)
     {
         _createPatientsVm = createPatientsVm;
         _createPatientInfoVm = createPatientInfoVm;
@@ -44,6 +46,7 @@ public class ViewModelFactory : IViewModelFactory
         _createVisitsExportVm = createVisitsExportVm;
         _createProcedureCreateVm = createProcedureCreateVm;
         _createProcedureUpdateVm = createProcedureUpdateVm;
+        _createCityCreateVm = createCityCreateVm;
     }
 
     public BaseViewModel CreatePageViewModel(PageType pageType)
@@ -78,6 +81,7 @@ public class ViewModelFactory : IViewModelFactory
         {
             ModalType.VisitReport => _createVisitsExportVm(),
             ModalType.ProcedureCreate => _createProcedureCreateVm(),
+            ModalType.CityCreate => _createCityCreateVm(),
             _ => throw new InvalidOperationException("Cannot create view model with this type")
         };
     }
