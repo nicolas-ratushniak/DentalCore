@@ -57,10 +57,10 @@ public class ProceduresViewModel : BaseViewModel
 
         ProcedureCreateCommand = new RelayCommand<object>(_ => modalService.OpenModal(ModalType.ProcedureCreate));
         ProcedureEditCommand = new RelayCommand<int>(id => modalService.OpenModal(ModalType.ProcedureUpdate, id));
-        ProcedureDeleteCommand = new RelayCommand<int>(TryDeleteProcedure_Execute);
+        ProcedureDeleteCommand = new AsyncRelayCommand<int>(TryDeleteProcedure_ExecuteAsync);
     }
 
-    private void TryDeleteProcedure_Execute(int id)
+    private async Task TryDeleteProcedure_ExecuteAsync(int id)
     {
         var result = MessageBox.Show(
             "Ви впевнені, що хочете видалити цю процедуру?",
@@ -75,8 +75,8 @@ public class ProceduresViewModel : BaseViewModel
 
         try
         {
-            _procedureService.SoftDeleteAsync(id);
-            LoadData();
+            await _procedureService.SoftDeleteAsync(id);
+            await LoadDataAsync();
         }
         catch (EntityNotFoundException)
         {
