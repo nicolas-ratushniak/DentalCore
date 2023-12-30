@@ -15,7 +15,7 @@ public abstract class BaseViewModel : INotifyPropertyChanged, IDisposable
 
     protected BaseViewModel()
     {
-        LoadedCommand = new AsyncRelayCommand(LoadData, ex => 
+        LoadedCommand = new AsyncCommand(LoadData, ex => 
             MessageBox.Show(
                 $"Зверніться по допомогу до розробника \n{ex.Message}", 
                 "Упс, помилка", 

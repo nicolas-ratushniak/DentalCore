@@ -90,7 +90,7 @@ public class MainViewModel : BaseViewModel
         
         ModalService.CurrentModalTypeChanged += OnCurrentModalChanged;
 
-        LoadedCommand = new AsyncRelayCommand(
+        LoadedCommand = new AsyncCommand(
             LoadData,
             _ => MessageBox.Show("Під час перевірки оновлень виникла помилка"));
     }

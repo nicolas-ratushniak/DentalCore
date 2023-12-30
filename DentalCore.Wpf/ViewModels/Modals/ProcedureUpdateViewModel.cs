@@ -65,7 +65,7 @@ public class ProcedureUpdateViewModel : BaseViewModel
         _modalService = modalService;
 
         CancelCommand = new RelayCommand<object>(_ => modalService.CloseModal());
-        UpdateProcedureCommand = new AsyncRelayCommand(UpdateProcedure_Execute);
+        UpdateProcedureCommand = new AsyncCommand(UpdateProcedure_Execute);
     }
 
     public override async Task LoadData()

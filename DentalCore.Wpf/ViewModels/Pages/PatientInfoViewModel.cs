@@ -123,7 +123,7 @@ public class PatientInfoViewModel : BaseViewModel
         GoToVisitInfoCommand = new RelayCommand<int>(visitId =>
             navigationService.NavigateTo(PageType.VisitInfo, visitId));
 
-        PayPatientDebtCommand = new AsyncRelayCommand(
+        PayPatientDebtCommand = new AsyncCommand(
             PayPatientDebt_Execute,
             _ => MessageBox.Show("Помилка при виконанні операції", "Помилка",
                 MessageBoxButton.OK, MessageBoxImage.Error));

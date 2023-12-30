@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Abstract;
+using DentalCore.Domain.Exceptions;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 using DentalCore.Wpf.ViewModels.Inners;
@@ -55,7 +57,35 @@ public class ProceduresViewModel : BaseViewModel
 
         ProcedureCreateCommand = new RelayCommand<object>(_ => modalService.OpenModal(ModalType.ProcedureCreate));
         ProcedureEditCommand = new RelayCommand<int>(id => modalService.OpenModal(ModalType.ProcedureUpdate, id));
-        ProcedureDeleteCommand = new RelayCommand<object>(_ => { });
+        ProcedureDeleteCommand = new RelayCommand<int>(TryDeleteProcedure_Execute);
+    }
+
+    private void TryDeleteProcedure_Execute(int id)
+    {
+        var result = MessageBox.Show(
+            "Ви впевнені, що хочете видалити цю процедуру?",
+            "Увага",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+
+        if (result != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        try
+        {
+            _procedureService.SoftDeleteAsync(id);
+            LoadData();
+        }
+        catch (EntityNotFoundException)
+        {
+            MessageBox.Show(
+                "Під час виконання операції виникла помилка",
+                "Упс...",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+        }
     }
 
     public override async Task LoadData()

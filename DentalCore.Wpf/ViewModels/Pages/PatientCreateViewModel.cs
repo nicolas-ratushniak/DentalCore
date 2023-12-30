@@ -208,7 +208,7 @@ public class PatientCreateViewModel : BaseViewModel
         CancelCommand = new RelayCommand<object>(_ =>
             _navigationService.NavigateTo(PageType.Patients));
 
-        SubmitCommand = new AsyncRelayCommand(Add_Execute);
+        SubmitCommand = new AsyncCommand(Add_Execute);
     }
 
     public override async Task LoadData()
