@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
              xmlns:models="clr-namespace:DentalCore.Data.Models;assembly=DentalCore.Data"
-             xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
              xmlns:custom="clr-namespace:SimpleWpfToolkit;assembly=SimpleWpfToolkit"
 
@@ -14,18 +13,6 @@
              Loaded="OnLoaded">
 
     <UserControl.Resources>
-
-        <Style x:Key="NiceCityList" TargetType="ListBox">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate DataType="{x:Type inners:CityListItemViewModel}">
-                        <TextBlock Text="{Binding Path=Name}"
-                                   FontSize="18" />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
 
         <Style x:Key="NiceDiseaseList" TargetType="ListBox">
             <Setter Property="BorderThickness" Value="0" />
@@ -142,49 +129,9 @@
                     </StackPanel>
 
                     <!-- Select City -->
-                    <Grid Grid.Row="4"
-                          Margin="0 0 0 10">
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <custom:PlaceholderTextBox Grid.Row="0"
-                                                   Text="{Binding CitySearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                   Placeholder="Оберіть місто" />
-
-                        <Popup Grid.Row="1"
-                               IsOpen="{Binding IsCityListVisible}"
-                               ClipToBounds="True"
-                               AllowsTransparency="True"
-                               PopupAnimation="Slide"
-                               StaysOpen="False">
-
-                            <Border Style="{StaticResource NiceBorder}"
-                                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
-                                    MaxHeight="250"
-                                    Background="White">
-                                <Grid>
-                                    <TextBlock Text="Нічого не знайдено"
-                                               Panel.ZIndex="1"
-                                               TextWrapping="Wrap"
-                                               Foreground="{StaticResource BrushGrey}"
-                                               FontSize="16"
-                                               Visibility="{Binding ElementName=LbPopup1, Path=HasItems,
-                                               Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-
-                                    <ListBox x:Name="LbPopup1"
-                                             ScrollViewer.CanContentScroll="True"
-                                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                             Style="{StaticResource NiceCityList}"
-                                             ItemsSource="{Binding CityCollectionView}"
-                                             SelectedItem="{Binding SelectedCity, Mode=TwoWay}" />
-                                </Grid>
-                            </Border>
-                        </Popup>
-                    </Grid>
+                    <components:CitySelector Grid.Row="4"
+                                             Margin="0 0 0 10"
+                                             DataContext="{Binding CitySelector}"/>
 
                     <custom:PlaceholderTextBox Grid.Row="5"
                                                Placeholder="Дата народження (2.03.2000)"

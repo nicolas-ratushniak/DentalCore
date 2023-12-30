@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="DentalCore.Wpf.Views.Components.CitySelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+
+             xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
+             xmlns:custom="clr-namespace:SimpleWpfToolkit;assembly=SimpleWpfToolkit"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Style x:Key="CityList" TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate DataType="{x:Type inners:CityListItemViewModel}">
+                        <TextBlock Text="{Binding Path=Name}"
+                                   FontSize="18" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="10" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <custom:PlaceholderTextBox Grid.Column="0"
+                                       Text="{Binding CitySearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                       Placeholder="Введіть місто" />
+
+            <Button Grid.Column="2"
+                    Style="{StaticResource NiceButton}"
+                    Content="+"
+                    FontSize="32"
+                    FontWeight="Bold"
+                    Command="{Binding AddCityCommand}" />
+
+        </Grid>
+
+        <Popup Grid.Row="1"
+               IsOpen="{Binding IsCityListVisible}"
+               ClipToBounds="True"
+               AllowsTransparency="True"
+               PopupAnimation="Slide"
+               StaysOpen="False">
+
+            <Border Style="{StaticResource NiceBorder}"
+                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                    MaxHeight="250"
+                    Background="White">
+                <Grid>
+                    <TextBlock Text="Нічого не знайдено"
+                               Panel.ZIndex="1"
+                               TextWrapping="Wrap"
+                               Foreground="{StaticResource BrushGrey}"
+                               FontSize="16"
+                               Visibility="{Binding ElementName=LbPopup, Path=HasItems,
+                                               Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+
+                    <ListBox x:Name="LbPopup"
+                             ScrollViewer.CanContentScroll="True"
+                             ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             Style="{StaticResource CityList}"
+                             ItemsSource="{Binding CityCollectionView}"
+                             SelectedItem="{Binding SelectedCity, Mode=TwoWay}" />
+                </Grid>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

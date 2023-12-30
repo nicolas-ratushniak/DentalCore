@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Data;
+using System.Windows;
 using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
@@ -29,70 +28,16 @@ public class PatientCreateViewModel : BaseViewModel
     private string _patronymic;
     private Gender _gender = Gender.Male;
     private string _phone;
-    private string _citySearchFilter = string.Empty;
-    private bool _isCityListVisible;
-    private CityListItemViewModel? _selectedCity;
     private string _birthDate;
     private string? _errorMessage;
-    private readonly ObservableCollection<CityListItemViewModel> _cities;
 
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
 
-    public ICollectionView CityCollectionView { get; }
-
     public ObservableCollection<DiseaseListItemViewModel> Diseases { get; }
 
     public AllergySelectorComponent AllergySelector { get; }
-
-    #region SearchAndFilter
-
-    public string CitySearchFilter
-    {
-        get => _citySearchFilter;
-        set
-        {
-            if (value == _citySearchFilter) return;
-            _citySearchFilter = value;
-
-            OnPropertyChanged();
-            OnCityFilterChanged();
-        }
-    }
-
-    public bool IsCityListVisible
-    {
-        get => _isCityListVisible;
-        set
-        {
-            if (value == _isCityListVisible) return;
-            _isCityListVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public CityListItemViewModel? SelectedCity
-    {
-        get => _selectedCity;
-        set
-        {
-            if (Equals(value, _selectedCity)) return;
-            _selectedCity = value;
-
-            if (_selectedCity is not null)
-            {
-                CitySearchFilter = _selectedCity.Name;
-                IsCityListVisible = false;
-            }
-
-            OnPropertyChanged();
-            CommandManager.InvalidateRequerySuggested();
-        }
-    }
-
-    #endregion
-
-    #region UiProperties
+    public CitySelector CitySelector { get; }
 
     public string? ErrorMessage
     {
@@ -183,8 +128,6 @@ public class PatientCreateViewModel : BaseViewModel
         }
     }
 
-    #endregion
-
     public PatientCreateViewModel(
         INavigationService navigationService,
         IPatientService patientService,
@@ -193,16 +136,10 @@ public class PatientCreateViewModel : BaseViewModel
         _navigationService = navigationService;
         _patientService = patientService;
         _commonService = commonService;
-        _cities = new ObservableCollection<CityListItemViewModel>();
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
         AllergySelector = new AllergySelectorComponent();
-
-        CityCollectionView = CollectionViewSource.GetDefaultView(_cities);
-
-        CityCollectionView.Filter = o =>
-            o is CityListItemViewModel c &&
-            c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
+        CitySelector = new CitySelector(new RelayCommand(() => MessageBox.Show("Yes!")));
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
         SubmitCommand = new AsyncRelayCommand(Add_Execute);
@@ -217,11 +154,11 @@ public class PatientCreateViewModel : BaseViewModel
             Diseases.Add(disease);
         }
         
-        _cities.Clear();
-
+        CitySelector.Cities.Clear();
+        
         foreach (var city in await GetCitiesAsync())
         {
-            _cities.Add(city);
+            CitySelector.Cities.Add(city);
         }
         
         AllergySelector.Allergies.Clear();
@@ -239,7 +176,7 @@ public class PatientCreateViewModel : BaseViewModel
             string.IsNullOrEmpty(Patronymic) ||
             string.IsNullOrEmpty(Phone) || 
             string.IsNullOrEmpty(BirthDate) || 
-            SelectedCity is null)
+            CitySelector.SelectedCity is null)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;
@@ -261,7 +198,7 @@ public class PatientCreateViewModel : BaseViewModel
 
         var dto = new PatientCreateDto
         {
-            CityId = SelectedCity!.Id,
+            CityId = CitySelector.SelectedCity!.Id,
             Gender = Gender,
             Name = Name,
             Surname = Surname,
@@ -289,29 +226,6 @@ public class PatientCreateViewModel : BaseViewModel
         {
             ErrorMessage = ex.Message;
         }
-    }
-
-    private void OnCityFilterChanged()
-    {
-        var filter = CitySearchFilter;
-
-        if (_selectedCity is null)
-        {
-            IsCityListVisible = !string.IsNullOrEmpty(filter);
-        }
-        else
-        {
-            if (filter == _selectedCity.Name)
-            {
-                IsCityListVisible = false;
-                return;
-            }
-
-            IsCityListVisible = true;
-            _selectedCity = null;
-        }
-
-        CityCollectionView.Refresh();
     }
 
     private async Task<IEnumerable<CityListItemViewModel>> GetCitiesAsync()

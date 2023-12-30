@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Data;
+using System.Windows;
 using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
@@ -20,7 +19,6 @@ namespace DentalCore.Wpf.ViewModels.Pages;
 
 public class PatientUpdateViewModel : BaseViewModel
 {
-    private readonly ObservableCollection<CityListItemViewModel> _cities;
     private readonly INavigationService _navigationService;
     private readonly IPatientService _patientService;
     private readonly ICommonService _commonService;
@@ -33,17 +31,12 @@ public class PatientUpdateViewModel : BaseViewModel
     private string _phone = string.Empty;
     private string _birthDate = string.Empty;
     private string? _errorMessage;
-    private CityListItemViewModel? _selectedCity;
-    private string _citySearchFilter = string.Empty;
-    private bool _isCityListVisible;
-
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
 
-    public ICollectionView CityCollectionView { get; }
-
     public ObservableCollection<DiseaseListItemViewModel> Diseases { get; }
     public AllergySelectorComponent AllergySelector { get; }
+    public CitySelector CitySelector { get; }
 
     public string? ErrorMessage
     {
@@ -55,51 +48,6 @@ public class PatientUpdateViewModel : BaseViewModel
             OnPropertyChanged();
         }
     }
-
-    public string CitySearchFilter
-    {
-        get => _citySearchFilter;
-        set
-        {
-            if (value == _citySearchFilter) return;
-            _citySearchFilter = value;
-
-            OnPropertyChanged();
-            OnCityFilterChanged();
-        }
-    }
-
-    public bool IsCityListVisible
-    {
-        get => _isCityListVisible;
-        set
-        {
-            if (value == _isCityListVisible) return;
-            _isCityListVisible = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public CityListItemViewModel? SelectedCity
-    {
-        get => _selectedCity;
-        set
-        {
-            if (Equals(value, _selectedCity)) return;
-            _selectedCity = value;
-
-            if (_selectedCity is not null)
-            {
-                CitySearchFilter = _selectedCity.Name;
-                IsCityListVisible = false;
-            }
-
-            OnPropertyChanged();
-            CommandManager.InvalidateRequerySuggested();
-        }
-    }
-
-    #region UiProperties
 
     public string Name
     {
@@ -179,8 +127,6 @@ public class PatientUpdateViewModel : BaseViewModel
         }
     }
 
-    #endregion
-
     public PatientUpdateViewModel(
         int id,
         INavigationService navigationService,
@@ -191,14 +137,10 @@ public class PatientUpdateViewModel : BaseViewModel
         _navigationService = navigationService;
         _patientService = patientService;
         _commonService = commonService;
-        _cities = new ObservableCollection<CityListItemViewModel>();
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
         AllergySelector = new AllergySelectorComponent();
-
-        CityCollectionView = CollectionViewSource.GetDefaultView(_cities);
-        CityCollectionView.Filter = o => o is CityListItemViewModel c &&
-                                         c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
+        CitySelector = new CitySelector(new RelayCommand(() => MessageBox.Show("Yes!")));
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
         SubmitCommand = new AsyncRelayCommand(Update_Execute);
@@ -206,11 +148,11 @@ public class PatientUpdateViewModel : BaseViewModel
 
     public override async Task LoadDataAsync()
     {
-        _cities.Clear();
+        CitySelector.Cities.Clear();
         
         foreach (var city in await GetCitiesAsync())
         {
-            _cities.Add(city);
+            CitySelector.Cities.Add(city);
         }
         
         AllergySelector.Allergies.Clear();
@@ -235,7 +177,7 @@ public class PatientUpdateViewModel : BaseViewModel
         BirthDate = patient.BirthDate.ToString("dd.MM.yyyy");
         Gender = patient.Gender;
         Phone = (await _patientService.GetPhonesAsync(patient.Id)).First().PhoneNumber;
-        SelectedCity = _cities.Single(c => c.Id == patient.City.Id);
+        CitySelector.SelectedCity = CitySelector.Cities.Single(c => c.Id == patient.City.Id);
     }
 
     private async Task Update_Execute()
@@ -245,7 +187,7 @@ public class PatientUpdateViewModel : BaseViewModel
             string.IsNullOrEmpty(Patronymic) ||
             string.IsNullOrEmpty(Phone) || 
             string.IsNullOrEmpty(BirthDate) || 
-            SelectedCity is null)
+            CitySelector.SelectedCity is null)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;
@@ -268,7 +210,7 @@ public class PatientUpdateViewModel : BaseViewModel
         var dto = new PatientUpdateDto
         {
             Id = _patientId,
-            CityId = SelectedCity!.Id,
+            CityId = CitySelector.SelectedCity!.Id,
             Gender = Gender,
             Name = Name,
             Surname = Surname,
@@ -296,29 +238,6 @@ public class PatientUpdateViewModel : BaseViewModel
         {
             ErrorMessage = ex.Message;
         }
-    }
-
-    private void OnCityFilterChanged()
-    {
-        var filter = CitySearchFilter;
-
-        if (_selectedCity is null)
-        {
-            IsCityListVisible = !string.IsNullOrEmpty(filter);
-        }
-        else
-        {
-            if (filter == _selectedCity.Name)
-            {
-                IsCityListVisible = false;
-                return;
-            }
-
-            IsCityListVisible = true;
-            _selectedCity = null;
-        }
-
-        CityCollectionView.Refresh();
     }
 
     private async Task<IEnumerable<CityListItemViewModel>> GetCitiesAsync()
