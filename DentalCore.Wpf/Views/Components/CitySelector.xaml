@@ -43,10 +43,14 @@
 
             <Button Grid.Column="2"
                     Style="{StaticResource NiceButton}"
-                    Content="+"
-                    FontSize="32"
-                    FontWeight="Bold"
-                    Command="{Binding AddCityCommand}" />
+                    Command="{Binding AddCityCommand}"
+                    Height="36"
+                    Width="36"
+                    Padding="10">
+                <Image Source="../../Assets/add.png"
+                       Stretch="Fill"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+            </Button>
 
         </Grid>
 

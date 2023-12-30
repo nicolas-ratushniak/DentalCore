@@ -46,6 +46,8 @@
         <Resource Include="Assets\more.png"/>
         <Resource Include="Assets\quit.png"/>
         <Resource Include="Assets\delete.png" />
+        <None Remove="Assets\add.png" />
+        <Resource Include="Assets\add.png" />
     </ItemGroup>
 
     <ItemGroup>
