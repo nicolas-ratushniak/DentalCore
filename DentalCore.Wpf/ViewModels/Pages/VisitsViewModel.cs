@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Domain.Abstract;
 using DentalCore.Wpf.Abstract;
-using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Commands.Generic;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Pages;

@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
@@ -37,8 +36,8 @@ public class PatientCreateViewModel : BaseViewModel
     private string? _errorMessage;
     private readonly ObservableCollection<CityListItemViewModel> _cities;
 
-    public ICommand CancelCommand { get; set; }
-    public ICommand SubmitCommand { get; set; }
+    public ICommand CancelCommand { get; }
+    public ICommand SubmitCommand { get; }
 
     public ICollectionView CityCollectionView { get; }
 
@@ -205,10 +204,8 @@ public class PatientCreateViewModel : BaseViewModel
             o is CityListItemViewModel c &&
             c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
 
-        CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(PageType.Patients));
-
-        SubmitCommand = new AsyncCommand(Add_Execute);
+        CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
+        SubmitCommand = new AsyncRelayCommand(Add_Execute);
     }
 
     public override async Task LoadDataAsync()

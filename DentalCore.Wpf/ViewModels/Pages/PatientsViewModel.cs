@@ -8,6 +8,7 @@ using System.Windows.Input;
 using DentalCore.Domain.Abstract;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Commands.Generic;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Pages;
@@ -62,7 +63,7 @@ public class PatientsViewModel : BaseViewModel
             return false;
         };
 
-        GoToPatientCreateCommand = new RelayCommand<object>(_ =>
+        GoToPatientCreateCommand = new RelayCommand(() =>
             navigationService.NavigateTo(PageType.PatientCreate));
 
         GoToPatientUpdateCommand = new RelayCommand<int>(id =>
@@ -71,7 +72,7 @@ public class PatientsViewModel : BaseViewModel
         GoToPatientInfoCommand = new RelayCommand<int>(id =>
             navigationService.NavigateTo(PageType.PatientInfo, id));
 
-        GoToVisitsExportCommand = new RelayCommand<object>(_ =>
+        GoToVisitsExportCommand = new RelayCommand(() =>
             modalService.OpenModal(ModalType.VisitReport));
     }
 

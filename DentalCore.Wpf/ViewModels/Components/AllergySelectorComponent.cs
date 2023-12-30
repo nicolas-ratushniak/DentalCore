@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Wpf.Abstract;
-using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Commands.Generic;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Components;
@@ -69,11 +69,11 @@ public class AllergySelectorComponent : BaseViewModel
         SelectedAllergyCollectionView = new CollectionViewSource { Source = Allergies }.View;
         
         NotSelectedAllergyCollectionView.Filter = o =>
-            o is AllergyListItemViewModel a && !a.IsSelected &&
+            o is AllergyListItemViewModel { IsSelected: false } a &&
             a.Name.ToLower().StartsWith(AllergySelectionFilter.ToLower());
 
         SelectedAllergyCollectionView.Filter = o =>
-            o is AllergyListItemViewModel a && a.IsSelected;
+            o is AllergyListItemViewModel { IsSelected: true };
         
         RemoveAllergyCommand = new RelayCommand<int>(allergyId =>
         {

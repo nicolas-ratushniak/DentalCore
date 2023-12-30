@@ -10,6 +10,7 @@ using System.Windows.Input;
 using DentalCore.Domain.Abstract;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Commands.Generic;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Pages;
@@ -117,13 +118,13 @@ public class PatientInfoViewModel : BaseViewModel
         VisitCollectionView.SortDescriptions.Add(
             new SortDescription(nameof(VisitOfPatientListItemViewModel.Date), ListSortDirection.Descending));
 
-        GoToVisitCreateCommand = new RelayCommand<object>(_ =>
+        GoToVisitCreateCommand = new RelayCommand(() =>
             navigationService.NavigateTo(PageType.VisitCreate, id));
 
         GoToVisitInfoCommand = new RelayCommand<int>(visitId =>
             navigationService.NavigateTo(PageType.VisitInfo, visitId));
 
-        PayPatientDebtCommand = new AsyncCommand(
+        PayPatientDebtCommand = new AsyncRelayCommand(
             PayPatientDebt_Execute,
             _ => MessageBox.Show("Помилка при виконанні операції", "Помилка",
                 MessageBoxButton.OK, MessageBoxImage.Error));

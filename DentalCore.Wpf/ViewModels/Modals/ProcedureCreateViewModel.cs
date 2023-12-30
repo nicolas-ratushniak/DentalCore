@@ -60,8 +60,8 @@ public class ProcedureCreateViewModel : BaseViewModel
         _procedureService = procedureService;
         _modalService = modalService;
 
-        CancelCommand = new RelayCommand<object>(_ => modalService.CloseModal());
-        CreateProcedureCommand = new AsyncCommand(CreateProcedure_Execute);
+        CancelCommand = new RelayCommand(modalService.CloseModal);
+        CreateProcedureCommand = new AsyncRelayCommand(CreateProcedure_Execute);
     }
 
     private async Task CreateProcedure_Execute()

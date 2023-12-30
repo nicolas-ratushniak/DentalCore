@@ -9,6 +9,7 @@ using System.Windows.Input;
 using DentalCore.Domain.Dto;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Commands.Generic;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Components;
@@ -95,14 +96,14 @@ public class TreatmentSelectorComponent : BaseViewModel
             NonSelectedTreatmentItemCollectionView.Refresh();
         });
 
-        UpdatePriceCommand = new RelayCommand<object>(_ =>
+        UpdatePriceCommand = new RelayCommand(() =>
             SelectedTreatmentSetChanged?.Invoke(this, EventArgs.Empty));
     }
 
     public IEnumerable<TreatmentItemCreateDto> GetSelectedTreatmentItems()
     {
         return TreatmentItems
-            .Where(t => t.IsSelected && t.Quantity > 0)
+            .Where(t => t is { IsSelected: true, Quantity: > 0 })
             .Select(t => new TreatmentItemCreateDto
             {
                 ProcedureId = t.Id,

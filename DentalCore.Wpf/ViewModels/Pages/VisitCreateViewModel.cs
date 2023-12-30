@@ -174,8 +174,8 @@ public class VisitCreateViewModel : BaseViewModel
             return false;
         };
 
-        CancelCommand = new RelayCommand<object>(_ => navigationService.NavigateTo(PageType.PatientInfo, id));
-        SubmitCommand = new AsyncCommand(AddVisit_Execute);
+        CancelCommand = new RelayCommand(() => navigationService.NavigateTo(PageType.PatientInfo, id));
+        SubmitCommand = new AsyncRelayCommand(AddVisit_Execute);
     }
 
     public override void Dispose()

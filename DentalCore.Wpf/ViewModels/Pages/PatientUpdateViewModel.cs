@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
@@ -37,7 +36,6 @@ public class PatientUpdateViewModel : BaseViewModel
     private CityListItemViewModel? _selectedCity;
     private string _citySearchFilter = string.Empty;
     private bool _isCityListVisible;
-
 
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
@@ -202,10 +200,8 @@ public class PatientUpdateViewModel : BaseViewModel
         CityCollectionView.Filter = o => o is CityListItemViewModel c &&
                                          c.Name.ToLower().StartsWith(CitySearchFilter.ToLower());
 
-        CancelCommand = new RelayCommand<object>(_ =>
-            _navigationService.NavigateTo(PageType.Patients));
-
-        SubmitCommand = new AsyncCommand(Update_Execute);
+        CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
+        SubmitCommand = new AsyncRelayCommand(Update_Execute);
     }
 
     public override async Task LoadDataAsync()
@@ -294,7 +290,7 @@ public class PatientUpdateViewModel : BaseViewModel
         try
         {
             await _patientService.UpdateAsync(dto);
-            _navigationService.NavigateTo(PageType.Patients, null);
+            _navigationService.NavigateTo(PageType.Patients);
         }
         catch (ValidationException ex)
         {

@@ -10,6 +10,7 @@ using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Exceptions;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Commands.Generic;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Pages;
@@ -55,7 +56,7 @@ public class ProceduresViewModel : BaseViewModel
             o is ProcedureListItemViewModel p &&
             p.Name.ToLower().Contains(ProcedureSearchFilter.ToLower());
 
-        ProcedureCreateCommand = new RelayCommand<object>(_ => modalService.OpenModal(ModalType.ProcedureCreate));
+        ProcedureCreateCommand = new RelayCommand(() => modalService.OpenModal(ModalType.ProcedureCreate));
         ProcedureEditCommand = new RelayCommand<int>(id => modalService.OpenModal(ModalType.ProcedureUpdate, id));
         ProcedureDeleteCommand = new AsyncRelayCommand<int>(TryDeleteProcedure_ExecuteAsync);
     }

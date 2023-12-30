@@ -2,6 +2,7 @@
 using System.Windows.Input;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
+using DentalCore.Wpf.Commands.Generic;
 
 namespace DentalCore.Wpf.Services;
 

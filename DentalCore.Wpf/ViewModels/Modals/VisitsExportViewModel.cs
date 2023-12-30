@@ -72,9 +72,8 @@ public class VisitsExportViewModel : BaseViewModel
         FromDateInput = today.ToString("d.MM.yyyy");
         ToDateInput = today.ToString("d.MM.yyyy");
 
-        ExportVisitsCommand = new AsyncCommand(ExportVisits);
-        CancelCommand = new RelayCommand<object>(_ =>
-            _modalService.CloseModal());
+        ExportVisitsCommand = new AsyncRelayCommand(ExportVisits);
+        CancelCommand = new RelayCommand(_modalService.CloseModal);
     }
 
     private async Task ExportVisits()

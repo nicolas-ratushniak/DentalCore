@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DentalCore.Domain.Abstract;
 using DentalCore.Domain.Dto;
+using DentalCore.Domain.Exceptions;
 using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.Commands;
 
@@ -64,8 +64,8 @@ public class ProcedureUpdateViewModel : BaseViewModel
         _procedureService = procedureService;
         _modalService = modalService;
 
-        CancelCommand = new RelayCommand<object>(_ => modalService.CloseModal());
-        UpdateProcedureCommand = new AsyncCommand(UpdateProcedure_Execute);
+        CancelCommand = new RelayCommand(modalService.CloseModal);
+        UpdateProcedureCommand = new AsyncRelayCommand(UpdateProcedure_Execute);
     }
 
     public override async Task LoadDataAsync()
@@ -77,7 +77,7 @@ public class ProcedureUpdateViewModel : BaseViewModel
             Name = procedure.Name;
             Price = procedure.Price;
         }
-        catch (Exception e)
+        catch (EntityNotFoundException)
         {
             _modalService.CloseModal();
         }
