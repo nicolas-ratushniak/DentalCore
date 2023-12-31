@@ -9,7 +9,7 @@
         <AssemblyName>DentalCore</AssemblyName>
 
         <!--Set to 'true' to pack release on build-->
-        <VersionStampOnBuild>false</VersionStampOnBuild>
+        <VersionStampOnBuild>true</VersionStampOnBuild>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
