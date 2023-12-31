@@ -32,13 +32,13 @@
                                             </Grid.ColumnDefinitions>
                                             
                                             <TextBlock Grid.Column="0"
-                                                       Text="{Binding Path=DateString}"
-                                                       FontSize="18" />
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding Path=DateString}" />
 
                                             <TextBlock Grid.Column="1"
+                                                       Style="{StaticResource NormalText}"
                                                        Text="{Binding Path=Diagnosis}"
                                                        TextWrapping="Wrap"
-                                                       FontSize="18" 
                                                        Margin="24 0"/>
 
                                             <Button Grid.Column="2"
@@ -76,6 +76,7 @@
 
                                         <Grid>
                                             <TextBlock Grid.Column="0"
+                                                       Style="{StaticResource NormalText}"
                                                        Text="{Binding }"
                                                        TextWrapping="Wrap"
                                                        FontSize="16" />
@@ -110,21 +111,25 @@
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0"
+                           Style="{StaticResource NormalText}"
                            FontSize="20"
                            Text="{Binding Surname}"
                            Margin="0 0 0 15" />
 
                 <TextBlock Grid.Row="1"
+                           Style="{StaticResource NormalText}"
                            FontSize="20"
                            Text="{Binding Name}"
                            Margin="0 0 0 15" />
 
                 <TextBlock Grid.Row="2"
+                           Style="{StaticResource NormalText}"
                            FontSize="20"
                            Text="{Binding Patronymic}"
                            Margin="0 0 0 15" />
 
                 <TextBlock Grid.Row="3"
+                           Style="{StaticResource NormalText}"
                            FontSize="20"
                            Text="{Binding AgeString}"
                            Margin="0 0 0 15" />
@@ -153,6 +158,7 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0"
+                                       Style="{StaticResource NormalText}"
                                        FontSize="14"
                                        FontWeight="Bold"
                                        Text="Алергії:"
@@ -179,6 +185,7 @@
                             </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0"
+                                       Style="{StaticResource NormalText}"
                                        FontSize="14"
                                        FontWeight="Bold"
                                        Text="Хвороби:"
@@ -223,9 +230,9 @@
                         Background="{StaticResource DangerBrush}"
                         Padding="17 7">
                     
-                    <TextBlock Foreground="#fff"
-                               FontSize="18"
-                               Text="{Binding Debt, StringFormat=Борг: {0} грн }"/>
+                    <TextBlock  Style="{StaticResource NormalText}" 
+                                Foreground="#fff"
+                                Text="{Binding Debt, StringFormat=Борг: {0} грн }"/>
                 </Border>
                 
                 <Button Grid.Column="2"

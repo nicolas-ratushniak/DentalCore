@@ -32,13 +32,13 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0"
-                                                       Text="{Binding Path=ShortName}"
-                                                       FontSize="18" />
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding Path=ShortName}" />
 
                                             <TextBlock Grid.Column="1"
+                                                       Style="{StaticResource NormalText}"
                                                        Text="{Binding Path=Diagnosis}"
                                                        TextWrapping="Wrap"
-                                                       FontSize="18"
                                                        Margin="24 0" />
 
                                             <Button Grid.Column="2"

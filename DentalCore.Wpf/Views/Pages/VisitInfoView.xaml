@@ -26,19 +26,19 @@
                                         </Grid.ColumnDefinitions>
 
                                         <TextBlock Grid.Column="0"
-                                                   FontSize="18"
+                                                   Style="{StaticResource NormalText}"
                                                    VerticalAlignment="Center"
                                                    TextWrapping="Wrap"
                                                    Text="{Binding Name}" />
 
                                         <TextBlock Grid.Column="1"
-                                                   FontSize="18"
+                                                   Style="{StaticResource NormalText}"
                                                    VerticalAlignment="Center"
                                                    TextAlignment="Right"
                                                    Text="{Binding Quantity}" />
 
                                         <TextBlock Grid.Column="2"
-                                                   FontSize="18"
+                                                   Style="{StaticResource NormalText}"
                                                    VerticalAlignment="Center"
                                                    Text="{Binding Price, StringFormat=x{0}}" />
                                     </Grid>
@@ -69,8 +69,7 @@
 
             <!-- Title -->
             <TextBlock Grid.Row="0"
-                       FontSize="28"
-                       FontWeight="Bold"
+                       Style="{StaticResource Title}"
                        Text="Візит"
                        Margin="0 0 0 24" />
 
@@ -102,30 +101,31 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0"
-                               FontSize="18"
+                               Style="{StaticResource NormalText}"
                                Text="Дата: " />
 
                     <TextBlock Grid.Row="0" Grid.Column="1"
-                               FontSize="18"
+                               Style="{StaticResource NormalText}"
                                Text="{Binding Date}" />
 
                     <TextBlock Grid.Row="2" Grid.Column="0"
-                               FontSize="18"
+                               Style="{StaticResource NormalText}"
                                Text="Лікар: " />
 
                     <TextBlock Grid.Row="2" Grid.Column="1"
-                               FontSize="18"
+                               Style="{StaticResource NormalText}"
                                Text="{Binding DoctorShortName}" />
 
                     <TextBlock Grid.Row="4" Grid.Column="0"
-                               FontSize="18"
+                               Style="{StaticResource NormalText}"
                                Text="Пацієнт: " />
 
                     <TextBlock Grid.Row="4" Grid.Column="1"
-                               FontSize="18"
+                               Style="{StaticResource NormalText}"
                                Text="{Binding PatientShortName}" />
 
                     <TextBlock Grid.Row="6" Grid.Column="0"
+                               Style="{StaticResource NormalText}"
                                FontSize="16"
                                Text="Діагноз" />
 
@@ -133,8 +133,8 @@
                             Style="{StaticResource NiceBorder}">
 
                         <TextBlock Grid.Row="1"
+                                   Style="{StaticResource NormalText}"
                                    Text="{Binding Diagnosis}"
-                                   FontSize="18"
                                    TextWrapping="Wrap" />
                     </Border>
                 </Grid>
@@ -177,21 +177,21 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Style="{StaticResource NormalText}"
                                    FontWeight="Bold"
-                                   FontSize="18"
                                    Text="Всього: " />
 
                         <TextBlock Grid.Row="0" Grid.Column="2"
+                                   Style="{StaticResource NormalText}"
                                    FontWeight="Bold"
-                                   FontSize="18"
                                    Text="{Binding TotalSum, StringFormat={}{0} грн}" />
 
                         <TextBlock Grid.Row="2" Grid.Column="0"
-                                   FontSize="18"
+                                   Style="{StaticResource NormalText}"
                                    Text="Внесено коштів: " />
 
                         <TextBlock Grid.Row="2" Grid.Column="2"
-                                   FontSize="18"
+                                   Style="{StaticResource NormalText}"
                                    Text="{Binding HasPayed, StringFormat={}{0} грн}" />
                     </Grid>
                 </Grid>

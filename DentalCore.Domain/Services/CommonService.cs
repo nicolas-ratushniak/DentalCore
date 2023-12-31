@@ -49,7 +49,7 @@ public class CommonService : ICommonService
             .ToListAsync();
     }
 
-    public async Task<int> AddCityAsync(CityCreateDto dto)
+    public async Task<CityDto> AddCityAsync(CityCreateDto dto)
     {
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
@@ -66,6 +66,10 @@ public class CommonService : ICommonService
         await _context.Cities.AddAsync(city);
         await _context.SaveChangesAsync();
 
-        return city.Id;
+        return new CityDto
+        {
+            Id = city.Id,
+            Name = city.Name
+        };
     }
 }

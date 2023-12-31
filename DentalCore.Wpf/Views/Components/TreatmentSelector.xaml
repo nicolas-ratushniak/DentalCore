@@ -16,7 +16,7 @@
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type inners:TreatmentItemListItemViewModel}">
                         <TextBlock Text="{Binding Path=Name}"
-                                   FontSize="18" />
+                                   Style="{StaticResource NormalText}" />
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -45,13 +45,14 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0"
+                                                       Style="{StaticResource NormalText}"
                                                        FontSize="16"
                                                        VerticalAlignment="Center"
                                                        TextWrapping="Wrap"
                                                        Text="{Binding Name}" />
 
                                             <TextBlock Grid.Column="1"
-                                                       FontSize="18"
+                                                       Style="{StaticResource NormalText}"
                                                        VerticalAlignment="Center"
                                                        TextAlignment="Right"
                                                        Text="{Binding Price}"
@@ -118,7 +119,8 @@
                         MaxHeight="250"
                         Background="White">
                     <Grid>
-                        <TextBlock Text="Нічого не знайдено"
+                        <TextBlock Style="{StaticResource NormalText}"
+                                   Text="Нічого не знайдено"
                                    Panel.ZIndex="1"
                                    TextWrapping="Wrap"
                                    Foreground="{StaticResource BrushGrey}"

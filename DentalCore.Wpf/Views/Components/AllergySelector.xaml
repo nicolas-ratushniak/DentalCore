@@ -16,7 +16,7 @@
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type inners:AllergyListItemViewModel}">
                         <TextBlock Text="{Binding Path=Name}"
-                                   FontSize="18" />
+                                   Style="{StaticResource NormalText}" />
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -43,6 +43,7 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0"
+                                                       Style="{StaticResource NormalText}"
                                                        FontSize="16"
                                                        VerticalAlignment="Center"
                                                        TextWrapping="Wrap"
@@ -101,7 +102,8 @@
                         MaxHeight="250"
                         Background="White">
                     <Grid>
-                        <TextBlock Text="Нічого не знайдено"
+                        <TextBlock Style="{StaticResource NormalText}" 
+                                   Text="Нічого не знайдено"
                                    Panel.ZIndex="1"
                                    TextWrapping="Wrap"
                                    Foreground="{StaticResource BrushGrey}"

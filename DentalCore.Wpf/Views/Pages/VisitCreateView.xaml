@@ -19,7 +19,7 @@
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type inners:DoctorListItemViewModel}">
                         <TextBlock Text="{Binding Path=FullName}"
-                                   FontSize="18" />
+                                   Style="{StaticResource NormalText}" />
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -44,7 +44,7 @@
 
             <!-- Title -->
             <TextBlock Grid.Row="0"
-                       FontSize="28"
+                       Style="{StaticResource Title}"
                        FontWeight="Bold"
                        Text="Новий візит"
                        Margin="0 0 0 24" />
@@ -68,7 +68,8 @@
                         Style="{StaticResource NiceBorder}"
                         Margin="0 0 0 10">
                     
-                    <TextBlock Text="{Binding PatientInfo}"/>
+                    <TextBlock Text="{Binding PatientInfo}"
+                               Style="{StaticResource NormalText}"/>
                 </Border>
 
                 <!-- Select Doctor -->
@@ -97,6 +98,7 @@
                                 Background="White">
                             <Grid>
                                 <TextBlock Text="Нікого не знайдено"
+                                           Style="{StaticResource NormalText}"
                                            Panel.ZIndex="1"
                                            TextWrapping="Wrap"
                                            Foreground="{StaticResource BrushGrey}"
@@ -126,6 +128,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0"
+                               Style="{StaticResource NormalText}"
                                FontSize="16"
                                Text="Діагноз"
                                Margin="0 0 0 15" />
@@ -165,14 +168,14 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0"
+                                   Style="{StaticResource NormalText}"
                                    FontWeight="Bold"
-                                   FontSize="18"
                                    Text="Всього: "
                                    Margin="0 0 12 0" />
 
                         <TextBlock Grid.Column="2"
+                                   Style="{StaticResource NormalText}"
                                    FontWeight="Bold"
-                                   FontSize="18"
                                    Text="{Binding TotalSum, StringFormat= {}{0} грн }" />
                     </Grid>
 
@@ -186,7 +189,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Grid.Column="0"
-                                   FontSize="18"
+                                   Style="{StaticResource NormalText}"
                                    Text="Внесено коштів: "
                                    Margin="0 0 12 0" />
 

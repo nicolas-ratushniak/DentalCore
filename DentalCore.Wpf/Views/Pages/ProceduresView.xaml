@@ -33,12 +33,12 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0"
-                                                       Text="{Binding Path=Name}"
-                                                       FontSize="18" />
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding Path=Name}"/>
                                             
                                             <TextBlock Grid.Column="1"
-                                                       Text="{Binding Path=Price, StringFormat=N2}"
-                                                       FontSize="18" />
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding Path=Price, StringFormat=N2}"/>
 
                                             <Button Grid.Column="2"
                                                     Width="24"

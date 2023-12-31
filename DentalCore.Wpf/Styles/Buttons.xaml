@@ -4,9 +4,10 @@
     <Style x:Key="NiceButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource BrushAccent}" />
         <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="18" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Padding" Value="17,7"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -14,7 +15,7 @@
                             Opacity="{TemplateBinding Opacity}"
                             CornerRadius="5">
                         <ContentPresenter Margin="{TemplateBinding Padding}"
-                                          HorizontalAlignment="Center" />
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

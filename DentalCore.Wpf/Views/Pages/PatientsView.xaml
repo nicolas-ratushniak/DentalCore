@@ -32,8 +32,8 @@
                                             </Grid.ColumnDefinitions>
 
                                             <TextBlock Grid.Column="0"
-                                                       Text="{Binding Path=FullName}"
-                                                       FontSize="18" />
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding Path=FullName}" />
 
                                             <Button Grid.Column="1"
                                                     Width="24"
