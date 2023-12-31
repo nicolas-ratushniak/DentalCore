@@ -92,7 +92,7 @@ public class CitySelectorViewModel : BaseViewModel
             }
 
             IsCityListVisible = true;
-            _selectedCity = null;
+            SelectedCity = null;
         }
 
         CityCollectionView.Refresh();
