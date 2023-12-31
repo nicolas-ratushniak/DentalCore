@@ -37,7 +37,31 @@ public class CommonService : ICommonService
             })
             .ToListAsync();
     }
-    
+
+    public async Task<AllergyDto> AddAllergyAsync(AllergyCreateDto dto)
+    {
+        Validator.ValidateObject(dto, new ValidationContext(dto), true);
+
+        if (_context.Allergies.Any(c => c.Name == dto.Name))
+        {
+            throw new ValidationException("Алергія з такою назвою вже існує");
+        }
+
+        var allergy = new Allergy()
+        {
+            Name = dto.Name
+        };
+
+        await _context.Allergies.AddAsync(allergy);
+        await _context.SaveChangesAsync();
+
+        return new AllergyDto()
+        {
+            Id = allergy.Id,
+            Name = allergy.Name
+        };
+    }
+
     public async Task<IEnumerable<CityDto>> GetCitiesAsync()
     {
         return await _context.Cities

@@ -137,7 +137,7 @@ public class PatientCreateViewModel : BaseViewModel
         _commonService = commonService;
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
-        AllergyMultiSelector = new AllergyMultiSelectorViewModel();
+        AllergyMultiSelector = new AllergyMultiSelectorViewModel(AddAllergyCallback);
         CitySelector = new CitySelectorViewModel(AddCityCallback);
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
@@ -186,6 +186,31 @@ public class PatientCreateViewModel : BaseViewModel
             
             CitySelector.Cities.Add(cityListItem);
             CitySelector.SelectedCity = cityListItem;
+        }
+        catch (ValidationException ex)
+        {
+            ErrorMessage = ex.Message;
+        }
+    }
+
+    private async Task AddAllergyCallback(string allergyName)
+    {
+        var dto = new AllergyCreateDto()
+        {
+            Name = allergyName
+        };
+
+        try
+        {
+            var allergy = await _commonService.AddAllergyAsync(dto);
+            var allergyListItem = new AllergyListItemViewModel()
+            {
+                Id = allergy.Id,
+                Name = allergy.Name
+            };
+            
+            AllergyMultiSelector.Allergies.Add(allergyListItem);
+            AllergyMultiSelector.SelectedAllergy = allergyListItem;
         }
         catch (ValidationException ex)
         {

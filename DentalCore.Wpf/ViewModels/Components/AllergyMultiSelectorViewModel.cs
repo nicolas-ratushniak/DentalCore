@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Wpf.Abstract;
@@ -17,6 +19,7 @@ public class AllergyMultiSelectorViewModel : BaseViewModel
     private bool _isAllergyListVisible;
     private AllergyListItemViewModel? _selectedAllergy;
     
+    public ICommand AddAllergyCommand { get; }
     public ICommand RemoveAllergyCommand { get; }
     
     public ICollectionView SelectedAllergyCollectionView { get; }
@@ -61,7 +64,7 @@ public class AllergyMultiSelectorViewModel : BaseViewModel
         }
     }
 
-    public AllergyMultiSelectorViewModel()
+    public AllergyMultiSelectorViewModel(Func<string, Task> addAllergyCallback)
     {
         Allergies = new ObservableCollection<AllergyListItemViewModel>();
         
@@ -74,6 +77,8 @@ public class AllergyMultiSelectorViewModel : BaseViewModel
 
         SelectedAllergyCollectionView.Filter = o =>
             o is AllergyListItemViewModel { IsSelected: true };
+
+        AddAllergyCommand = new AsyncRelayCommand<string>(addAllergyCallback);
         
         RemoveAllergyCommand = new RelayCommand<int>(allergyId =>
         {
