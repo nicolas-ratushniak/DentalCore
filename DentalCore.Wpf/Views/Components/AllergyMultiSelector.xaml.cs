@@ -2,9 +2,9 @@
 
 namespace DentalCore.Wpf.Views.Components;
 
-public partial class AllergySelector : UserControl
+public partial class AllergyMultiSelector : UserControl
 {
-    public AllergySelector()
+    public AllergyMultiSelector()
     {
         InitializeComponent();
     }

@@ -41,7 +41,7 @@ public class VisitCreateViewModel : BaseViewModel
     public ICommand SubmitCommand { get; }
 
     public ICollectionView DoctorCollectionView { get; }
-    public TreatmentSelectorViewModel TreatmentSelector { get; }
+    public TreatmentMultiSelectorViewModel TreatmentMultiSelector { get; }
 
     public string? ErrorMessage
     {
@@ -158,8 +158,8 @@ public class VisitCreateViewModel : BaseViewModel
         _patientId = id;
         _doctors = new ObservableCollection<DoctorListItemViewModel>();
 
-        TreatmentSelector = new TreatmentSelectorViewModel();
-        TreatmentSelector.SelectedTreatmentSetChanged += OnSelectedTreatmentsChanged;
+        TreatmentMultiSelector = new TreatmentMultiSelectorViewModel();
+        TreatmentMultiSelector.SelectedTreatmentSetChanged += OnSelectedTreatmentsMultiChanged;
         
         DoctorCollectionView = CollectionViewSource.GetDefaultView(_doctors);
         
@@ -180,7 +180,7 @@ public class VisitCreateViewModel : BaseViewModel
 
     public override void Dispose()
     {
-        TreatmentSelector.SelectedTreatmentSetChanged -= OnSelectedTreatmentsChanged;
+        TreatmentMultiSelector.SelectedTreatmentSetChanged -= OnSelectedTreatmentsMultiChanged;
         base.Dispose();
     }   
 
@@ -196,23 +196,23 @@ public class VisitCreateViewModel : BaseViewModel
             _doctors.Add(doctor);
         }
         
-        TreatmentSelector.TreatmentItems.Clear();
+        TreatmentMultiSelector.TreatmentItems.Clear();
 
         foreach (var item in await GetTreatmentItemsAsync())
         {
-            TreatmentSelector.TreatmentItems.Add(item);
+            TreatmentMultiSelector.TreatmentItems.Add(item);
         }
     }
 
     private async Task AddVisit_Execute()
     {
-        if (SelectedDoctor is null || !TreatmentSelector.HasSelectedItems)
+        if (SelectedDoctor is null || !TreatmentMultiSelector.HasSelectedItems)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;
         }
         
-        var items = TreatmentSelector.GetSelectedTreatmentItems();
+        var items = TreatmentMultiSelector.GetSelectedTreatmentItems();
 
         var dto = new VisitCreateDto
         {
@@ -270,9 +270,9 @@ public class VisitCreateViewModel : BaseViewModel
         IsDoctorListVisible = false;
     }
 
-    private async Task OnSelectedTreatmentsChanged(object? sender, EventArgs e)
+    private async Task OnSelectedTreatmentsMultiChanged(object? sender, EventArgs e)
     {
-        var items = TreatmentSelector.GetSelectedTreatmentItems().ToList();
+        var items = TreatmentMultiSelector.GetSelectedTreatmentItems().ToList();
 
         (TotalSum, _) = await _paymentService.CalculateTotalWithDiscountAsync(items, 0);
         FirstPayment = TotalSum;

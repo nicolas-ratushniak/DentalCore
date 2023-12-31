@@ -35,7 +35,7 @@ public class PatientCreateViewModel : BaseViewModel
 
     public ObservableCollection<DiseaseListItemViewModel> Diseases { get; }
 
-    public AllergySelectorViewModel AllergySelector { get; }
+    public AllergyMultiSelectorViewModel AllergyMultiSelector { get; }
     public CitySelectorViewModel CitySelector { get; }
 
     public string? ErrorMessage
@@ -137,7 +137,7 @@ public class PatientCreateViewModel : BaseViewModel
         _commonService = commonService;
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
-        AllergySelector = new AllergySelectorViewModel();
+        AllergyMultiSelector = new AllergyMultiSelectorViewModel();
         CitySelector = new CitySelectorViewModel(AddCityCallback);
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
@@ -160,11 +160,11 @@ public class PatientCreateViewModel : BaseViewModel
             Diseases.Add(disease);
         }
 
-        AllergySelector.Allergies.Clear();
+        AllergyMultiSelector.Allergies.Clear();
 
         foreach (var allergy in await GetAllergiesAsync())
         {
-            AllergySelector.Allergies.Add(allergy);
+            AllergyMultiSelector.Allergies.Add(allergy);
         }
     }
 
@@ -211,7 +211,7 @@ public class PatientCreateViewModel : BaseViewModel
             .Select(d => d.Id)
             .ToList();
 
-        var allergyIds = AllergySelector.GetSelectedAllergiesIds().ToList();
+        var allergyIds = AllergyMultiSelector.GetSelectedAllergiesIds().ToList();
 
         if (!DateTime.TryParseExact(BirthDate, "d.MM.yyyy", CultureInfo.CurrentCulture, DateTimeStyles.None,
                 out var birthDate))

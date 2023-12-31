@@ -10,7 +10,7 @@ using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Components;
 
-public class AllergySelectorViewModel : BaseViewModel
+public class AllergyMultiSelectorViewModel : BaseViewModel
 {
     private bool _canSelectAllergy = true;
     private string _allergySelectionFilter = string.Empty;
@@ -61,7 +61,7 @@ public class AllergySelectorViewModel : BaseViewModel
         }
     }
 
-    public AllergySelectorViewModel()
+    public AllergyMultiSelectorViewModel()
     {
         Allergies = new ObservableCollection<AllergyListItemViewModel>();
         

@@ -150,9 +150,9 @@
                 </Grid>
 
                 <!-- Select Allergies -->
-                <components:AllergySelector Grid.Column="1"
+                <components:AllergyMultiSelector Grid.Column="1"
                                             Margin="12 0 12 0"
-                                            DataContext="{Binding AllergySelector}" />
+                                            DataContext="{Binding AllergyMultiSelector}" />
 
                 <Grid Grid.Column="2">
                     <Grid.RowDefinitions>

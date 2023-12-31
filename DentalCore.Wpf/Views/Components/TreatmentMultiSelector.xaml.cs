@@ -4,16 +4,16 @@ using DentalCore.Wpf.ViewModels.Components;
 
 namespace DentalCore.Wpf.Views.Components;
 
-public partial class TreatmentSelector : UserControl
+public partial class TreatmentMultiSelector : UserControl
 {
-    public TreatmentSelector()
+    public TreatmentMultiSelector()
     {
         InitializeComponent();
     }
     
     private void TreatmentItem_OnQuantityChanged(object sender, RoutedPropertyChangedEventArgs<int> e)
     {
-        var viewModel = (TreatmentSelectorViewModel)DataContext;
+        var viewModel = (TreatmentMultiSelectorViewModel)DataContext;
         viewModel.UpdatePriceCommand.Execute(null);
     }
 }

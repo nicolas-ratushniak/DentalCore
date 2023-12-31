@@ -146,8 +146,8 @@
                 </Grid>
 
                 <!-- Treatment Items -->
-                <components:TreatmentSelector Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
-                                              DataContext="{Binding TreatmentSelector}"/>
+                <components:TreatmentMultiSelector Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
+                                              DataContext="{Binding TreatmentMultiSelector}"/>
 
                 <!-- Total Sum and First Payment -->
                 <Grid Grid.Row="3" Grid.Column="2"
