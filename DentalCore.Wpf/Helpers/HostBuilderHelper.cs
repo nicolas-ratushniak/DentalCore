@@ -31,14 +31,12 @@ public static class HostBuilderHelper
 
             services.AddSingleton<Func<PatientCreateViewModel>>(s => () => new PatientCreateViewModel(
                 s.GetRequiredService<INavigationService>(),
-                s.GetRequiredService<IModalService>(),
                 s.GetRequiredService<IPatientService>(),
                 s.GetRequiredService<ICommonService>()));
 
             services.AddSingleton<Func<int, PatientUpdateViewModel>>(s => id => new PatientUpdateViewModel(
                 id,
                 s.GetRequiredService<INavigationService>(),
-                s.GetRequiredService<IModalService>(),
                 s.GetRequiredService<IPatientService>(),
                 s.GetRequiredService<ICommonService>()));
 

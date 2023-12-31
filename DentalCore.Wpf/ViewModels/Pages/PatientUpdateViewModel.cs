@@ -19,7 +19,6 @@ namespace DentalCore.Wpf.ViewModels.Pages;
 public class PatientUpdateViewModel : BaseViewModel
 {
     private readonly INavigationService _navigationService;
-    private readonly IModalService _modalService;
     private readonly IPatientService _patientService;
     private readonly ICommonService _commonService;
     private readonly int _patientId;
@@ -130,28 +129,20 @@ public class PatientUpdateViewModel : BaseViewModel
     public PatientUpdateViewModel(
         int id,
         INavigationService navigationService,
-        IModalService modalService,
         IPatientService patientService,
         ICommonService commonService)
     {
         _patientId = id;
         _navigationService = navigationService;
-        _modalService = modalService;
         _patientService = patientService;
         _commonService = commonService;
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
         AllergySelector = new AllergySelectorViewModel();
-        CitySelector = new CitySelectorViewModel(
-            new RelayCommand(CreateCity_Execute));
+        CitySelector = new CitySelectorViewModel(AddCityCallback);
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
         SubmitCommand = new AsyncRelayCommand(Update_Execute);
-    }
-
-    private void CreateCity_Execute()
-    {
-        _modalService.OpenModal(ModalType.CityCreate);
     }
 
     public override async Task LoadDataAsync()
@@ -186,6 +177,31 @@ public class PatientUpdateViewModel : BaseViewModel
         Gender = patient.Gender;
         Phone = (await _patientService.GetPhonesAsync(patient.Id)).First().PhoneNumber;
         CitySelector.SelectedCity = CitySelector.Cities.Single(c => c.Id == patient.City.Id);
+    }
+    
+    private async Task AddCityCallback(string cityName)
+    {
+        var dto = new CityCreateDto
+        {
+            Name = cityName
+        };
+
+        try
+        {
+            var city = await _commonService.AddCityAsync(dto);
+            var cityListItem = new CityListItemViewModel
+            {
+                Id = city.Id,
+                Name = city.Name
+            };
+            
+            CitySelector.Cities.Add(cityListItem);
+            CitySelector.SelectedCity = cityListItem;
+        }
+        catch (ValidationException ex)
+        {
+            ErrorMessage = ex.Message;
+        }
     }
 
     private async Task Update_Execute()

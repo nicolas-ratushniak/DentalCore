@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Wpf.Abstract;
+using DentalCore.Wpf.Commands.Generic;
 using DentalCore.Wpf.ViewModels.Inners;
 
 namespace DentalCore.Wpf.ViewModels.Components;
@@ -13,7 +16,7 @@ public class CitySelectorViewModel : BaseViewModel
     private bool _isCityListVisible;
     private CityListItemViewModel? _selectedCity;
     
-    public ObservableCollection<CityListItemViewModel> Cities { get; set; }
+    public ObservableCollection<CityListItemViewModel> Cities { get; }
     public ICollectionView CityCollectionView { get; }
     public ICommand AddCityCommand { get; }
     
@@ -60,9 +63,9 @@ public class CitySelectorViewModel : BaseViewModel
         }
     }
 
-    public CitySelectorViewModel(ICommand addCityCommand)
+    public CitySelectorViewModel(Func<string, Task> addCityCallback)
     {
-        AddCityCommand = addCityCommand;
+        AddCityCommand = new AsyncRelayCommand<string>(addCityCallback);
         
         Cities = new ObservableCollection<CityListItemViewModel>();
         CityCollectionView = CollectionViewSource.GetDefaultView(Cities);

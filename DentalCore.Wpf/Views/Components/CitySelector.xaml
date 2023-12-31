@@ -16,7 +16,7 @@
                 <Setter.Value>
                     <DataTemplate DataType="{x:Type inners:CityListItemViewModel}">
                         <TextBlock Text="{Binding Path=Name}"
-                                   FontSize="18" />
+                                   Style="{StaticResource NormalText}"/>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -30,29 +30,9 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <custom:PlaceholderTextBox Grid.Column="0"
-                                       Text="{Binding CitySearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                       Placeholder="Введіть місто" />
-
-            <Button Grid.Column="2"
-                    Style="{StaticResource NiceButton}"
-                    Command="{Binding AddCityCommand}"
-                    Height="36"
-                    Width="36"
-                    Padding="10">
-                <Image Source="../../Assets/add.png"
-                       Stretch="Fill"
-                       RenderOptions.BitmapScalingMode="HighQuality"/>
-            </Button>
-
-        </Grid>
+        <custom:PlaceholderTextBox Grid.Row="0"
+                                   Text="{Binding CitySearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                   Placeholder="Введіть місто" />
 
         <Popup Grid.Row="1"
                IsOpen="{Binding IsCityListVisible}"
@@ -66,7 +46,25 @@
                     MaxHeight="250"
                     Background="White">
                 <Grid>
-                    <TextBlock Text="Нічого не знайдено"
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Button Grid.Row="0"
+                            Style="{StaticResource CancelButton}"
+                            FontSize="14"
+                            Padding="5 5"
+                            HorizontalContentAlignment="Left"
+                            Content="{Binding CitySearchFilter}"
+                            ContentStringFormat="{}Додати &quot;{0}&quot;"
+                            Command="{Binding AddCityCommand}"
+                            CommandParameter="{Binding CitySearchFilter}" />
+
+                    <TextBlock Grid.Row="1"
+                               Style="{StaticResource NormalText}"
+                               Text="Нічого не знайдено"
                                Panel.ZIndex="1"
                                TextWrapping="Wrap"
                                Foreground="{StaticResource BrushGrey}"
@@ -74,7 +72,7 @@
                                Visibility="{Binding ElementName=LbPopup, Path=HasItems,
                                                Converter={StaticResource InverseBoolToVisibilityConverter}}" />
 
-                    <ListBox x:Name="LbPopup"
+                    <ListBox x:Name="LbPopup" Grid.Row="1"
                              ScrollViewer.CanContentScroll="True"
                              ScrollViewer.VerticalScrollBarVisibility="Hidden"
                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"

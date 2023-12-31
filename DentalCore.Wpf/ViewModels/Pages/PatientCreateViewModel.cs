@@ -129,7 +129,6 @@ public class PatientCreateViewModel : BaseViewModel
 
     public PatientCreateViewModel(
         INavigationService navigationService,
-        IModalService modalService,
         IPatientService patientService,
         ICommonService commonService)
     {
@@ -139,8 +138,7 @@ public class PatientCreateViewModel : BaseViewModel
         Diseases = new ObservableCollection<DiseaseListItemViewModel>();
 
         AllergySelector = new AllergySelectorViewModel();
-        CitySelector = new CitySelectorViewModel(
-            new RelayCommand(() => modalService.OpenModal(ModalType.CityCreate)));
+        CitySelector = new CitySelectorViewModel(AddCityCallback);
 
         CancelCommand = new RelayCommand(() => _navigationService.NavigateTo(PageType.Patients));
         SubmitCommand = new AsyncRelayCommand(Add_Execute);
@@ -167,6 +165,31 @@ public class PatientCreateViewModel : BaseViewModel
         foreach (var allergy in await GetAllergiesAsync())
         {
             AllergySelector.Allergies.Add(allergy);
+        }
+    }
+
+    private async Task AddCityCallback(string cityName)
+    {
+        var dto = new CityCreateDto
+        {
+            Name = cityName
+        };
+
+        try
+        {
+            var city = await _commonService.AddCityAsync(dto);
+            var cityListItem = new CityListItemViewModel
+            {
+                Id = city.Id,
+                Name = city.Name
+            };
+            
+            CitySelector.Cities.Add(cityListItem);
+            CitySelector.SelectedCity = cityListItem;
+        }
+        catch (ValidationException ex)
+        {
+            ErrorMessage = ex.Message;
         }
     }
 
