@@ -22,7 +22,6 @@ public class TreatmentMultiSelectorViewModel : BaseViewModel
     private TreatmentItemListItemViewModel? _selectedTreatmentItem;
     private string _treatmentItemSelectionFilter = string.Empty;
     private bool _isTreatmentItemListVisible;
-    private bool _canSelectTreatmentItem = true;
 
     public ICommand RemoveTreatmentItemCommand { get; }
     public ICommand UpdatePriceCommand { get; }
@@ -52,7 +51,7 @@ public class TreatmentMultiSelectorViewModel : BaseViewModel
         get => _selectedTreatmentItem;
         set
         {
-            if (Equals(value, _selectedTreatmentItem) || !_canSelectTreatmentItem) return;
+            if (Equals(value, _selectedTreatmentItem)) return;
             _selectedTreatmentItem = value;
 
             OnPropertyChanged();
@@ -121,14 +120,12 @@ public class TreatmentMultiSelectorViewModel : BaseViewModel
         {
             NonSelectedTreatmentItemCollectionView.Refresh();
             IsTreatmentItemListVisible = true;
-            _canSelectTreatmentItem = true;
         }
     }
 
     private void OnSelectedTreatmentItemChanged()
     {
         TreatmentItemSelectionFilter = string.Empty;
-        _canSelectTreatmentItem = false;
 
         if (_selectedTreatmentItem is null)
         {
@@ -145,6 +142,6 @@ public class TreatmentMultiSelectorViewModel : BaseViewModel
         NonSelectedTreatmentItemCollectionView.Refresh();
         SelectedTreatmentSetChanged?.Invoke(this, EventArgs.Empty);
 
-        _selectedTreatmentItem = null;
+        SelectedTreatmentItem = null;
     }
 }
