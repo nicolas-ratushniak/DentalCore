@@ -4,27 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 
-             xmlns:inners="clr-namespace:DentalCore.Wpf.ViewModels.Inners"
              xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
              xmlns:custom="clr-namespace:SimpleWpfToolkit;assembly=SimpleWpfToolkit"
              mc:Ignorable="d"
              d:DesignHeight="600" d:DesignWidth="1000"
              Loaded="OnLoaded">
-
-    <UserControl.Resources>
-
-        <Style x:Key="NiceDoctorList" TargetType="ListBox">
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="ItemTemplate">
-                <Setter.Value>
-                    <DataTemplate DataType="{x:Type inners:DoctorListItemViewModel}">
-                        <TextBlock Text="{Binding Path=FullName}"
-                                   Style="{StaticResource NormalText}" />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -45,7 +29,6 @@
             <!-- Title -->
             <TextBlock Grid.Row="0"
                        Style="{StaticResource Title}"
-                       FontWeight="Bold"
                        Text="Новий візит"
                        Margin="0 0 0 24" />
 
@@ -62,61 +45,20 @@
                     <ColumnDefinition Width="24" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <!-- Patient Info -->
                 <Border Grid.Row="0" Grid.Column="0"
                         Style="{StaticResource NiceBorder}"
                         Margin="0 0 0 10">
-                    
+
                     <TextBlock Text="{Binding PatientInfo}"
-                               Style="{StaticResource NormalText}"/>
+                               Style="{StaticResource NormalText}" />
                 </Border>
 
                 <!-- Select Doctor -->
-                <Grid Grid.Row="1" Grid.Column="0"
-                      Margin="0 0 0 10">
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <custom:PlaceholderTextBox Grid.Row="0"
-                                               Text="{Binding DoctorSearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                               Placeholder="Оберіть лікаря" />
-
-                    <Popup Grid.Row="1"
-                           IsOpen="{Binding IsDoctorListVisible}"
-                           ClipToBounds="True"
-                           AllowsTransparency="True"
-                           PopupAnimation="Slide"
-                           StaysOpen="False">
-
-                        <Border Style="{StaticResource NiceBorder}"
-                                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
-                                MaxHeight="250"
-                                Background="White">
-                            <Grid>
-                                <TextBlock Text="Нікого не знайдено"
-                                           Style="{StaticResource NormalText}"
-                                           Panel.ZIndex="1"
-                                           TextWrapping="Wrap"
-                                           Foreground="{StaticResource BrushGrey}"
-                                           FontSize="16"
-                                           Visibility="{Binding ElementName=DoctorPopup, Path=HasItems,
-                                               Converter={StaticResource InverseBoolToVisibilityConverter}}" />
-
-                                <ListBox x:Name="DoctorPopup"
-                                         ScrollViewer.CanContentScroll="True"
-                                         ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                         Style="{StaticResource NiceDoctorList}"
-                                         ItemsSource="{Binding DoctorCollectionView}"
-                                         SelectedItem="{Binding SelectedDoctor, Mode=TwoWay}" />
-                            </Grid>
-                        </Border>
-                    </Popup>
-                </Grid>
+                <components:DoctorSelector Grid.Row="1" Grid.Column="0"
+                                           DataContext="{Binding DoctorSelector}"
+                                           Margin="0 0 0 10" />
 
                 <!-- Diagnosis -->
                 <Grid Grid.Row="2" Column="0">
@@ -147,7 +89,7 @@
 
                 <!-- Treatment Items -->
                 <components:TreatmentMultiSelector Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
-                                              DataContext="{Binding TreatmentMultiSelector}"/>
+                                                   DataContext="{Binding TreatmentMultiSelector}" />
 
                 <!-- Total Sum and First Payment -->
                 <Grid Grid.Row="3" Grid.Column="2"
