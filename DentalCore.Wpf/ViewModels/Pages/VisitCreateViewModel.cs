@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Windows.Input;
 using DentalCore.Data.Models;
 using DentalCore.Domain.Abstract;
@@ -27,20 +24,16 @@ public class VisitCreateViewModel : BaseViewModel
     private readonly IPaymentService _paymentService;
     private readonly int _patientId;
 
-    private DoctorListItemViewModel? _selectedDoctor;
-    private string _doctorSearchFilter = string.Empty;
     private string? _diagnosis;
     private int _firstPayment;
     private int _totalSum;
     private string? _errorMessage;
-    private bool _isDoctorListVisible;
-    private readonly ObservableCollection<DoctorListItemViewModel> _doctors;
     private string _patientInfo;
 
     public ICommand CancelCommand { get; }
     public ICommand SubmitCommand { get; }
 
-    public ICollectionView DoctorCollectionView { get; }
+    public DoctorSelectorViewModel DoctorSelector { get; }
     public TreatmentMultiSelectorViewModel TreatmentMultiSelector { get; }
 
     public string? ErrorMessage
@@ -61,44 +54,6 @@ public class VisitCreateViewModel : BaseViewModel
         {
             if (value == _patientInfo) return;
             _patientInfo = value;
-            OnPropertyChanged();
-        }
-    }
-
-    public string DoctorSearchFilter
-    {
-        get => _doctorSearchFilter;
-        set
-        {
-            if (value == _doctorSearchFilter) return;
-            _doctorSearchFilter = value;
-
-            OnPropertyChanged();
-            OnDoctorFilterChanged();
-        }
-    }
-
-    public DoctorListItemViewModel? SelectedDoctor
-    {
-        get => _selectedDoctor;
-        set
-        {
-            if (Equals(value, _selectedDoctor)) return;
-            _selectedDoctor = value;
-
-            OnPropertyChanged();
-            OnSelectedDoctorChanged();
-            CommandManager.InvalidateRequerySuggested();
-        }
-    }
-
-    public bool IsDoctorListVisible
-    {
-        get => _isDoctorListVisible;
-        set
-        {
-            if (value == _isDoctorListVisible) return;
-            _isDoctorListVisible = value;
             OnPropertyChanged();
         }
     }
@@ -156,23 +111,11 @@ public class VisitCreateViewModel : BaseViewModel
         _procedureService = procedureService;
         _paymentService = paymentService;
         _patientId = id;
-        _doctors = new ObservableCollection<DoctorListItemViewModel>();
+
+        DoctorSelector = new DoctorSelectorViewModel();
 
         TreatmentMultiSelector = new TreatmentMultiSelectorViewModel();
         TreatmentMultiSelector.SelectedTreatmentSetChanged += OnSelectedTreatmentsMultiChanged;
-        
-        DoctorCollectionView = CollectionViewSource.GetDefaultView(_doctors);
-        
-        DoctorCollectionView.Filter = o =>
-        {
-            if (o is DoctorListItemViewModel d)
-            {
-                return d.Surname.ToLower().StartsWith(DoctorSearchFilter.ToLower()) ||
-                       d.Name.ToLower().StartsWith(DoctorSearchFilter.ToLower());
-            }
-
-            return false;
-        };
 
         CancelCommand = new RelayCommand(() => navigationService.NavigateTo(PageType.PatientInfo, id));
         SubmitCommand = new AsyncRelayCommand(AddVisit_Execute);
@@ -182,20 +125,20 @@ public class VisitCreateViewModel : BaseViewModel
     {
         TreatmentMultiSelector.SelectedTreatmentSetChanged -= OnSelectedTreatmentsMultiChanged;
         base.Dispose();
-    }   
+    }
 
     public override async Task LoadDataAsync()
     {
         var patient = await _patientService.GetAsync(_patientId);
         PatientInfo = $"{patient.Surname} {patient.Name} {patient.Patronymic}";
-        
-        _doctors.Clear();
-        
+
+        DoctorSelector.Doctors.Clear();
+
         foreach (var doctor in await GetDoctorsAsync())
         {
-            _doctors.Add(doctor);
+            DoctorSelector.Doctors.Add(doctor);
         }
-        
+
         TreatmentMultiSelector.TreatmentItems.Clear();
 
         foreach (var item in await GetTreatmentItemsAsync())
@@ -206,18 +149,18 @@ public class VisitCreateViewModel : BaseViewModel
 
     private async Task AddVisit_Execute()
     {
-        if (SelectedDoctor is null || !TreatmentMultiSelector.HasSelectedItems)
+        if (DoctorSelector.SelectedDoctor is null || !TreatmentMultiSelector.HasSelectedItems)
         {
             ErrorMessage = "Заповніть всі необхідні поля";
             return;
         }
-        
+
         var items = TreatmentMultiSelector.GetSelectedTreatmentItems();
 
         var dto = new VisitCreateDto
         {
             PatientId = _patientId,
-            DoctorId = SelectedDoctor!.Id,
+            DoctorId = DoctorSelector.SelectedDoctor!.Id,
             DiscountPercent = 0,
             FirstPayment = FirstPayment,
             Diagnosis = Diagnosis,
@@ -234,40 +177,6 @@ public class VisitCreateViewModel : BaseViewModel
         {
             ErrorMessage = ex.Message;
         }
-    }
-
-    private void OnDoctorFilterChanged()
-    {
-        var filter = DoctorSearchFilter;
-
-        if (_selectedDoctor is null)
-        {
-            IsDoctorListVisible = !string.IsNullOrEmpty(filter);
-        }
-        else
-        {
-            if (filter == _selectedDoctor.FullName)
-            {
-                IsDoctorListVisible = false;
-                return;
-            }
-
-            IsDoctorListVisible = true;
-            _selectedDoctor = null;
-        }
-
-        DoctorCollectionView.Refresh();
-    }
-
-    private void OnSelectedDoctorChanged()
-    {
-        if (_selectedDoctor is null)
-        {
-            return;
-        }
-
-        DoctorSearchFilter = _selectedDoctor.FullName;
-        IsDoctorListVisible = false;
     }
 
     private async Task OnSelectedTreatmentsMultiChanged(object? sender, EventArgs e)
@@ -289,7 +198,7 @@ public class VisitCreateViewModel : BaseViewModel
                 Surname = d.Surname
             });
     }
-    
+
     private async Task<IEnumerable<TreatmentItemListItemViewModel>> GetTreatmentItemsAsync()
     {
         return (await _procedureService.GetAllAsync())

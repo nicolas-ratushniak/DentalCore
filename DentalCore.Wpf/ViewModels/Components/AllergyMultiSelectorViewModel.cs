@@ -14,7 +14,6 @@ namespace DentalCore.Wpf.ViewModels.Components;
 
 public class AllergyMultiSelectorViewModel : BaseViewModel
 {
-    private bool _canSelectAllergy = true;
     private string _allergySelectionFilter = string.Empty;
     private bool _isAllergyListVisible;
     private AllergyListItemViewModel? _selectedAllergy;
@@ -56,7 +55,7 @@ public class AllergyMultiSelectorViewModel : BaseViewModel
         get => _selectedAllergy;
         set
         {
-            if (Equals(value, _selectedAllergy) || !_canSelectAllergy) return;
+            if (Equals(value, _selectedAllergy)) return;
             _selectedAllergy = value;
 
             OnPropertyChanged();
@@ -107,14 +106,12 @@ public class AllergyMultiSelectorViewModel : BaseViewModel
         {
             NotSelectedAllergyCollectionView.Refresh();
             IsAllergyListVisible = true;
-            _canSelectAllergy = true;
         }
     }
 
     private void OnSelectedAllergyChanged()
     {
         AllergySelectionFilter = string.Empty;
-        _canSelectAllergy = false;
 
         if (_selectedAllergy is null)
         {
@@ -129,6 +126,6 @@ public class AllergyMultiSelectorViewModel : BaseViewModel
         SelectedAllergyCollectionView.Refresh();
         NotSelectedAllergyCollectionView.Refresh();
 
-        _selectedAllergy = null;
+        SelectedAllergy = null;
     }
 }
