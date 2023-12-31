@@ -9,9 +9,9 @@
         <AssemblyName>DentalCore</AssemblyName>
 
         <!--Set to 'true' to pack release on build-->
-        <VersionStampOnBuild>true</VersionStampOnBuild>
-        <AssemblyVersion>0.0.7</AssemblyVersion>
-        <FileVersion>0.0.7</FileVersion>
+        <VersionStampOnBuild>false</VersionStampOnBuild>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -32,6 +32,7 @@
     <ItemGroup>
         <ProjectReference Include="..\DentalCore.Data\DentalCore.Data.csproj"/>
         <ProjectReference Include="..\DentalCore.Domain\DentalCore.Domain.csproj"/>
+        <ProjectReference Include="..\SimpleWpfToolkit\SimpleWpfToolkit.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -41,12 +42,65 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="Assets\edit.png"/>
         <Resource Include="Assets\edit.png"/>
-        <None Remove="Assets\more.png"/>
         <Resource Include="Assets\more.png"/>
-        <None Remove="Assets\quit.png"/>
         <Resource Include="Assets\quit.png"/>
+        <Resource Include="Assets\delete.png" />
+        <None Remove="Assets\add.png" />
+        <Resource Include="Assets\add.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\Components\NavBar.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\PatientCreateView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\PatientInfoView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\PatientsView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\PatientUpdateView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\ProceduresView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\VisitCreateView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\VisitInfoView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Pages\VisitsView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
+      <Page Update="Views\Modals\VisitsExportView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
 
     <PropertyGroup>

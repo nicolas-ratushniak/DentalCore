@@ -19,19 +19,100 @@ public class VisitService : IVisitService
         _paymentService = paymentService;
     }
 
-    public async Task<Visit> GetAsync(int id)
+    public async Task<VisitRichDto> GetAsync(int id)
     {
-        return await _context.Visits.FindAsync(id)
+        return await _context.Visits
+                   .Include(v => v.Patient)
+                   .Include(v => v.Doctor)
+                   .Include(v => v.Payments)
+                   .Select(v => new VisitRichDto
+                   {
+                       Id = v.Id,
+                       VisitDate = v.VisitDate,
+                       TotalPrice = v.TotalPrice,
+                       AlreadyPayed = v.Payments.Sum(p => p.Sum),
+                       Diagnosis = v.Diagnosis,
+                       Patient = new PatientDto
+                       {
+                           Id = v.PatientId,
+                           Name = v.Patient.Name,
+                           Surname = v.Patient.Surname,
+                           Patronymic = v.Patient.Patronymic
+                       },
+                       Doctor = new UserDto
+                       {
+                           Id = v.DoctorId,
+                           Role = v.Doctor.Role,
+                           Login = v.Doctor.Login,
+                           Name = v.Doctor.Name,
+                           Surname = v.Doctor.Surname,
+                           Phone = v.Doctor.Phone
+                       }
+                   })
+                   .SingleOrDefaultAsync(v => v.Id == id)
                ?? throw new EntityNotFoundException();
     }
 
-    public async Task<IEnumerable<Visit>> GetAllAsync()
+    public async Task<IEnumerable<VisitDto>> GetAllAsync()
     {
-        return await _context.Visits.ToListAsync();
+        return await _context.Visits
+            .Select(v => new VisitDto
+            {
+                Id = v.Id,
+                PatientId = v.PatientId,
+                DoctorId = v.DoctorId,
+                VisitDate = v.VisitDate,
+                TotalPrice = v.TotalPrice,
+                Diagnosis = v.Diagnosis
+            })
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<VisitRichDto>> GetAllRichAsync(DateTime from, DateTime to)
+    {
+        if (from > to)
+        {
+            throw new ArgumentException("From should not be greater than To", nameof(from));
+        }        
+        
+        return await _context.Visits
+            .Include(v => v.Patient)
+            .Include(v => v.Doctor)
+            .Include(v => v.Payments)
+            .Where(v =>
+                v.VisitDate >= from &&
+                v.VisitDate <= to)
+            .Select(v => new VisitRichDto
+            {
+                Id = v.Id,
+                VisitDate = v.VisitDate,
+                TotalPrice = v.TotalPrice,
+                AlreadyPayed = v.Payments.Sum(p => p.Sum),
+                Diagnosis = v.Diagnosis,
+                Patient = new PatientDto
+                {
+                    Id = v.PatientId,
+                    Name = v.Patient.Name,
+                    Surname = v.Patient.Surname,
+                    Patronymic = v.Patient.Patronymic
+                },
+                Doctor = new UserDto
+                {
+                    Id = v.DoctorId,
+                    Role = v.Doctor.Role,
+                    Login = v.Doctor.Login,
+                    Name = v.Doctor.Name,
+                    Surname = v.Doctor.Surname,
+                    Phone = v.Doctor.Phone
+                }
+            })
+            .ToListAsync();
     }
 
     public async Task<int> AddAsync(VisitCreateDto dto)
     {
+        var createdOn = DateTime.Now;
+
         Validator.ValidateObject(dto, new ValidationContext(dto), true);
 
         if (!dto.TreatmentItems.Any())
@@ -42,7 +123,7 @@ public class VisitService : IVisitService
         var itemsNoDuplicates = dto.TreatmentItems
             .Where(t => t.Quantity > 0)
             .GroupBy(t => t.ProcedureId)
-            .Select(g => new TreatmentItemDto
+            .Select(g => new TreatmentItemCreateDto
             {
                 ProcedureId = g.Key,
                 Quantity = g.Sum(item => item.Quantity)
@@ -74,7 +155,8 @@ public class VisitService : IVisitService
             DiscountSum = discountSum,
             Diagnosis = dto.Diagnosis,
             TotalPrice = totalPrice,
-            CreatedOn = dto.Date,
+            VisitDate = dto.Date,
+            CreatedOn = createdOn,
             Payments = new List<Payment>(),
             TreatmentItems = new List<TreatmentItem>(),
         };
@@ -115,11 +197,19 @@ public class VisitService : IVisitService
 
         return visit.Id;
     }
-
-    public async Task<IEnumerable<TreatmentItem>> GetTreatmentItemsAsync(int id)
+    
+    public async Task<IEnumerable<TreatmentItemDto>> GetTreatmentItemsAsync(int visitId)
     {
         return await _context.TreatmentItems
-            .Where(t => t.VisitId == id)
+            .Include(t => t.Procedure)
+            .Where(t => t.VisitId == visitId)
+            .Select(t => new TreatmentItemDto
+            {
+                Id = t.ProcedureId,
+                Name = t.Procedure.Name,
+                Quantity = t.Quantity,
+                Price = t.Price
+            })
             .ToListAsync();
     }
 }

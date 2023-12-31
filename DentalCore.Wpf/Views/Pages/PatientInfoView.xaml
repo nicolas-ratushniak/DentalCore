@@ -1,0 +1,267 @@
+﻿<UserControl x:Class="DentalCore.Wpf.Views.Pages.PatientInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="1000"
+             Loaded="OnLoaded">
+
+    <UserControl.Resources>
+        
+        <Style x:Key="VisitListBox" TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0" />
+
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Padding="0 10"
+                                            Margin="10 0"
+                                            BorderBrush="#a2a6a8"
+                                            BorderThickness="0 0 0 1">
+
+                                        <Grid Margin="10 0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Column="0"
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding Path=DateString}" />
+
+                                            <TextBlock Grid.Column="1"
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding Path=Diagnosis}"
+                                                       TextWrapping="Wrap"
+                                                       Margin="24 0"/>
+
+                                            <Button Grid.Column="2"
+                                                    Width="24"
+                                                    Height="24"
+                                                    Margin="0 0 15 0"
+                                                    BorderThickness="0"
+                                                    Command="{Binding DataContext.GoToVisitInfoCommand,
+                                                    RelativeSource={RelativeSource AncestorType=ListBox}}"
+                                                    CommandParameter="{Binding Id}">
+                                                <Button.Background>
+                                                    <ImageBrush ImageSource="../../Assets/more.png" Stretch="Fill" />
+                                                </Button.Background>
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ItemListBox" TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0" />
+
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border Padding="3 2">
+
+                                        <Grid>
+                                            <TextBlock Grid.Column="0"
+                                                       Style="{StaticResource NormalText}"
+                                                       Text="{Binding }"
+                                                       TextWrapping="Wrap"
+                                                       FontSize="16" />
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0"
+                Background="#f0fce6"
+                Padding="24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0"
+                           Style="{StaticResource NormalText}"
+                           FontSize="20"
+                           Text="{Binding Surname}"
+                           Margin="0 0 0 15" />
+
+                <TextBlock Grid.Row="1"
+                           Style="{StaticResource NormalText}"
+                           FontSize="20"
+                           Text="{Binding Name}"
+                           Margin="0 0 0 15" />
+
+                <TextBlock Grid.Row="2"
+                           Style="{StaticResource NormalText}"
+                           FontSize="20"
+                           Text="{Binding Patronymic}"
+                           Margin="0 0 0 15" />
+
+                <TextBlock Grid.Row="3"
+                           Style="{StaticResource NormalText}"
+                           FontSize="20"
+                           Text="{Binding AgeString}"
+                           Margin="0 0 0 15" />
+
+                <Border Grid.Row="5"
+                        Padding="5"
+                        CornerRadius="5"
+                        Background="{StaticResource WarningBrush}"
+                        Visibility="{Binding HasAllergiesOrDiseases,
+                        Converter={StaticResource BooleanToVisibilityConverter}}">
+                    
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0"
+                              Margin="0 0 0 10"
+                              Visibility="{Binding ElementName=AllergiesList, Path=HasItems,
+                              Converter={StaticResource BooleanToVisibilityConverter}}">
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0"
+                                       Style="{StaticResource NormalText}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Text="Алергії:"
+                                       Foreground="#fff"
+                                       Margin="0 0 0 5" />
+
+                            <ListBox x:Name="AllergiesList" Grid.Row="1"
+                                     MaxHeight="120"
+                                     Style="{StaticResource ItemListBox}"
+                                     ItemsSource="{Binding AllergyNames}"
+                                     Background="Transparent"
+                                     Foreground="#fff"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                        </Grid>
+
+                        <Grid Grid.Row="1"
+                              Visibility="{Binding ElementName=DiseasesList, Path=HasItems,
+                              Converter={StaticResource BooleanToVisibilityConverter}}">
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0"
+                                       Style="{StaticResource NormalText}"
+                                       FontSize="14"
+                                       FontWeight="Bold"
+                                       Text="Хвороби:"
+                                       Foreground="#fff"
+                                       Margin="0 0 0 5" />
+
+                            <ListBox x:Name="DiseasesList" Grid.Row="1"
+                                     MaxHeight="120"
+                                     Style="{StaticResource ItemListBox}"
+                                     ItemsSource="{Binding DiseasesNames}"
+                                     Background="Transparent"
+                                     Foreground="#fff"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Column="1"
+              Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0"
+                  Margin="0 0 0 24">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                
+                <Border Grid.Column="0"
+                        Visibility="{Binding HasDebt,
+                        Converter={StaticResource BooleanToVisibilityConverter}}"
+                        CornerRadius="17"
+                        Background="{StaticResource DangerBrush}"
+                        Padding="17 7">
+                    
+                    <TextBlock  Style="{StaticResource NormalText}" 
+                                Foreground="#fff"
+                                Text="{Binding Debt, StringFormat=Борг: {0} грн }"/>
+                </Border>
+                
+                <Button Grid.Column="2"
+                        Style="{StaticResource WarningButton}"
+                        Command="{Binding PayPatientDebtCommand}"
+                        Visibility="{Binding HasDebt, 
+                        Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Content="Сплатити борг" 
+                        Margin="0 0 12px 0"/>
+                
+                <Button Grid.Column="3"
+                        Style="{StaticResource NiceButton}"
+                        Command="{Binding GoToVisitCreateCommand}"
+                        Content="Створити візит" />
+            </Grid>
+
+            <Border Grid.Row="1"
+                    BorderThickness="1"
+                    BorderBrush="Black"
+                    CornerRadius="5"
+                    Padding="5">
+
+                <ListBox Style="{StaticResource VisitListBox}"
+                         ItemsSource="{Binding VisitCollectionView}"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+            </Border>
+
+        </Grid>
+
+    </Grid>
+</UserControl>

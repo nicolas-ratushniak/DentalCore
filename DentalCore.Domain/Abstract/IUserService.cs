@@ -1,15 +1,14 @@
-﻿using DentalCore.Data.Models;
-using DentalCore.Domain.Dto;
+﻿using DentalCore.Domain.Dto;
 
 namespace DentalCore.Domain.Abstract;
 
 public interface IUserService
 {
-    public Task<User> GetAsync(int id);
-    public Task<User> GetAsync(string login);
-    public Task<User> GetIncludeSoftDeletedAsync(int id);
-    public Task<IEnumerable<User>> GetAllAsync();
-    public Task<IEnumerable<User>> GetAllIncludeSoftDeletedAsync();
+    public Task<UserDto> GetAsync(int id);
+    public Task<UserDto> GetAsync(string login);
+    public Task<UserDto> GetIncludeSoftDeletedAsync(int id);
+    public Task<IEnumerable<UserDto>> GetAllAsync();
+    public Task<IEnumerable<UserDto>> GetAllIncludeSoftDeletedAsync();
     public Task<int> AddAsync(UserCreateDto dto);
     public Task UpdateAsync(UserUpdateDto dto);
     public Task SoftDeleteAsync(int id);

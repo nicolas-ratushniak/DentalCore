@@ -17,28 +17,47 @@ public class ProcedureService : IProcedureService
         _context = context;
     }
 
-    public async Task<Procedure> GetAsync(int id)
+    public async Task<ProcedureDto> GetAsync(int id)
     {
         return await _context.Procedures
             .Where(p => !p.IsDeleted)
-            .SingleOrDefaultAsync(p => p.Id == id) ?? throw new EntityNotFoundException();
+            .Select(p => new ProcedureDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                IsDiscountAllowed = p.IsDiscountAllowed
+            })
+            .SingleOrDefaultAsync(p => p.Id == id) 
+               ?? throw new EntityNotFoundException();
     }
 
-    public async Task<Procedure> GetIncludeSoftDeletedAsync(int id)
-    {
-        return await _context.Procedures.FindAsync(id) ?? throw new EntityNotFoundException();
-    }
 
-    public async Task<IEnumerable<Procedure>> GetAllAsync()
+    public async Task<IEnumerable<ProcedureDto>> GetAllAsync()
     {
         return await _context.Procedures
             .Where(p => !p.IsDeleted)
+            .Select(p => new ProcedureDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                IsDiscountAllowed = p.IsDiscountAllowed
+            })
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Procedure>> GetAllIncludeSoftDeletedAsync()
+    public async Task<IEnumerable<ProcedureDto>> GetAllIncludeSoftDeletedAsync()
     {
-        return await _context.Procedures.ToListAsync();
+        return await _context.Procedures
+            .Select(p => new ProcedureDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                IsDiscountAllowed = p.IsDiscountAllowed
+            })
+            .ToListAsync();
     }
 
     public async Task<int> AddAsync(ProcedureCreateDto dto)
@@ -79,7 +98,7 @@ public class ProcedureService : IProcedureService
             throw new ValidationException("У базі вже є процедура з такою назвою");
         }
 
-        var procedure = await GetAsync(dto.Id);
+        var procedure = await GetEntityAsync(dto.Id);
 
         procedure.Name = dto.Name;
         procedure.Price = dto.Price;
@@ -93,12 +112,21 @@ public class ProcedureService : IProcedureService
     public async Task SoftDeleteAsync(int id)
     {
         var deletedOn = DateTime.Now;
-        var procedure = await GetAsync(id);
+        var procedure = await GetEntityAsync(id);
 
         procedure.IsDeleted = true;
         procedure.DeletedOn = deletedOn;
 
         _context.Procedures.Update(procedure);
         await _context.SaveChangesAsync();
+    }
+    
+    private async Task<Procedure> GetEntityAsync(int id)
+    {
+        return await _context.Procedures
+                   .SingleOrDefaultAsync(p => 
+                       p.Id == id &&
+                       !p.IsDeleted) 
+               ?? throw new EntityNotFoundException();
     }
 }

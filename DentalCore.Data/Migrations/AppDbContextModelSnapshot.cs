@@ -181,6 +181,9 @@ namespace DentalCore.Data.Migrations
                     b.Property<int?>("PatientId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Sum")
                         .HasColumnType("int");
 
@@ -367,6 +370,9 @@ namespace DentalCore.Data.Migrations
 
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("VisitDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

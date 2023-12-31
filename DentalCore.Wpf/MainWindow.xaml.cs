@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using DentalCore.Wpf.Abstract;
 using DentalCore.Wpf.ViewModels;
 
 namespace DentalCore.Wpf;

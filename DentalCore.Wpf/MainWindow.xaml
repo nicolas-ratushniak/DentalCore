@@ -3,8 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:components="clr-namespace:DentalCore.Wpf.Views.Components"
+        xmlns:custom="clr-namespace:SimpleWpfToolkit;assembly=SimpleWpfToolkit"
         
-        xmlns:controls="clr-namespace:DentalCore.Wpf.Controls"
         mc:Ignorable="d"
         Title="{Binding CurrentVersion, StringFormat=Dental Core {0}}" 
         Height="700" MinHeight="620"
@@ -12,13 +13,19 @@
         Loaded="OnLoaded">
     
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <custom:Modal Panel.ZIndex="1" IsOpen="{Binding IsModalOpen}">
+            <ContentControl Content="{Binding CurrentModal}"/>
+        </custom:Modal>
         
-        <controls:NavBar Grid.Row="0"/> 
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
         
-        <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}"/>
+            <components:NavBar Grid.Row="0"/> 
+        
+            <ContentControl Grid.Row="1" Content="{Binding CurrentPage}"/>
+        </Grid>
     </Grid>
 </Window>

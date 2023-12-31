@@ -12,6 +12,7 @@ public class Visit
     public int DiscountSum { get; set; }
     public int TotalPrice { get; set; }
     [MaxLength(100)] public string? Diagnosis { get; set; }
+    public DateTime VisitDate { get; set; }
     public DateTime CreatedOn { get; set; }
 
     public List<TreatmentItem> TreatmentItems { get; set; } = new();

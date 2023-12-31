@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:simpleWpfToolkit="clr-namespace:SimpleWpfToolkit">
+    
+    <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="/SimpleWpfToolkit;component/Themes/Modal.xaml"/>
+            <ResourceDictionary Source="/SimpleWpfToolkit;component/Themes/PlaceholderTextBox.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    
+    <Style TargetType="simpleWpfToolkit:IntegerTextBox"
+           BasedOn="{StaticResource {x:Type simpleWpfToolkit:PlaceholderTextBox}}" />
+
+</ResourceDictionary>
